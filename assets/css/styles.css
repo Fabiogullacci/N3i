@@ -31,7 +31,7 @@
   --font-body: 'Inter', sans-serif;
   
   /* Structural variables */
-  --nav-height: 85px;
+  --nav-height: 105px;
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -179,7 +179,7 @@ p {
   background-color: rgba(10, 12, 13, 0.85);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-color);
-  height: 75px;
+  height: 85px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -197,7 +197,7 @@ p {
 }
 
 .logo img {
-  height: 48px;
+  height: 84px;
   width: auto;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -205,7 +205,7 @@ p {
 }
 
 .header.scrolled .logo img {
-  height: 42px;
+  height: 66px;
 }
 
 .logo-text {
