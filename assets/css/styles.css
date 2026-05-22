@@ -991,6 +991,13 @@ textarea.form-control {
 .developer-tag {
   font-size: 0.85rem;
   color: var(--text-muted);
+  transition: var(--transition-smooth);
+}
+
+@media (min-width: 769px) {
+  .developer-tag {
+    margin-right: 220px; /* Deja espacio para el botón flotante de WhatsApp */
+  }
 }
 
 .developer-tag a {
