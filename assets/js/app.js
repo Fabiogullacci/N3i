@@ -198,4 +198,52 @@ ${message}`;
       }, 800);
     });
   }
+
+  // =========================================================================
+  // 7. Abono CTA Autofill & Smooth Scroll
+  // =========================================================================
+  const abonoBtns = document.querySelectorAll('.abono-btn');
+  const serviceSelect = document.getElementById('form-service');
+  const messageTextarea = document.getElementById('form-message');
+
+  abonoBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const abonoName = btn.getAttribute('data-abono');
+      
+      // Set the select dropdown option
+      if (serviceSelect) {
+        const targetValue = `Abono Mantenimiento - ${abonoName}`;
+        
+        for (let i = 0; i < serviceSelect.options.length; i++) {
+          if (serviceSelect.options[i].value === targetValue) {
+            serviceSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+      
+      // Pre-fill the description textarea with customized text
+      if (messageTextarea) {
+        let prepopulatedText = "";
+        if (abonoName === 'PyME Start') {
+          prepopulatedText = "Hola Fabio, me interesa solicitar una cotización y asesoramiento personalizado sobre el Abono Mensual PyME Start para nuestro local/oficina. Deseamos coordinar una visita preventiva inicial.";
+        } else if (abonoName === 'PyME Pro') {
+          prepopulatedText = "Hola Fabio, nos interesa el Abono Mensual PyME Pro para nuestra mediana empresa. Quisiéramos recibir una propuesta técnica formal, evaluar la auditoría edilicia quincenal y el soporte en redes/instalaciones.";
+        } else if (abonoName === 'Industrial 360') {
+          prepopulatedText = "Estimado Ing. Fabio Gullacci, nos contactamos para solicitar información detallada sobre el Abono Mensual Industrial 360 para nuestra planta/depósito. Requerimos soporte preventivo en electricidad industrial, neumática, gas certificado y guardias 24/7.";
+        } else {
+          prepopulatedText = `Hola Fabio, me interesa recibir más información sobre el abono de mantenimiento mensual: ${abonoName}.`;
+        }
+        messageTextarea.value = prepopulatedText;
+      }
+      
+      // Smooth scroll to contact section
+      const contactSection = document.getElementById('contacto');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
 });
