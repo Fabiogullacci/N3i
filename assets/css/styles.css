@@ -975,17 +975,20 @@ textarea.form-control {
 
 .footer-bottom {
   border-top: 1px solid var(--border-color);
-  padding-top: 40px;
+  padding: 40px 0 20px;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
+  width: 100%;
 }
 
 .footer-bottom p {
   font-size: 0.85rem;
   color: var(--text-muted);
+  margin: 0;
 }
 
 .developer-tag {
@@ -996,7 +999,7 @@ textarea.form-control {
 
 @media (min-width: 769px) {
   .developer-tag {
-    margin-right: 220px; /* Deja espacio para el botón flotante de WhatsApp */
+    margin-right: 280px; /* Safe zone: completely avoids the floating WhatsApp button */
   }
 }
 
@@ -1152,6 +1155,10 @@ textarea.form-control {
   
   .footer-bottom {
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
   }
 }
 
