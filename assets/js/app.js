@@ -161,13 +161,13 @@ document.addEventListener('DOMContentLoaded', () => {
 `*N3i Engineering & Maintenance*
 *Nueva Consulta desde el Sitio Web*
 
-\u{1F464} *Nombre:* ${name}
-\u{1F3E2} *Empresa:* ${company}
-\u{1F4DE} *Teléfono:* ${phone}
-\u{1F4E7} *Correo:* ${email ? email : 'No especificado'}
-\u{1F6E0}\u{FE0F} *Servicio de Interés:* ${service}
+\uD83D\uDC64 *Nombre:* ${name}
+\uD83C\uDFE2 *Empresa:* ${company}
+\uD83D\uDCDE *Teléfono:* ${phone}
+\uD83D\uDCE7 *Correo:* ${email ? email : 'No especificado'}
+\uD83D\uDEE0\uFE0F *Servicio de Interés:* ${service}
 
-\u{1F4AC} *Detalles del Requerimiento:*
+\uD83D\uDCAC *Detalles del Requerimiento:*
 ${message}`;
 
       // Encode for URL safely
@@ -185,10 +185,10 @@ ${message}`;
       submitBtn.innerHTML = 'Procesando Consulta...';
       submitBtn.disabled = true;
 
+      // Open WhatsApp in a new tab immediately (synchronously) to avoid browser popup blockers
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
       setTimeout(() => {
-        // Open WhatsApp in a new tab
-        window.open(whatsappUrl, '_blank');
-        
         // Restore button state
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
