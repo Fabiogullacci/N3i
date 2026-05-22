@@ -367,7 +367,7 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="form-service">Especialidad de Interés</label>
-              <select id="form-service" class="form-control" required>
+              <select id="form-service" class="form-control" required style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; pointer-events: none;">
                 <option value="" disabled selected hidden>Seleccione un servicio...</option>
                 <option value="Electricidad Industrial">Electricidad Industrial</option>
                 <option value="Sistemas de Gas Industrial">Sistemas de Gas Industrial</option>
@@ -387,6 +387,33 @@
                 <option value="Pintura de Obra y Revestimientos">Pintura de Obra y Revestimientos</option>
                 <option value="Mantenimiento General / Otros">Mantenimiento General / Otros</option>
               </select>
+
+              <!-- Custom Premium Dropdown Menu -->
+              <div class="custom-select-container" id="custom-select-container">
+                <div class="custom-select-trigger" id="custom-select-trigger">
+                  <span class="custom-select-placeholder">Seleccione un servicio...</span>
+                  <span class="custom-select-arrow"></span>
+                </div>
+                <div class="custom-select-options" id="custom-select-options">
+                  <div class="custom-select-option" data-value="Electricidad Industrial">Electricidad Industrial</div>
+                  <div class="custom-select-option" data-value="Sistemas de Gas Industrial">Sistemas de Gas Industrial</div>
+                  <div class="custom-select-option" data-value="Neumática y Aire Comprimido">Neumática y Aire Comprimido</div>
+                  <div class="custom-select-option" data-value="Automatización Industrial (IA/IoT)">Automatización Industrial (IA/IoT)</div>
+                  <div class="custom-select-option" data-value="Generación y Renovables">Generación y Renovables</div>
+                  <div class="custom-select-option" data-value="Gestión Hídrica">Gestión Hídrica</div>
+                  <div class="custom-select-option" data-value="Redes de Alta Velocidad">Redes de Alta Velocidad</div>
+                  <div class="custom-select-option" data-value="Telecomunicaciones y Datos">Telecomunicaciones y Datos</div>
+                  <div class="custom-select-option" data-value="Seguridad y PCI">Seguridad y PCI</div>
+                  <div class="custom-select-option" data-value="Ingeniería Civil y Arquitectura">Ingeniería Civil y Arquitectura</div>
+                  <div class="custom-select-option" data-value="Construcción Steel / Wood Frame">Construcción Steel / Wood Frame</div>
+                  <div class="custom-select-option" data-value="Viviendas Modulares de Alta Calidad">Viviendas Modulares de Alta Calidad</div>
+                  <div class="custom-select-option" data-value="Integridad Estructural">Integridad Estructural</div>
+                  <div class="custom-select-option" data-value="Ingeniería de Superficies">Ingeniería de Superficies</div>
+                  <div class="custom-select-option" data-value="Reparación de Cubiertas">Reparación de Cubiertas</div>
+                  <div class="custom-select-option" data-value="Pintura de Obra y Revestimientos">Pintura de Obra y Revestimientos</div>
+                  <div class="custom-select-option" data-value="Mantenimiento General / Otros">Mantenimiento General / Otros</div>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label" for="form-message">Breve Descripción de la Consulta</label>

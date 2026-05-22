@@ -134,10 +134,66 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 6. Contact Form to WhatsApp compilation, Email backup & redirect
+  // 6. Custom Select Dropdown Implementation
   // =========================================================================
+  const selectContainer = document.getElementById('custom-select-container');
+  const selectTrigger = document.getElementById('custom-select-trigger');
+  const selectOptions = document.querySelectorAll('.custom-select-option');
+  const hiddenSelect = document.getElementById('form-service');
   const contactForm = document.getElementById('whatsapp-contact-form');
 
+  if (selectContainer && selectTrigger && hiddenSelect) {
+    // Open/Close dropdown panel
+    selectTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectContainer.classList.toggle('open');
+    });
+
+    // Handle selecting an option
+    selectOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const selectedValue = option.getAttribute('data-value');
+
+        // Update active class on option elements
+        selectOptions.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+
+        // Update trigger display text & remove placeholder styling
+        const triggerText = selectTrigger.querySelector('span:first-child');
+        triggerText.textContent = selectedValue;
+        triggerText.classList.remove('custom-select-placeholder');
+        selectTrigger.style.color = 'var(--text-primary)';
+
+        // Sync and dispatch event to hidden native select
+        hiddenSelect.value = selectedValue;
+        hiddenSelect.dispatchEvent(new Event('change'));
+
+        // Close dropdown panel
+        selectContainer.classList.remove('open');
+      });
+    });
+
+    // Close dropdown when clicking anywhere else on the document
+    document.addEventListener('click', () => {
+      selectContainer.classList.remove('open');
+    });
+
+    // Listen for form reset to reset custom select UI state
+    if (contactForm) {
+      contactForm.addEventListener('reset', () => {
+        selectOptions.forEach(opt => opt.classList.remove('selected'));
+        const triggerText = selectTrigger.querySelector('span:first-child');
+        triggerText.textContent = 'Seleccione un servicio...';
+        triggerText.classList.add('custom-select-placeholder');
+        selectTrigger.style.color = '';
+      });
+    }
+  }
+
+  // =========================================================================
+  // 7. Contact Form to WhatsApp compilation, Email backup & redirect
+  // =========================================================================
   if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();

@@ -881,7 +881,7 @@ p {
 .form-group {
   margin-bottom: 24px;
   position: relative;
-  z-index: 1;
+  /* Removed z-index: 1 to allow children with higher z-index to stack over subsequent form-groups */
 }
 
 .form-label {
@@ -907,43 +907,116 @@ p {
   transition: var(--transition-smooth);
 }
 
-/* Custom styling for select dropdown to replace default browser styling */
-select.form-control {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238CC63F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 18px center;
-  background-size: 16px;
-  padding-right: 45px; /* Make space for custom arrow */
-  cursor: pointer;
+/* Custom Premium Select Dropdown */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+  user-select: none;
+  z-index: 999; /* Higher z-index to render above neighboring controls */
 }
 
-/* Hide arrow in IE/Edge */
-select.form-control::-ms-expand {
-  display: none;
-}
-
-/* Muted color for placeholder when invalid (nothing selected yet) */
-select.form-control:invalid {
-  color: var(--text-muted);
-}
-
-/* Premium Dark Mode options list */
-.form-control option {
-  background-color: #191c1e; /* Solid fallback for standard engines */
-  background-color: var(--bg-tertiary);
-  color: #ffffff; /* Solid fallback */
-  color: var(--text-primary);
+.custom-select-trigger {
+  width: 100%;
+  background-color: #111416; /* Solid secondary dark background to avoid transparency blending bugs */
+  border: 1px solid var(--border-color);
+  color: var(--text-muted); /* Start with muted color for placeholder */
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
   font-family: var(--font-body), 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 15px;
-  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition-smooth);
 }
 
-/* Fallback color for placeholder option in list if visible */
-.form-control option[value=""] {
-  color: var(--text-muted);
+.custom-select-trigger:hover {
+  border-color: rgba(140, 198, 63, 0.4);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.custom-select-container.open .custom-select-trigger {
+  border-color: var(--accent);
+  background-color: rgba(140, 198, 63, 0.03);
+  box-shadow: 0 0 15px rgba(140, 198, 63, 0.15);
+}
+
+.custom-select-trigger .custom-select-arrow {
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238CC63F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-select-container.open .custom-select-trigger .custom-select-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-select-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background: #111416 !important; /* Force solid, opaque dark color to avoid background blending and transparency issues */
+  background-color: #111416 !important; /* Force solid color */
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(140, 198, 63, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 99999 !important; /* Extremely high z-index to overlay on top of subsequent form elements */
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--bg-secondary);
+}
+
+.custom-select-options::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-select-options::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+.custom-select-options::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+.custom-select-options::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+.custom-select-container.open .custom-select-options {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+.custom-select-option {
+  padding: 12px 18px;
+  font-family: var(--font-body), 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition-smooth);
+}
+
+.custom-select-option:hover {
+  background-color: rgba(140, 198, 63, 0.08);
+  color: var(--text-primary);
+  padding-left: 22px; /* Smooth slide-in hover effect */
+}
+
+.custom-select-option.selected {
+  background-color: rgba(140, 198, 63, 0.15);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .form-control:focus {
