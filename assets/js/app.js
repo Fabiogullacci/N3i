@@ -161,13 +161,13 @@ document.addEventListener('DOMContentLoaded', () => {
 `*N3i Engineering & Maintenance*
 *Nueva Consulta desde el Sitio Web*
 
-👤 *Nombre:* ${name}
-🏢 *Empresa:* ${company}
-📞 *Teléfono:* ${phone}
-📧 *Correo:* ${email ? email : 'No especificado'}
-🛠️ *Servicio de Interés:* ${service}
+\u{1F464} *Nombre:* ${name}
+\u{1F3E2} *Empresa:* ${company}
+\u{1F4DE} *Teléfono:* ${phone}
+\u{1F4E7} *Correo:* ${email ? email : 'No especificado'}
+\u{1F6E0}\u{FE0F} *Servicio de Interés:* ${service}
 
-💬 *Detalles del Requerimiento:*
+\u{1F4AC} *Detalles del Requerimiento:*
 ${message}`;
 
       // Encode for URL safely
