@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 6. Contact Form to WhatsApp compilation & redirect
+  // 6. Contact Form to WhatsApp compilation, Email backup & redirect
   // =========================================================================
   const contactForm = document.getElementById('whatsapp-contact-form');
 
@@ -145,29 +145,25 @@ document.addEventListener('DOMContentLoaded', () => {
       // Form fields
       const name = document.getElementById('form-name').value.trim();
       const company = document.getElementById('form-company').value.trim();
-      const phone = document.getElementById('form-phone').value.trim();
-      const email = document.getElementById('form-email').value.trim();
       const service = document.getElementById('form-service').value;
       const message = document.getElementById('form-message').value.trim();
 
       // Basic validation
-      if (!name || !company || !phone || !service || !message) {
-        alert('Por favor complete todos los campos obligatorios del formulario.');
+      if (!name || !company || !service || !message) {
+        alert('Por favor complete todos los campos del formulario.');
         return;
       }
 
       // WhatsApp text formatting with markdown
       const wpMessage = 
-`*N3i Engineering & Maintenance*
+`*N3i Engineering %26 Maintenance*
 *Nueva Consulta desde el Sitio Web*
 
-\u{1F464} *Nombre:* ${name}
-\u{1F3E2} *Empresa:* ${company}
-\u{1F4DE} *Teléfono:* ${phone}
-\u{1F4E7} *Correo:* ${email ? email : 'No especificado'}
-\u{1F6E0}\u{FE0F} *Servicio de Interés:* ${service}
+👤 *Nombre:* ${name}
+🏢 *Empresa:* ${company}
+🛠️ *Servicio de Interés:* ${service}
 
-\u{1F4AC} *Detalles del Requerimiento:*
+💬 *Detalles del Requerimiento:*
 ${message}`;
 
       // Encode for URL safely
@@ -176,26 +172,52 @@ ${message}`;
       // Fabio's phone number in international format (+54 9 291 416-8232)
       const phoneNumber = '5492914168232';
 
-      // WhatsApp API redirect URL
+      // WhatsApp API redirect URL (using the properly encoded text)
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
 
       // Show action visual loader on the button
       const submitBtn = document.getElementById('btn-submit-wp');
       const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = 'Procesando Consulta...';
+      submitBtn.innerHTML = 'Enviando Consulta...';
       submitBtn.disabled = true;
 
-      setTimeout(() => {
-        // Open WhatsApp in a new tab
+      // Prepare data for the email backup using FormSubmit (completely free and robust)
+      const emailData = {
+        Nombre: name,
+        Empresa: company,
+        Servicio: service,
+        Mensaje: message,
+        _subject: `Nueva Consulta Web - ${name} (${company})`,
+        _honey: "" // Spam protection honeypot
+      };
+
+      // Send backup to email and then open WhatsApp
+      fetch("https://formsubmit.co/ajax/n3ibhi@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(emailData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Email backup sent successfully:", data);
+      })
+      .catch(error => {
+        console.error("Error sending email backup:", error);
+      })
+      .finally(() => {
+        // Open WhatsApp in a new tab (always executed, even if the email API has an error)
         window.open(whatsappUrl, '_blank');
-        
+
         // Restore button state
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        
-        // Optional: Reset form
+
+        // Reset the form fields
         contactForm.reset();
-      }, 800);
+      });
     });
   }
 });

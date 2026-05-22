@@ -907,6 +907,13 @@ p {
   transition: var(--transition-smooth);
 }
 
+.form-control option {
+  background-color: #ffffff;
+  color: #111416;
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
 .form-control:focus {
   border-color: var(--accent);
   background-color: rgba(140, 198, 63, 0.03);
