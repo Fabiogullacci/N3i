@@ -902,16 +902,48 @@ p {
   color: var(--text-primary);
   border-radius: var(--radius-sm);
   padding: 14px 18px;
-  font-family: var(--font-body);
+  font-family: var(--font-body), 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 15px;
   transition: var(--transition-smooth);
 }
 
+/* Custom styling for select dropdown to replace default browser styling */
+select.form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238CC63F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 16px;
+  padding-right: 45px; /* Make space for custom arrow */
+  cursor: pointer;
+}
+
+/* Hide arrow in IE/Edge */
+select.form-control::-ms-expand {
+  display: none;
+}
+
+/* Muted color for placeholder when invalid (nothing selected yet) */
+select.form-control:invalid {
+  color: var(--text-muted);
+}
+
+/* Premium Dark Mode options list */
 .form-control option {
-  background-color: #ffffff;
-  color: #111416;
-  font-family: var(--font-body);
+  background-color: #191c1e; /* Solid fallback for standard engines */
+  background-color: var(--bg-tertiary);
+  color: #ffffff; /* Solid fallback */
+  color: var(--text-primary);
+  font-family: var(--font-body), 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 15px;
+  padding: 12px;
+}
+
+/* Fallback color for placeholder option in list if visible */
+.form-control option[value=""] {
+  color: var(--text-muted);
 }
 
 .form-control:focus {
