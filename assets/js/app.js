@@ -145,22 +145,26 @@ document.addEventListener('DOMContentLoaded', () => {
       // Form fields
       const name = document.getElementById('form-name').value.trim();
       const company = document.getElementById('form-company').value.trim();
+      const phone = document.getElementById('form-phone').value.trim();
+      const email = document.getElementById('form-email').value.trim();
       const service = document.getElementById('form-service').value;
       const message = document.getElementById('form-message').value.trim();
 
       // Basic validation
-      if (!name || !company || !service || !message) {
-        alert('Por favor complete todos los campos del formulario.');
+      if (!name || !company || !phone || !service || !message) {
+        alert('Por favor complete todos los campos obligatorios del formulario.');
         return;
       }
 
       // WhatsApp text formatting with markdown
       const wpMessage = 
-`*N3i Engineering %26 Maintenance*
+`*N3i Engineering & Maintenance*
 *Nueva Consulta desde el Sitio Web*
 
 👤 *Nombre:* ${name}
 🏢 *Empresa:* ${company}
+📞 *Teléfono:* ${phone}
+📧 *Correo:* ${email ? email : 'No especificado'}
 🛠️ *Servicio de Interés:* ${service}
 
 💬 *Detalles del Requerimiento:*
@@ -173,7 +177,7 @@ ${message}`;
       const phoneNumber = '5492914168232';
 
       // WhatsApp API redirect URL
-      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${wpMessage}`;
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
 
       // Show action visual loader on the button
       const submitBtn = document.getElementById('btn-submit-wp');
