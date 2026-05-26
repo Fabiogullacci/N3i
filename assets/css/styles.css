@@ -4,8 +4,6 @@
  * Colors: Slate Dark Gray (#2B2D2F), Lime Green Accent (#8CC63F)
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
-
 :root {
   /* Colors */
   --bg-primary: #0a0c0d;
@@ -296,7 +294,7 @@ p {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../img/hero.png');
+  background-image: url('../img/hero.webp');
   background-size: cover;
   background-position: center;
   opacity: 0.35;
@@ -696,7 +694,7 @@ p {
   right: 0;
   width: 50%;
   height: 100%;
-  background-image: url('../img/steel_frame.png');
+  background-image: url('../img/steel_frame.webp');
   background-size: cover;
   background-position: center;
   opacity: 0.15;
