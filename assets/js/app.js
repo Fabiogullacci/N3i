@@ -150,24 +150,39 @@ document.addEventListener('DOMContentLoaded', () => {
       const service = document.getElementById('form-service').value;
       const message = document.getElementById('form-message').value.trim();
 
+      const isEnglish = document.documentElement.lang === 'en';
+
       // Basic validation
       if (!name || !company || !phone || !service || !message) {
-        alert('Por favor complete todos los campos obligatorios del formulario.');
+        alert(isEnglish 
+          ? 'Please complete all required fields in the form.' 
+          : 'Por favor complete todos los campos obligatorios del formulario.');
         return;
       }
 
       // WhatsApp text formatting with markdown
-      const wpMessage = 
-`*N3i Engineering & Maintenance*
+      const wpMessage = isEnglish
+        ? `*N3i Engineering & Maintenance*
+*New Inquiry from the Website*
+
+👤 *Name:* ${name}
+🏢 *Company:* ${company}
+📞 *Phone:* ${phone}
+📧 *Email:* ${email ? email : 'Not specified'}
+🛠️ *Service of Interest:* ${service}
+
+💬 *Requirement Details:*
+${message}`
+        : `*N3i Engineering & Maintenance*
 *Nueva Consulta desde el Sitio Web*
 
-\uD83D\uDC64 *Nombre:* ${name}
-\uD83C\uDFE2 *Empresa:* ${company}
-\uD83D\uDCDE *Teléfono:* ${phone}
-\uD83D\uDCE7 *Correo:* ${email ? email : 'No especificado'}
-\uD83D\uDEE0\uFE0F *Servicio de Interés:* ${service}
+👤 *Nombre:* ${name}
+🏢 *Empresa:* ${company}
+📞 *Teléfono:* ${phone}
+📧 *Correo:* ${email ? email : 'No especificado'}
+🛠️ *Servicio de Interés:* ${service}
 
-\uD83D\uDCAC *Detalles del Requerimiento:*
+💬 *Detalles del Requerimiento:*
 ${message}`;
 
       // Encode for URL safely
@@ -182,7 +197,7 @@ ${message}`;
       // Show action visual loader on the button
       const submitBtn = document.getElementById('btn-submit-wp');
       const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = 'Procesando Consulta...';
+      submitBtn.innerHTML = isEnglish ? 'Processing Inquiry...' : 'Procesando Consulta...';
       submitBtn.disabled = true;
 
       // Open WhatsApp in a new tab immediately (synchronously) to avoid browser popup blockers
