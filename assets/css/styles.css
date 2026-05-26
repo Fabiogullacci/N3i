@@ -1107,47 +1107,17 @@ textarea.form-control {
 .footer-bottom {
   border-top: 1px solid var(--border-color);
   padding: 40px 0 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
   width: 100%;
 }
 
 .footer-bottom p {
   font-size: 0.85rem;
   color: var(--text-muted);
-  margin: 0;
+  margin: 0 0 4px;
+  text-align: left;
+  max-width: 65%;
 }
 
-.developer-tag {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  transition: var(--transition-smooth);
-}
-
-@media (min-width: 769px) {
-  .developer-tag {
-    margin-right: 280px; /* Safe zone: completely avoids the floating WhatsApp button */
-  }
-}
-
-.developer-tag a {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: var(--transition-smooth);
-}
-
-.developer-tag a:hover {
-  color: var(--accent);
-}
-
-.footer-director {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin: 0;
-}
 
 /* =========================================================================
    Conditional Form Fields (Technical Budget Form)
