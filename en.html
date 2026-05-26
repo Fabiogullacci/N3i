@@ -187,8 +187,8 @@
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "Automation & Intelligent Smart Homes",
-            "description": "Installation of sensors and Fibaro/Sonoff/Tuya systems for efficient control of lighting, climate, and energy with a 30% savings rate."
+            "name": "Automation & Smart Home · Integration Engineering",
+            "description": "We develop adaptive intelligent systems based on local servers running Home Assistant, integrated via Python scripts. We unify security, lighting, climate control, and energy management into a single robust, scalable interface with full data privacy."
           }
         },
         {
@@ -257,13 +257,20 @@
         </div>
       </a>
       
-      <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
+      <div class="header-actions">
+        <div class="lang-switcher-mobile" id="lang-switcher-mobile-header">
+          <a href="index.html" class="lang-flag" title="Español (Argentina)">&#127462;&#127479;</a>
+          <span class="lang-divider">|</span>
+          <span class="lang-flag active" title="English (US)">&#127482;&#127480;</span>
+        </div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
 
       <nav class="nav" id="nav">
         <ul class="nav-menu" id="nav-menu">
@@ -275,9 +282,9 @@
           <li><a href="#contacto" class="nav-link">Contact</a></li>
           <li class="lang-switcher-container">
             <div class="lang-switcher">
-              <a href="index.html" class="lang-btn" title="Español">ES</a>
+              <a href="index.html" class="lang-btn" title="Español (Argentina)">&#127462;&#127479;</a>
               <span class="lang-divider">|</span>
-              <span class="lang-btn active" title="English (US)">EN</span>
+              <span class="lang-btn active" title="English (US)">&#127482;&#127480;</span>
             </div>
           </li>
           <li>
@@ -518,7 +525,7 @@
           </p>
         </div>
 
-        <!-- 10. Automatizaciones & Domótica Inteligente -->
+        <!-- 10. Automation & Smart Home · Integration Engineering -->
         <div class="service-card reveal" data-category="industrial" style="--card-color: #A85A80; --card-color-rgb: 168, 90, 128;">
           <div class="service-card-bg" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=450&q=40');"></div>
           <div class="service-icon">
@@ -527,9 +534,9 @@
               <path d="M12 6v6l4 2"></path>
             </svg>
           </div>
-          <h3 class="service-title">Automation & Intelligent Smart Homes</h3>
+          <h3 class="service-title">Automation & Smart Home · Integration Engineering</h3>
           <p class="service-description">
-            Pioneers in the design and implementation of advanced home automation and smart control systems for homes, offices, and industries. Using state-of-the-art tech (Fibaro, Sonoff, Tuya, and centralized integrations), we install smart sensors for automated control of lighting, 220V plugs, temperature, humidity, and air quality. We optimize your facilities to ensure full comfort, simplify repetitive tasks, and yield a real 30% savings on electricity and gas consumption.
+            We don’t sell devices: <strong>we program intelligent systems built to your exact specifications.</strong> We develop proprietary platforms based on local servers running <strong>Home Assistant</strong>, integrated via <strong>Python scripts</strong> that unify into a single robust interface: perimeter security, zone lighting, multi-zone climate control, energy management, and access control. Unlike cloud-based commercial systems, our architecture guarantees <strong>full data privacy</strong>, offline operation during internet outages, and scalability without external licensing dependencies. The result: an adaptive system that grows with your operation, from a single-family home to a residential complex or industrial plant.
           </p>
         </div>
 
@@ -796,33 +803,53 @@
           </div>
         </div>
         
-        <!-- Contact Form Card -->
-        <div class="contact-form-container reveal" style="transition-delay: 0.1s;">
-          <form class="contact-form-card" id="whatsapp-contact-form">
-            <h3 class="form-card-title">Technical Support Request</h3>
-            
-            <div class="form-group">
-              <label class="form-label" for="form-name">First and Last Name</label>
-              <input type="text" id="form-name" class="form-control" placeholder="E.g., John Smith" required>
+        <div class="contact-form-card reveal" style="transition-delay: 0.15s;">
+          <h3 style="font-size: 1.4rem; margin-bottom: 6px;">Technical Budget Request</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 28px;">Fill in the project details to streamline our pre-sales engineering process.</p>
+          <form id="whatsapp-contact-form">
+
+            <!-- BLOCK A: Contact info -->
+            <div class="form-group-row">
+              <div class="form-group">
+                <label class="form-label" for="form-name">First and Last Name</label>
+                <input type="text" id="form-name" class="form-control" placeholder="E.g., John Smith" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="form-role">Title / Role</label>
+                <input type="text" id="form-role" class="form-control" placeholder="E.g., Operations Manager" required>
+              </div>
             </div>
-            
-            <div class="form-group">
-              <label class="form-label" for="form-company">Company / Shop Name</label>
-              <input type="text" id="form-company" class="form-control" placeholder="E.g., Smith Logistics Ltd." required>
+
+            <div class="form-group-row">
+              <div class="form-group">
+                <label class="form-label" for="form-company">Company / Organization</label>
+                <input type="text" id="form-company" class="form-control" placeholder="E.g., Smith Logistics Ltd." required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="form-phone">Contact Phone Number</label>
+                <input type="tel" id="form-phone" class="form-control" placeholder="E.g., +54 9 291 400-0000" required>
+              </div>
             </div>
-            
+
             <div class="form-group">
-              <label class="form-label" for="form-phone">Contact Phone Number</label>
-              <input type="tel" id="form-phone" class="form-control" placeholder="E.g., +54 9 291 400-0000" required>
+              <label class="form-label" for="form-email">Email Address</label>
+              <input type="email" id="form-email" class="form-control" placeholder="E.g., john@company.com" required>
             </div>
-            
+
+            <!-- BLOCK B: Project type -->
             <div class="form-group">
-              <label class="form-label" for="form-email">Email Address (Optional)</label>
-              <input type="email" id="form-email" class="form-control" placeholder="E.g., john@company.com">
+              <label class="form-label" for="form-project-type">Project Category</label>
+              <select id="form-project-type" class="form-control" style="background-color: #111416;" required>
+                <option value="" disabled selected>Select project type...</option>
+                <option value="Single-Family Residence">Single-Family Residence</option>
+                <option value="Building / Apartment Complex">Building / Apartment Complex</option>
+                <option value="Industrial Plant / Logistics Warehouse">Industrial Plant / Logistics Warehouse</option>
+              </select>
             </div>
-            
+
+            <!-- BLOCK C: Service -->
             <div class="form-group">
-              <label class="form-label" for="form-service">Service of Interest</label>
+              <label class="form-label" for="form-service">Primary Service Required</label>
               <select id="form-service" class="form-control" style="background-color: #111416;" required>
                 <option value="" disabled selected>Select a service...</option>
                 <optgroup label="Monthly Maintenance Plans">
@@ -830,40 +857,95 @@
                   <option value="Abono Mantenimiento - PyME Pro">Maintenance Plan - SMB Pro</option>
                   <option value="Abono Mantenimiento - Industrial 360">Maintenance Plan - Industrial 360</option>
                 </optgroup>
-                <optgroup label="Maintenance & Industrial Services">
-                  <option value="Electricidad Industrial & PyMEs">Industrial & SMB Electricity</option>
-                  <option value="Sistemas de Gas Industrial & PyMEs">Industrial & SMB Gas Systems</option>
-                  <option value="Neumática & Aire Comprimido">Pneumatics & Compressed Air</option>
-                  <option value="Automatizaciones & Domótica Inteligente">Automation & Intelligent Smart Homes</option>
-                  <option value="Energías Renovables & Generación de Respaldo">Renewable Energy & Backup Generation</option>
+                <optgroup label="Maintenance &amp; Industrial Services">
+                  <option value="electricidad">Industrial &amp; SMB Electricity</option>
+                  <option value="Sistemas de Gas Industrial &amp; PyMEs">Industrial &amp; SMB Gas Systems</option>
+                  <option value="Neum&aacute;tica &amp; Aire Comprimido">Pneumatics &amp; Compressed Air</option>
+                  <option value="domotica">Automation &amp; Smart Home</option>
+                  <option value="Energ&iacute;as Renovables &amp; Generaci&oacute;n de Respaldo">Renewable Energy &amp; Backup Generation</option>
                 </optgroup>
-                <optgroup label="Installations & Networks">
-                  <option value="Gestión Hídrica & Plomería (Industrias & PyMEs)">Water Management & Plumbing (Industries & SMBs)</option>
-                  <option value="Redes de Datos, Telecomunicaciones & Conectividad (Industrias & PyMEs)">Data Networks, Telecoms & Connectivity (Industries & SMBs)</option>
-                  <option value="Seguridad, Videovigilancia & Sistemas de Alarmas">Security, Video Surveillance & Alarm Systems</option>
+                <optgroup label="Installations &amp; Networks">
+                  <option value="Gesti&oacute;n H&iacute;drica &amp; Plomer&iacute;a">Water Management &amp; Plumbing</option>
+                  <option value="Redes de Datos, Telecomunicaciones &amp; Conectividad">Data Networks &amp; Connectivity</option>
+                  <option value="cctv">Security, CCTV &amp; Alarm Systems</option>
                 </optgroup>
-                <optgroup label="Works, Renovations & Painting">
-                  <option value="Ingeniería Civil & Arquitectura">Civil Engineering & Architecture</option>
-                  <option value="Steel Frame, Wood Frame & Construcción en Seco">Steel Frame, Wood Frame & Drywall Construction</option>
-                  <option value="Integridad Estructural & Reparación de Techos">Structural Integrity & Roof Repair</option>
-                  <option value="Pintura, Revestimientos & Tratamiento de Superficies (Industrias & PyMEs)">Painting, Coatings & Surface Treatment (Industries & SMBs)</option>
+                <optgroup label="Works, Renovations &amp; Painting">
+                  <option value="Ingenier&iacute;a Civil &amp; Arquitectura">Civil Engineering &amp; Architecture</option>
+                  <option value="Steel Frame, Wood Frame &amp; Construcci&oacute;n en Seco">Steel Frame &amp; Drywall Construction</option>
+                  <option value="Integridad Estructural &amp; Reparaci&oacute;n de Techos">Structural Integrity &amp; Roof Repair</option>
+                  <option value="Pintura, Revestimientos &amp; Tratamiento de Superficies">Painting &amp; Coatings</option>
                 </optgroup>
                 <option value="Mantenimiento General / Otros">General Maintenance / Other</option>
               </select>
             </div>
-            
-            <div class="form-group">
-              <label class="form-label" for="form-message">Brief Inquiry Description</label>
-              <textarea id="form-message" class="form-control" placeholder="Write the details of your technical requirement..." required></textarea>
+
+            <!-- BLOCK D: Conditional technical fields -->
+
+            <!-- Conditional: Electricity -->
+            <div id="fields-electricidad" class="conditional-fields" style="display:none;">
+              <div class="conditional-fields-header">Technical Data &mdash; Electricity</div>
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label class="form-label" for="form-elec-obra">Type of Work</label>
+                  <select id="form-elec-obra" class="form-control" style="background-color: #111416;">
+                    <option value="" disabled selected>Select...</option>
+                    <option value="New construction">New construction</option>
+                    <option value="Renovation / Extension">Renovation / Extension</option>
+                    <option value="Corrective maintenance">Corrective maintenance</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="form-elec-potencia">Estimated Power (kW)</label>
+                  <input type="number" id="form-elec-potencia" class="form-control" placeholder="E.g., 50" min="1">
+                </div>
+              </div>
             </div>
-            
+
+            <!-- Conditional: CCTV / Security -->
+            <div id="fields-cctv" class="conditional-fields" style="display:none;">
+              <div class="conditional-fields-header">Technical Data &mdash; Security &amp; CCTV</div>
+              <div class="form-group">
+                <label class="form-label" for="form-cctv-puntos">Number of Monitoring Points (Cameras)</label>
+                <input type="number" id="form-cctv-puntos" class="form-control" placeholder="E.g., 8" min="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Perimeter Integration Required</label>
+                <div class="form-checkbox-group">
+                  <label class="form-checkbox-label">
+                    <input type="checkbox" id="form-cctv-perimetral" value="Yes"> Yes, include perimeter alarm
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Conditional: Smart Home -->
+            <div id="fields-domotica" class="conditional-fields" style="display:none;">
+              <div class="conditional-fields-header">Automation Goals</div>
+              <div class="form-group">
+                <label class="form-label">Which systems do you want to integrate? (multi-select)</label>
+                <div class="form-checkbox-group">
+                  <label class="form-checkbox-label"><input type="checkbox" name="form-domo-metas" value="Multi-zone climate control"> Multi-zone climate control</label>
+                  <label class="form-checkbox-label"><input type="checkbox" name="form-domo-metas" value="Access control / Door automation"> Access control / Door automation</label>
+                  <label class="form-checkbox-label"><input type="checkbox" name="form-domo-metas" value="Zone lighting"> Zone lighting</label>
+                  <label class="form-checkbox-label"><input type="checkbox" name="form-domo-metas" value="Energy management"> Energy management</label>
+                  <label class="form-checkbox-label"><input type="checkbox" name="form-domo-metas" value="Integrated security (CCTV + alarm)"> Integrated security (CCTV + alarm)</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- BLOCK F: Free description -->
+            <div class="form-group">
+              <label class="form-label" for="form-message">Project Description</label>
+              <textarea id="form-message" class="form-control" placeholder="Describe the project scope, urgency, or any relevant technical detail..." required></textarea>
+            </div>
+
             <button type="submit" class="btn btn-primary" id="btn-submit-wp">
-              Open Inquiry in WhatsApp
+              Send Request via WhatsApp
               <span class="btn-icon">➔</span>
             </button>
           </form>
         </div>
-        
+            
       </div>
     </div>
   </section>
@@ -919,9 +1001,14 @@
       </div>
       
       <div class="footer-bottom">
-        <p>&copy; 2026 N3i Engineering & Maintenance. All rights reserved.</p>
-        <div class="developer-tag">
-          Technical Direction: <a href="mailto:fabiogullacci@gmail.com">Ing. Fabio Gullacci</a>
+        <p>&copy; 2026 N3i Engineering &amp; Maintenance. All rights reserved.</p>
+        <div class="footer-credentials">
+          <span class="footer-credentials-label">Technical Direction:</span>
+          <a href="mailto:fabiogullacci@gmail.com" class="footer-credentials-name">Ing. Fabio Gullacci</a>
+          <span class="footer-credentials-sep">&middot;</span>
+          <span class="footer-credential-badge">MMO</span>
+          <span class="footer-credential-badge">Systems Analyst</span>
+          <span class="footer-credential-badge">Certified Electrician</span>
         </div>
       </div>
     </div>

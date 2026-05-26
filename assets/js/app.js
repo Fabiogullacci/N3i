@@ -134,7 +134,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 6. Contact Form to WhatsApp compilation & redirect
+  // 6. Contact Form — Conditional Fields Logic
+  // =========================================================================
+  const serviceSelect = document.getElementById('form-service');
+
+  const conditionalMap = {
+    'electricidad': 'fields-electricidad',
+    'cctv':         'fields-cctv',
+    'domotica':     'fields-domotica',
+  };
+
+  const hideAllConditionals = () => {
+    Object.values(conditionalMap).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  };
+
+  if (serviceSelect) {
+    serviceSelect.addEventListener('change', () => {
+      hideAllConditionals();
+      const targetId = conditionalMap[serviceSelect.value];
+      if (targetId) {
+        const el = document.getElementById(targetId);
+        if (el) el.style.display = 'block';
+      }
+    });
+  }
+
+  // =========================================================================
+  // 6b. Contact Form to WhatsApp compilation & redirect
   // =========================================================================
   const contactForm = document.getElementById('whatsapp-contact-form');
 
@@ -142,74 +171,105 @@ document.addEventListener('DOMContentLoaded', () => {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      // Form fields
-      const name = document.getElementById('form-name').value.trim();
-      const company = document.getElementById('form-company').value.trim();
-      const phone = document.getElementById('form-phone').value.trim();
-      const email = document.getElementById('form-email').value.trim();
-      const service = document.getElementById('form-service').value;
-      const message = document.getElementById('form-message').value.trim();
-
       const isEnglish = document.documentElement.lang === 'en';
 
+      // Core fields
+      const name        = document.getElementById('form-name')?.value.trim() || '';
+      const role        = document.getElementById('form-role')?.value.trim() || '';
+      const company     = document.getElementById('form-company')?.value.trim() || '';
+      const phone       = document.getElementById('form-phone')?.value.trim() || '';
+      const email       = document.getElementById('form-email')?.value.trim() || '';
+      const projectType = document.getElementById('form-project-type')?.value || '';
+      const service     = serviceSelect ? serviceSelect.value : '';
+      const message     = document.getElementById('form-message')?.value.trim() || '';
+
       // Basic validation
-      if (!name || !company || !phone || !service || !message) {
-        alert(isEnglish 
-          ? 'Please complete all required fields in the form.' 
+      if (!name || !company || !phone || !service || !message || !projectType) {
+        alert(isEnglish
+          ? 'Please complete all required fields in the form.'
           : 'Por favor complete todos los campos obligatorios del formulario.');
         return;
       }
 
-      // WhatsApp text formatting with markdown
+      // Build conditional technical data block
+      let technicalData = '';
+
+      if (service === 'electricidad') {
+        const obraType = document.getElementById('form-elec-obra')?.value || '';
+        const potencia = document.getElementById('form-elec-potencia')?.value || '';
+        if (isEnglish) {
+          technicalData = `\n⚡ *Electrical Details:*\n   • Type of Work: ${obraType || 'Not specified'}\n   • Estimated Power: ${potencia ? potencia + ' kW' : 'Not specified'}`;
+        } else {
+          technicalData = `\n⚡ *Datos Eléctricos:*\n   • Tipo de Obra: ${obraType || 'No especificado'}\n   • Potencia Estimada: ${potencia ? potencia + ' kW' : 'No especificada'}`;
+        }
+      } else if (service === 'cctv') {
+        const puntos = document.getElementById('form-cctv-puntos')?.value || '';
+        const perimetral = document.getElementById('form-cctv-perimetral')?.checked;
+        if (isEnglish) {
+          technicalData = `\n📷 *Security Details:*\n   • Monitoring Points (cameras): ${puntos || 'Not specified'}\n   • Perimeter Alarm: ${perimetral ? 'Yes, required' : 'Not required'}`;
+        } else {
+          technicalData = `\n📷 *Datos de Seguridad:*\n   • Puntos de Monitoreo (cámaras): ${puntos || 'No especificado'}\n   • Alarma Perimetral: ${perimetral ? 'Sí, requerida' : 'No requerida'}`;
+        }
+      } else if (service === 'domotica') {
+        const metas = [...document.querySelectorAll('input[name="form-domo-metas"]:checked')].map(cb => cb.value);
+        if (isEnglish) {
+          technicalData = `\n🏠 *Automation Goals:*\n   • ${metas.length > 0 ? metas.join('\n   • ') : 'Not specified'}`;
+        } else {
+          technicalData = `\n🏠 *Metas de Automatización:*\n   • ${metas.length > 0 ? metas.join('\n   • ') : 'No especificadas'}`;
+        }
+      }
+
+      // Resolve service display name
+      const serviceOption = serviceSelect?.options[serviceSelect.selectedIndex];
+      const serviceLabel = serviceOption ? serviceOption.text : service;
+
+      // Build full WhatsApp message
       const wpMessage = isEnglish
         ? `*N3i Engineering & Maintenance*
-*New Inquiry from the Website*
+*Technical Budget Request — Website*
 
 👤 *Name:* ${name}
+💼 *Title / Role:* ${role || 'Not specified'}
 🏢 *Company:* ${company}
 📞 *Phone:* ${phone}
-📧 *Email:* ${email ? email : 'Not specified'}
-🛠️ *Service of Interest:* ${service}
+📧 *Email:* ${email || 'Not specified'}
 
-💬 *Requirement Details:*
+🏗️ *Project Category:* ${projectType}
+🛠️ *Service Required:* ${serviceLabel}${technicalData}
+
+💬 *Project Description:*
 ${message}`
         : `*N3i Engineering & Maintenance*
-*Nueva Consulta desde el Sitio Web*
+*Solicitud de Presupuesto Técnico — Sitio Web*
 
 👤 *Nombre:* ${name}
+💼 *Cargo / Rol:* ${role || 'No especificado'}
 🏢 *Empresa:* ${company}
 📞 *Teléfono:* ${phone}
-📧 *Correo:* ${email ? email : 'No especificado'}
-🛠️ *Servicio de Interés:* ${service}
+📧 *Correo:* ${email || 'No especificado'}
 
-💬 *Detalles del Requerimiento:*
+🏗️ *Categoría del Proyecto:* ${projectType}
+🛠️ *Servicio Requerido:* ${serviceLabel}${technicalData}
+
+💬 *Descripción del Requerimiento:*
 ${message}`;
 
-      // Encode for URL safely
       const encodedText = encodeURIComponent(wpMessage);
-
-      // Fabio's phone number in international format (+54 9 291 416-8232)
       const phoneNumber = '5492914168232';
-
-      // WhatsApp API redirect URL
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
 
-      // Show action visual loader on the button
       const submitBtn = document.getElementById('btn-submit-wp');
       const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = isEnglish ? 'Processing Inquiry...' : 'Procesando Consulta...';
+      submitBtn.innerHTML = isEnglish ? 'Processing...' : 'Procesando...';
       submitBtn.disabled = true;
 
-      // Open WhatsApp in a new tab immediately (synchronously) to avoid browser popup blockers
       window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 
       setTimeout(() => {
-        // Restore button state
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        
-        // Optional: Reset form
         contactForm.reset();
+        hideAllConditionals();
       }, 800);
     });
   }
@@ -218,7 +278,6 @@ ${message}`;
   // 7. Abono CTA Autofill & Smooth Scroll
   // =========================================================================
   const abonoBtns = document.querySelectorAll('.abono-btn');
-  const serviceSelect = document.getElementById('form-service');
   const messageTextarea = document.getElementById('form-message');
 
   abonoBtns.forEach(btn => {
@@ -234,6 +293,8 @@ ${message}`;
         for (let i = 0; i < serviceSelect.options.length; i++) {
           if (serviceSelect.options[i].value === targetValue) {
             serviceSelect.selectedIndex = i;
+            // Trigger change event to reset conditional fields
+            serviceSelect.dispatchEvent(new Event('change'));
             break;
           }
         }
@@ -241,15 +302,24 @@ ${message}`;
       
       // Pre-fill the description textarea with customized text
       if (messageTextarea) {
-        let prepopulatedText = "";
+        const isEnglish = document.documentElement.lang === 'en';
+        let prepopulatedText = '';
         if (abonoName === 'PyME Start') {
-          prepopulatedText = "Hola Fabio, me interesa solicitar una cotización y asesoramiento personalizado sobre el Abono Mensual PyME Start para nuestro local/oficina. Deseamos coordinar una visita preventiva inicial.";
+          prepopulatedText = isEnglish
+            ? 'Hello Fabio, I would like to request a quote and personalized advice on the SMB Start Monthly Plan for our shop/office. We would like to schedule an initial preventive visit.'
+            : 'Hola Fabio, me interesa solicitar una cotización y asesoramiento personalizado sobre el Abono Mensual PyME Start para nuestro local/oficina. Deseamos coordinar una visita preventiva inicial.';
         } else if (abonoName === 'PyME Pro') {
-          prepopulatedText = "Hola Fabio, nos interesa el Abono Mensual PyME Pro para nuestra mediana empresa. Quisiéramos recibir una propuesta técnica formal, evaluar la auditoría edilicia quincenal y el soporte en redes/instalaciones.";
+          prepopulatedText = isEnglish
+            ? 'Hello Fabio, we are interested in the SMB Pro Monthly Plan for our mid-size business. We would like to receive a formal technical proposal.'
+            : 'Hola Fabio, nos interesa el Abono Mensual PyME Pro para nuestra mediana empresa. Quisiéramos recibir una propuesta técnica formal, evaluar la auditoría edilicia quincenal y el soporte en redes/instalaciones.';
         } else if (abonoName === 'Industrial 360') {
-          prepopulatedText = "Estimado Ing. Fabio Gullacci, nos contactamos para solicitar información detallada sobre el Abono Mensual Industrial 360 para nuestra planta/depósito. Requerimos soporte preventivo en electricidad industrial, neumática, gas certificado y guardias 24/7.";
+          prepopulatedText = isEnglish
+            ? 'Dear Ing. Fabio Gullacci, we are contacting you to request detailed information on the Industrial 360 Monthly Plan for our plant/warehouse.'
+            : 'Estimado Ing. Fabio Gullacci, nos contactamos para solicitar información detallada sobre el Abono Mensual Industrial 360 para nuestra planta/depósito. Requerimos soporte preventivo en electricidad industrial, neumática, gas certificado y guardias 24/7.';
         } else {
-          prepopulatedText = `Hola Fabio, me interesa recibir más información sobre el abono de mantenimiento mensual: ${abonoName}.`;
+          prepopulatedText = isEnglish
+            ? `Hello Fabio, I am interested in learning more about the monthly maintenance plan: ${abonoName}.`
+            : `Hola Fabio, me interesa recibir más información sobre el abono de mantenimiento mensual: ${abonoName}.`;
         }
         messageTextarea.value = prepopulatedText;
       }
