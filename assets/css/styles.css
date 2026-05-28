@@ -1819,6 +1819,14 @@ textarea.form-control {
     grid-template-columns: 1fr;
     gap: 24px;
   }
+  .work-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+  .work-gallery, .work-gallery-3, .work-video-container {
+    height: 300px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1829,5 +1837,12 @@ textarea.form-control {
   }
   .floating-btn-badge {
     display: none;
+  }
+  .work-card {
+    padding: 16px;
+    gap: 20px;
+  }
+  .work-gallery, .work-gallery-3, .work-video-container {
+    height: 180px;
   }
 }
