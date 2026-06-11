@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N3i - Panel de Administración de Obras</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --accent: #8bc34a;
+      --accent-hover: #7cb342;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 40px 20px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 { color: var(--accent); margin-bottom: 10px; }
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #fff; }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: #fff;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    textarea { resize: vertical; min-height: 100px; }
+    .file-drop-area {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(0,0,0,0.2);
+    }
+    .file-drop-area:hover, .file-drop-area.dragover {
+      border-color: var(--accent);
+      background: rgba(139, 195, 74, 0.05);
+    }
+    .file-drop-area input { display: none; }
+    .btn {
+      background: var(--accent);
+      color: #111;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+      width: 100%;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:disabled { background: #555; cursor: not-allowed; }
+    
+    #preview-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .preview-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    
+    .status { margin-top: 15px; text-align: center; font-weight: bold; }
+    .success { color: var(--accent); }
+    .error { color: #ff5555; }
+    
+    /* Grid de Obras Existentes */
+    .obras-list { display: grid; gap: 15px; margin-top: 20px; }
+    .obra-item {
+      display: flex;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 6px;
+      justify-content: space-between;
+    }
+    .obra-info strong { display: block; color: #fff; font-size: 1.1rem; }
+    .obra-info span { font-size: 0.85rem; color: #888; }
+    .btn-delete {
+      background: transparent;
+      border: 1px solid #ff5555;
+      color: #ff5555;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-delete:hover { background: #ff5555; color: #fff; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Subir Nueva Obra</h1>
+    <p>Las imágenes se convertirán automáticamente a WebP y se redimensionarán para cargar rápido. Puedes subir hasta 4 fotos o 1 video.</p>
+  </div>
+
+  <div class="card">
+    <h2 id="form-header">Subir Nueva Obra</h2>
+    <form id="uploadForm">
+      <input type="hidden" id="obraId">
+      <div class="form-group">
+        <label>Título del Trabajo</label>
+        <input type="text" id="title" required placeholder="Ej: Renovación de Sistema de Desagüe Pluvial">
+      </div>
+      
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="category" required class="form-control" style="background-color: #2a2a2a; color: white;">
+          <option value="" disabled selected>Seleccione una categoría...</option>
+          <option value="Electricidad e Iluminación Industrial">Electricidad e Iluminación Industrial</option>
+          <option value="Inspección y Certificación Eléctrica">Inspección y Certificación Eléctrica</option>
+          <option value="Construcción en Seco y Terminaciones">Construcción en Seco y Terminaciones (Durlock)</option>
+          <option value="Climatización Comercial e Industrial">Climatización Comercial e Industrial</option>
+          <option value="Hidráulica y Plomería">Hidráulica y Plomería</option>
+          <option value="Neumática & Aire Comprimido">Neumática & Aire Comprimido</option>
+          <option value="Zinguería y Reparación Estructural">Zinguería y Reparación Estructural</option>
+          <option value="Construcción y Mantenimiento Integral">Construcción y Mantenimiento Integral</option>
+          <option value="Herrería y Estructuras Metálicas">Herrería y Estructuras Metálicas</option>
+          <option value="Redes y Datos">Redes y Datos</option>
+          <option value="Sistemas de Alarmas">Sistemas de Alarmas</option>
+          <option value="Sistemas de CCTV (Videovigilancia)">Sistemas de CCTV (Videovigilancia)</option>
+          <option value="Pintura y Revestimientos">Pintura y Revestimientos</option>
+          <option value="Obras llave en mano">Obras llave en mano</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Ubicación</label>
+        <input type="text" id="location" required placeholder="Ej: Calle Zelarrayán 33, Bahía Blanca">
+      </div>
+      
+      <div class="form-group">
+        <label>Descripción Larga</label>
+        <textarea id="description" required placeholder="Escriba los detalles del trabajo realizado..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label id="file-label">Archivos Multimedia (Máx 4 fotos o 1 video)</label>
+        <div class="file-drop-area" id="dropArea">
+          <span style="font-size: 2rem; display: block; margin-bottom: 10px;">📸</span>
+          <span id="dropAreaText">Arrastra tus fotos/video aquí o <strong>haz clic para seleccionar</strong></span>
+          <input type="file" id="files" multiple accept="image/*,video/mp4">
+        </div>
+        <div id="preview-container"></div>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="submit" class="btn" id="submitBtn">Procesar y Subir Obra</button>
+        <button type="button" class="btn" id="cancelBtn" style="display:none; background:#555;">Cancelar Edición</button>
+      </div>
+      <div id="status" class="status"></div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Obras en el Sistema</h2>
+    <div class="obras-list" id="obrasList">
+      Cargando obras...
+    </div>
+  </div>
+</div>
+
+<script>
+  let allObras = [];
+  const form = document.getElementById('uploadForm');
+  const fileInput = document.getElementById('files');
+  const dropArea = document.getElementById('dropArea');
+  const previewContainer = document.getElementById('preview-container');
+  const statusEl = document.getElementById('status');
+  const submitBtn = document.getElementById('submitBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const formHeader = document.getElementById('form-header');
+  const fileLabel = document.getElementById('file-label');
+  const obraIdInput = document.getElementById('obraId');
+  let selectedFiles = [];
+
+  // Drag and Drop Logic
+  dropArea.addEventListener('click', () => fileInput.click());
+  dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.classList.add('dragover'); });
+  dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+  dropArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropArea.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+  function renderPreviews() {
+    previewContainer.innerHTML = '';
+    selectedFiles.forEach((file, index) => {
+      const isString = typeof file === 'string';
+      const url = isString ? file : URL.createObjectURL(file);
+      const isVideo = isString ? file.endsWith('.mp4') : file.type.startsWith('video/');
+      
+      const isFirst = index === 0;
+      const isLast = index === selectedFiles.length - 1;
+
+      let mediaHtml = isVideo ? 
+        `<video src="${url}" class="preview-img" style="background:#000;" muted></video>` : 
+        `<img src="${url}" class="preview-img">`;
+
+      previewContainer.innerHTML += `
+        <div style="position:relative; display:inline-block; border: 1px solid var(--border); border-radius: 6px; padding: 5px; background: rgba(0,0,0,0.2);">
+          ${mediaHtml}
+          <div style="display:flex; justify-content:space-between; margin-top: 5px;">
+            <button type="button" class="btn-delete" style="padding: 4px 8px; border-color: #8bc34a; color: #8bc34a;" onclick="moveMedia(${index}, -1)" ${isFirst ? 'disabled style="opacity:0.3"' : ''}>⬅️</button>
+            <button type="button" class="btn-delete" style="padding: 4px 8px; border-color: #ff5555; color: #ff5555;" onclick="removeMedia(${index})">X</button>
+            <button type="button" class="btn-delete" style="padding: 4px 8px; border-color: #8bc34a; color: #8bc34a;" onclick="moveMedia(${index}, 1)" ${isLast ? 'disabled style="opacity:0.3"' : ''}>➡️</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function moveMedia(index, direction) {
+    if (direction === -1 && index > 0) {
+      const temp = selectedFiles[index - 1];
+      selectedFiles[index - 1] = selectedFiles[index];
+      selectedFiles[index] = temp;
+    } else if (direction === 1 && index < selectedFiles.length - 1) {
+      const temp = selectedFiles[index + 1];
+      selectedFiles[index + 1] = selectedFiles[index];
+      selectedFiles[index] = temp;
+    }
+    renderPreviews();
+  }
+
+  function removeMedia(index) {
+    selectedFiles.splice(index, 1);
+    renderPreviews();
+  }
+
+  function handleFiles(files) {
+    // Solo agregamos archivos nuevos a lo que ya tenemos, sin pasar de 4
+    let fileArray = Array.from(files);
+    
+    // Si meten un video, reemplaza todo
+    const hasVideo = fileArray.some(f => f.type.startsWith('video/'));
+    if (hasVideo) {
+      selectedFiles = [fileArray.find(f => f.type.startsWith('video/'))];
+    } else {
+      // Filtrar videos de los existentes si vamos a agregar fotos
+      selectedFiles = selectedFiles.filter(f => typeof f === 'string' ? !f.endsWith('.mp4') : !f.type.startsWith('video/'));
+      
+      fileArray.forEach(f => {
+        if (selectedFiles.length < 4 && f.type.startsWith('image/')) {
+          selectedFiles.push(f);
+        }
+      });
+    }
+    renderPreviews();
+  }
+
+  function editObra(id) {
+    const obra = allObras.find(o => o.id === id);
+    if (!obra) return;
+
+    obraIdInput.value = obra.id;
+    document.getElementById('title').value = obra.title;
+    document.getElementById('category').value = obra.category;
+    document.getElementById('location').value = obra.location;
+    document.getElementById('description').value = obra.description;
+
+    formHeader.textContent = 'Editando Obra: ' + obra.title;
+    submitBtn.textContent = 'Actualizar Obra';
+    cancelBtn.style.display = 'block';
+    
+    fileLabel.textContent = 'Archivos (Opcional - arrastra nuevas fotos para agregar, o usa las flechas para ordenar)';
+    
+    // Llenamos con los medios existentes
+    selectedFiles = obra.media.slice();
+    renderPreviews();
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  cancelBtn.addEventListener('click', resetForm);
+
+  function resetForm() {
+    form.reset();
+    obraIdInput.value = '';
+    selectedFiles = [];
+    previewContainer.innerHTML = '';
+    formHeader.textContent = 'Subir Nueva Obra';
+    submitBtn.textContent = 'Procesar y Subir Obra';
+    cancelBtn.style.display = 'none';
+    fileLabel.textContent = 'Archivos Multimedia (Máx 4 fotos o 1 video)';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const isEdit = obraIdInput.value !== '';
+    
+    if (!isEdit && selectedFiles.length === 0) {
+      alert('Por favor selecciona al menos un archivo o arrastra fotos al recuadro.');
+      statusEl.textContent = 'Por favor selecciona al menos un archivo.';
+      statusEl.className = 'status error';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Procesando (aguarde)...';
+    statusEl.textContent = '';
+
+    const formData = new FormData();
+    if (isEdit) formData.append('id', obraIdInput.value);
+    formData.append('title', document.getElementById('title').value);
+    formData.append('category', document.getElementById('category').value);
+    formData.append('location', document.getElementById('location').value);
+    formData.append('description', document.getElementById('description').value);
+    
+    selectedFiles.forEach(f => {
+      if (typeof f === 'string') {
+        formData.append('mediaOrder', `EXISTING:${f}`);
+      } else {
+        formData.append('mediaOrder', `NEW`);
+        formData.append('files', f);
+      }
+    });
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        const msg = isEdit ? '¡Obra actualizada!' : '¡Obra subida exitosamente!';
+        alert(msg);
+        statusEl.textContent = msg;
+        statusEl.className = 'status success';
+        resetForm();
+        loadObras();
+      } else {
+        throw new Error(data.error || 'Error desconocido del servidor');
+      }
+    } catch (err) {
+      alert('Hubo un error: ' + err.message);
+      statusEl.textContent = err.message;
+      statusEl.className = 'status error';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = isEdit ? 'Actualizar Obra' : 'Procesar y Subir Obra';
+    }
+  });
+
+  async function loadObras() {
+    try {
+      const res = await fetch('/api/obras?t=' + Date.now());
+      const data = await res.json();
+      allObras = data.obras;
+      const list = document.getElementById('obrasList');
+      list.innerHTML = '';
+      
+      if (!data.obras || data.obras.length === 0) {
+        list.innerHTML = '<p style="color:#888;">No hay obras cargadas.</p>';
+        return;
+      }
+
+      data.obras.forEach((obra, index) => {
+        const isFirst = index === 0;
+        const isLast = index === data.obras.length - 1;
+        list.innerHTML += `
+          <div class="obra-item">
+            <div class="obra-info">
+              <strong>${obra.title}</strong>
+              <span>${obra.category} - ${obra.type.toUpperCase()} (${obra.media.length} archivos)</span>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn-delete" style="border-color:#2196f3; color:#2196f3; opacity: ${isFirst ? '0.3' : '1'}; cursor: ${isFirst ? 'not-allowed' : 'pointer'}" onclick="reorderObra('${obra.id}', 'up')" ${isFirst ? 'disabled' : ''}>⬆ Subir</button>
+              <button class="btn-delete" style="border-color:#2196f3; color:#2196f3; opacity: ${isLast ? '0.3' : '1'}; cursor: ${isLast ? 'not-allowed' : 'pointer'}" onclick="reorderObra('${obra.id}', 'down')" ${isLast ? 'disabled' : ''}>⬇ Bajar</button>
+              <button class="btn-delete" style="border-color:#8bc34a; color:#8bc34a;" onclick="editObra('${obra.id}')">Editar</button>
+              <button class="btn-delete" onclick="deleteObra('${obra.id}')">Eliminar</button>
+            </div>
+          </div>
+        `;
+      });
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  async function deleteObra(id) {
+    if (!confirm('¿Seguro que deseas eliminar esta obra por completo?')) return;
+    try {
+      await fetch('/api/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      loadObras();
+    } catch(e) {
+      alert('Error al borrar');
+    }
+  }
+
+  async function reorderObra(id, direction) {
+    try {
+      await fetch('/api/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, direction })
+      });
+      loadObras();
+    } catch(e) {
+      alert('Error al reordenar');
+    }
+  }
+
+  // Carga inicial
+  loadObras();
+</script>
+
+</body>
+</html>

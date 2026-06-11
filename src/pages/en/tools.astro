@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import CalculadoraFrigoriasEn from '../../components/CalculadoraFrigoriasEn.astro';
+import CalculadoraHidricaEn from '../../components/CalculadoraHidricaEn.astro';
+import CalculadoraIluminacionEn from '../../components/CalculadoraIluminacionEn.astro';
+import CalculadoraSeguridadEn from '../../components/CalculadoraSeguridadEn.astro';
+import CalculadoraIncendioIntrusionEn from '../../components/CalculadoraIncendioIntrusionEn.astro';
+import CalculadoraPinturaEn from '../../components/CalculadoraPinturaEn.astro';
+import CalculadoraFacturaEn from '../../components/CalculadoraFacturaEn.astro';
+import CalculadoraDurlockEn from '../../components/CalculadoraDurlockEn.astro';
+import CalculadoraConsumoGasEn from '../../components/CalculadoraConsumoGasEn.astro';
+import CalculadoraConsumoElectricoEn from '../../components/CalculadoraConsumoElectricoEn.astro';
+import CalculadoraSolarEn from '../../components/CalculadoraSolarEn.astro';
+import CalculadoraCableEn from '../../components/CalculadoraCableEn.astro';
+import CalculadoraPlanillaTotalizadoraEn from '../../components/CalculadoraPlanillaTotalizadoraEn.astro';
+import CalculadoraUValueEn from '../../components/CalculadoraUValueEn.astro';
+import CalculadoraMantenimientoEn from '../../components/CalculadoraMantenimientoEn.astro';
+---
+<Layout 
+  title="Electrical Consumption Calculator | N3i Tools" 
+  description="Calculate the approximate electrical consumption of your appliances in Watts and Amperes (220V)."
+  lang="en"
+>
+  <Header lang="en" />
+  
+  <div style="padding-top: 120px;">
+    <!-- Container to give proper padding to the first section on this page -->
+    <CalculadoraConsumoElectricoEn />
+  </div>
+
+  <CalculadoraConsumoGasEn />
+  <CalculadoraIluminacionEn />
+  <CalculadoraHidricaEn />
+  <CalculadoraSeguridadEn />
+  <CalculadoraIncendioIntrusionEn />
+  <CalculadoraFrigoriasEn />
+  <CalculadoraPinturaEn />
+  <CalculadoraFacturaEn />
+  <CalculadoraDurlockEn />
+
+  <CalculadoraSolarEn />
+  <CalculadoraCableEn />
+  <CalculadoraPlanillaTotalizadoraEn />
+  <CalculadoraUValueEn />
+  <CalculadoraMantenimientoEn />
+
+  <Footer lang="en" />
+</Layout>

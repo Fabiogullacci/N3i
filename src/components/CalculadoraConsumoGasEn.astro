@@ -1,0 +1,1294 @@
+---
+// src/components/CalculadoraConsumoGasEn.astro
+// Gas Consumption Simulator and Pressure Regulator Sizing (Aesthetic Orange/Gas Theme - English Version)
+---
+
+<section class="section section-alt" id="calc-consumo-gas">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle">Gas Engineering / NAG-200</span>
+      <h2 class="section-title">Gas Consumption Simulator</h2>
+      <p class="section-desc">
+        Estimate your monthly gas consumption, size the regulatory pressure regulator for your installation, and receive professional technical safety recommendations.
+      </p>
+    </div>
+
+    <!-- Main Gas Type Selector -->
+    <div class="gas-type-selector card reveal" style="margin-bottom: 30px; text-align: center; max-width: 600px; margin-left: auto; margin-right: auto; padding: 20px;">
+      <h3 style="font-size: 1.2rem; margin-bottom: 15px; color: var(--text-primary);">Select Your Gas Supply Type</h3>
+      <div class="gas-toggle-group">
+        <label class="gas-toggle-label active" id="label-gas-red">
+          <input type="radio" name="tipo-gas" value="red" checked style="display:none;" />
+          🔥 Natural Gas (Utility Network)
+        </label>
+        <label class="gas-toggle-label" id="label-gas-envasado">
+          <input type="radio" name="tipo-gas" value="envasado" style="display:none;" />
+          📦 Bottled LPG (Propane/Cylinders)
+        </label>
+      </div>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Input Form (Gas Appliances) -->
+      <div class="calc-appliances card reveal">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+          <h3 style="margin: 0;">Appliances & Usage Hours</h3>
+          <label class="pilot-checkbox-wrapper">
+            <input type="checkbox" id="gas-incluir-pilotos" />
+            <span>Include pilot lights (150 kcal/h each, 24/7)</span>
+          </label>
+        </div>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+          Indicate the quantity of each appliance and the estimated average hours they are used per day.
+        </p>
+
+        <div class="gas-appliances-list">
+          <!-- Cooker -->
+          <div class="gas-appliance-item" data-id="gas-cocina" data-kcal="8000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">🍳</span>
+                <div>
+                  <span class="gas-app-name">Standard Cooker (4 Burners & Oven)</span>
+                  <span class="gas-app-kcal">8,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-cocina">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-cocina" value="1" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-cocina">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container active">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-cocina-display">1.5</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-cocina-hours" min="0.5" max="24" step="0.5" value="1.5" />
+            </div>
+          </div>
+
+          <!-- Cooktop -->
+          <div class="gas-appliance-item" data-id="gas-anafe" data-kcal="5000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">🔥</span>
+                <div>
+                  <span class="gas-app-name">Built-in Cooktop (4 Burners)</span>
+                  <span class="gas-app-kcal">5,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-anafe">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-anafe" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-anafe">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-anafe-display">1.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-anafe-hours" min="0.5" max="24" step="0.5" value="1.0" />
+            </div>
+          </div>
+
+          <!-- Oven -->
+          <div class="gas-appliance-item" data-id="gas-horno" data-kcal="3000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">🍕</span>
+                <div>
+                  <span class="gas-app-name">Built-in Gas Oven</span>
+                  <span class="gas-app-kcal">3,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-horno">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-horno" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-horno">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-horno-display">1.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-horno-hours" min="0.5" max="24" step="0.5" value="1.0" />
+            </div>
+          </div>
+
+          <!-- Tankless Water Heater -->
+          <div class="gas-appliance-item" data-id="gas-calefon" data-kcal="20000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">🚿</span>
+                <div>
+                  <span class="gas-app-name">Tankless Water Heater (14 L/min)</span>
+                  <span class="gas-app-kcal">20,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-calefon">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-calefon" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-calefon">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-calefon-display">1.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-calefon-hours" min="0.5" max="24" step="0.5" value="1.0" />
+              <label class="pilot-checkbox-wrapper" style="margin-top: 8px; display: flex; text-align: left; align-items: flex-start; gap: 6px;">
+                <input type="checkbox" id="gas-calefon-evac-defect" style="margin-top: 2px;" />
+                <span style="font-size: 0.8rem; color: #ff9800; line-height: 1.2;">Defective/missing flue duct (no compliant outdoor venting)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Storage Water Heater -->
+          <div class="gas-appliance-item" data-id="gas-termo" data-kcal="6000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">🌡️</span>
+                <div>
+                  <span class="gas-app-name">Storage Water Heater (50 - 120 Liters)</span>
+                  <span class="gas-app-kcal">6,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-termo">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-termo" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-termo">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily burner active time (estimated):</span>
+                <strong class="gas-hours-display"><span id="gas-termo-display">2.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-termo-hours" min="0.5" max="24" step="0.5" value="2.0" />
+              <label class="pilot-checkbox-wrapper" style="margin-top: 8px; display: flex; text-align: left; align-items: flex-start; gap: 6px;">
+                <input type="checkbox" id="gas-termo-evac-defect" style="margin-top: 2px;" />
+                <span style="font-size: 0.8rem; color: #ff9800; line-height: 1.2;">Defective/missing flue duct (no compliant outdoor venting)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Boiler -->
+          <div class="gas-appliance-item" data-id="gas-caldera" data-kcal="24000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">📟</span>
+                <div>
+                  <span class="gas-app-name">Combi Boiler (Heating + Sanitary Hot Water)</span>
+                  <span class="gas-app-kcal">24,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-caldera">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-caldera" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-caldera">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-caldera-display">4.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-caldera-hours" min="0.5" max="24" step="0.5" value="4.0" />
+            </div>
+          </div>
+
+          <!-- Small Flue Space Heater -->
+          <div class="gas-appliance-item" data-id="gas-tb-chico" data-kcal="2000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">🧱</span>
+                <div>
+                  <span class="gas-app-name">Balanced Flue Space Heater (Small - 2000 kcal/h)</span>
+                  <span class="gas-app-kcal">2,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-tb-chico">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-tb-chico" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-tb-chico">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-tb-chico-display">6.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-tb-chico-hours" min="0.5" max="24" step="0.5" value="6.0" />
+            </div>
+          </div>
+
+          <!-- Medium Flue Space Heater -->
+          <div class="gas-appliance-item" data-id="gas-tb-med" data-kcal="3000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">🏡</span>
+                <div>
+                  <span class="gas-app-name">Balanced Flue Space Heater (Medium - 3000 kcal/h)</span>
+                  <span class="gas-app-kcal">3,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-tb-med">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-tb-med" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-tb-med">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-tb-med-display">6.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-tb-med-hours" min="0.5" max="24" step="0.5" value="6.0" />
+            </div>
+          </div>
+
+          <!-- Large Flue Space Heater -->
+          <div class="gas-appliance-item" data-id="gas-tb-grn" data-kcal="5000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">🛋️</span>
+                <div>
+                  <span class="gas-app-name">Balanced Flue Space Heater (Large - 5000 kcal/h)</span>
+                  <span class="gas-app-kcal">5,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-tb-grn">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-tb-grn" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-tb-grn">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-tb-grn-display">6.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-tb-grn-hours" min="0.5" max="24" step="0.5" value="6.0" />
+            </div>
+          </div>
+
+          <!-- Vent-free Heater -->
+          <div class="gas-appliance-item" data-id="gas-estufa-ss" data-kcal="3000">
+            <div class="gas-app-main">
+              <div class="gas-app-info">
+                <span class="gas-app-icon">⚠️</span>
+                <div>
+                  <span class="gas-app-name">Vent-Free Space Heater (Infrared / Catalytic)</span>
+                  <span class="gas-app-kcal">3,000 kcal/h</span>
+                </div>
+              </div>
+              <div class="app-controls">
+                <button type="button" class="btn-qty gas-minus" data-target="gas-estufa-ss">-</button>
+                <input type="number" class="qty-input gas-qty" id="gas-estufa-ss" value="0" min="0" max="99" />
+                <button type="button" class="btn-qty gas-plus" data-target="gas-estufa-ss">+</button>
+              </div>
+            </div>
+            <div class="gas-app-slider-container">
+              <div class="gas-slider-header">
+                <span>Daily usage time:</span>
+                <strong class="gas-hours-display"><span id="gas-estufa-ss-display">4.0</span> hrs</strong>
+              </div>
+              <input type="range" class="gas-slider" id="gas-estufa-ss-hours" min="0.5" max="24" step="0.5" value="4.0" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="color: #FF7A00; border-bottom: 1px solid rgba(255,122,0,0.15); padding-bottom: 10px; margin-bottom: 20px;">
+            Installation Diagnosis
+          </h3>
+
+          <div class="result-box">
+            <span class="result-label">Total Installed Thermal Load</span>
+            <div class="result-value" style="color: var(--text-primary);"><span id="gas-res-kcal">8,000</span> <span style="font-size:1.1rem; font-weight:600;">kcal/h</span></div>
+          </div>
+
+          <!-- Max Caudal -->
+          <div class="result-box">
+            <span class="result-label">Maximum Flow Rate Required (100% Simultaneity)</span>
+            <div class="result-value" style="color: var(--text-primary);"><span id="gas-res-caudal">0.86</span> <span style="font-size:1.1rem; font-weight:600;" id="gas-res-caudal-unit">m³/h</span></div>
+            <span class="result-note" style="display:block; margin-top:5px; font-size:0.75rem;">Required to size gas pipes and regulator.</span>
+          </div>
+
+          <!-- Monthly consumption -->
+          <div class="result-box gas-primary-result">
+            <span class="result-label" style="color: #FF7A00;">Estimated Monthly Consumption</span>
+            <div class="result-value" style="color: #FF7A00;"><span id="gas-res-mensual">38.7</span> <span style="font-size:1.1rem; font-weight:800;" id="gas-res-mensual-unit">m³</span></div>
+            <span class="result-note" id="gas-res-equivalente-glp" style="font-size: 0.8rem; color: var(--text-light); margin-top:5px; display:block;"></span>
+          </div>
+
+          <!-- Estimated Monthly Cost -->
+          <div class="result-box gas-primary-result" style="border-color: #ff9800; background: rgba(255, 152, 0, 0.12);">
+            <span class="result-label" style="color: #ff9800;">Estimated Monthly Cost (ARS)</span>
+            <div class="result-value" style="color: #ff9800;">$ <span id="gas-res-costo">0</span></div>
+            <span class="result-note" id="gas-res-costo-desc" style="font-size: 0.75rem; color: var(--text-light); margin-top:5px; display:block;"></span>
+          </div>
+
+
+          <!-- Carbon footprint -->
+          <div class="result-box">
+            <span class="result-label">Estimated Monthly CO₂ Emissions</span>
+            <div class="result-value" style="color: #FF7A00; font-size: 1.6rem;"><span id="gas-res-co2">73.5</span> <span style="font-size:1rem; font-weight:600;">kg CO₂/mo</span></div>
+          </div>
+
+          <!-- Mandatory Ventilation NAG-200 -->
+          <div class="result-box" style="border: 1px solid rgba(255, 122, 0, 0.2); background: rgba(255, 122, 0, 0.03); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <span class="result-label" style="color: #FF7A00; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 0.9rem;">
+              💨 Mandatory Ventilation (NAG-200)
+            </span>
+            <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div style="border-right: 1px solid rgba(255, 255, 255, 0.05); padding-right: 5px;">
+                <span class="result-note" style="display: block; font-size: 0.72rem; color: var(--text-light); margin-bottom: 2px;">Lower Grille (Air Intake)</span>
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);"><span id="gas-res-rejilla-inf">100</span> <span style="font-size: 0.75rem; font-weight: 600;">cm²</span></span>
+                <span id="gas-res-rejilla-inf-dim" style="display: block; font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">(15x15 cm / 6x6")</span>
+              </div>
+              <div style="padding-left: 5px;">
+                <span class="result-note" style="display: block; font-size: 0.72rem; color: var(--text-light); margin-bottom: 2px;">Upper Grille (Outlet)</span>
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);"><span id="gas-res-rejilla-sup">100</span> <span style="font-size: 0.75rem; font-weight: 600;">cm²</span></span>
+                <span id="gas-res-rejilla-sup-dim" style="display: block; font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">(15x15 cm / 6x6")</span>
+              </div>
+            </div>
+            <span class="result-note" style="display:block; margin-top:10px; font-size:0.72rem; color: var(--text-light); border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 6px;">
+              Based on <strong id="gas-res-pot-abierta" style="color: #FF7A00;">8,000</strong> kcal/h open chamber load.
+            </span>
+          </div>
+
+          <!-- Carbon Monoxide (CO) Safety Alert -->
+          <div class="result-alert" id="gas-co-alert" style="background: rgba(46, 213, 115, 0.08); border-left: 4px solid #2ed573; transition: var(--transition-smooth); margin-bottom: 15px; padding: 12px; border-radius: 4px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px;">
+              <strong style="font-size: 0.85rem; color: var(--text-primary);">CO Risk Level:</strong>
+              <span id="gas-co-badge" style="padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: 700; background: #2ed573; color: #000000; text-transform: uppercase; letter-spacing: 0.5px;">Safe</span>
+            </div>
+            <p id="gas-co-text" style="font-size: 0.78rem; margin-top: 8px; line-height: 1.4; color: var(--text-secondary);">
+              Installation does not contain high-risk (unvented) appliances. Keep standard ventilation active.
+            </p>
+          </div>
+
+          <!-- Regulator recommendation -->
+          <div class="result-alert" id="gas-regulator-alert" style="background: rgba(255, 122, 0, 0.1); border-left-color: #FF7A00;">
+            <strong style="color: #FF7A00; font-size: 0.95rem;">Suggested Pressure Regulator (NAG-200):</strong>
+            <span id="gas-regulator-text" style="font-weight: 700; color: var(--text-primary); display:block; margin-top:5px; font-size:1.1rem;"></span>
+            <p id="gas-regulator-desc" style="font-size: 0.82rem; margin-top: 10px; line-height: 1.4; color: var(--text-secondary);"></p>
+          </div>
+
+          <div class="disclaimer" style="margin-bottom: 20px;">
+            <p><strong>⚠️ Fitter's Warning:</strong> All work on gas piping, gas lines, or pressure regulators must be executed exclusively by a **certified gas fitter**. Proper ventilation grilles are mandatory by law to prevent carbon monoxide poisoning.</p>
+          </div>
+
+          <a href="/en#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; background: #FF7A00; box-shadow: 0 4px 15px rgba(255, 122, 0, 0.3); color: #000000;">
+            Request Technical Review
+            <span class="btn-icon">➔</span>
+          </a>
+
+          <button id="gas-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; margin-top: 10px; border-color: #FF7A00; color: var(--text-primary); background: transparent;">
+            Print Report (PDF)
+            <span class="btn-icon" style="background: transparent;">🖨️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gas Efficiency Tips Section -->
+    <div class="card reveal" style="margin-top: 40px; border-top: 3px solid #FF7A00;">
+      <h3 style="color: #FF7A00; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.4rem;">
+        <span>💡</span> Professional Tips to Save Gas
+      </h3>
+      <div class="gas-tips-grid">
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon">🔥</div>
+          <div>
+            <h4 class="gas-tip-title">Clean Blue Flames</h4>
+            <p class="gas-tip-desc">Keep burners clean. If the flame is yellow or orange, it indicates poor combustion (produces toxic CO and consumes up to 30% more gas). Schedule annual cleaning.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon">🚿</div>
+          <div>
+            <h4 class="gas-tip-title">Adjust Water Temp Directly</h4>
+            <p class="gas-tip-desc">Set your water heater thermostat directly to a comfortable shower temp. Avoid mixing super hot water with cold in the shower, which wastes gas.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon">🚪</div>
+          <div>
+            <h4 class="gas-tip-title">Turn Off Pilot Lights</h4>
+            <p class="gas-tip-desc">A single pilot light left on 24/7 (in a space heater or water heater) consumes about 11.6 m³ of gas per month. Turn them off when not in use.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon">🌡️</div>
+          <div>
+            <h4 class="gas-tip-title">Thermostat at 20°C (68°F)</h4>
+            <p class="gas-tip-desc">In winter, set your heaters to 20°C. Every additional degree increases gas consumption on your heating bill by 7% to 10%.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Print Layout for Gas Report -->
+<div id="print-area-gas" class="print-only-gas">
+  <div class="print-header">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #FF7A00;">Gas Consumption & Sizing Report</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Date:</strong> <span id="gas-print-date"></span></p>
+    <p><strong>Document Type:</strong> Gas Load Flow & Monthly Demand Estimation</p>
+    <p><strong>Fuel Type:</strong> <span id="gas-print-tipo"></span></p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Qty</th>
+        <th>Gas Appliance</th>
+        <th>Unit Consumption</th>
+        <th>Daily Usage</th>
+        <th>Hourly Subtotal</th>
+      </tr>
+    </thead>
+    <tbody id="gas-print-tbody">
+      <!-- Rellenado por JS -->
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" style="text-align: right;"><strong>Total Installed Thermal Load (100%):</strong></td>
+        <td><strong id="gas-print-total-kcal">0 kcal/h</strong></td>
+      </tr>
+      <tr>
+        <td colspan="4" style="text-align: right;"><strong>Maximum Required Flow Rate:</strong></td>
+        <td><strong id="gas-print-caudal" style="font-size: 1.1rem;">0.00</strong></td>
+      </tr>
+      <tr>
+        <td colspan="4" style="text-align: right; color: #FF7A00;"><strong>Estimated Monthly Consumption:</strong></td>
+        <td><strong id="gas-print-mensual" style="font-size: 1.2rem; color: #FF7A00;">0.00</strong></td>
+      </tr>
+      <tr>
+        <td colspan="4" style="text-align: right; color: #ff9800;"><strong>Estimated Monthly Cost:</strong></td>
+        <td><strong id="gas-print-costo" style="font-size: 1.2rem; color: #ff9800;">$ 0.00 ARS</strong></td>
+      </tr>
+
+    </tfoot>
+  </table>
+  
+  <div style="background: rgba(255, 122, 0, 0.05); padding: 20px; border-radius: 8px; border: 1px solid #FF7A00; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #FF7A00;">Mandatory Safety Ventilation Grilles (NAG-200)</h3>
+    <div style="display: flex; gap: 40px; margin-bottom: 10px;">
+      <div>
+        <p style="margin: 0;"><strong>Lower Grille (Air Intake):</strong> <span id="gas-print-rejilla-inf">100 cm²</span> (<span id="gas-print-rejilla-inf-dim">15x15 cm / 6x6"</span>)</p>
+      </div>
+      <div>
+        <p style="margin: 0;"><strong>Upper Grille (Flue Gas Outlet):</strong> <span id="gas-print-rejilla-sup">100 cm²</span> (<span id="gas-print-rejilla-sup-dim">15x15 cm / 6x6"</span>)</p>
+      </div>
+    </div>
+    <p style="font-size: 0.85rem; margin: 5px 0 0 0; color: #555;">Calculated open-chamber heat load: <strong id="gas-print-pot-abierta">8,000</strong> kcal/h.</p>
+  </div>
+
+  <div id="gas-print-co-section" style="background: rgba(46, 213, 115, 0.05); padding: 20px; border-radius: 8px; border: 1px solid #2ed573; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #27ae60;" id="gas-print-co-title">Carbon Monoxide (CO) Safety Diagnosis</h3>
+    <p style="margin: 0 0 10px 0; font-size: 1.1rem;"><strong>Risk Status:</strong> <span id="gas-print-co-status" style="font-weight: 700; color: #27ae60;">SAFE</span></p>
+    <p style="font-size: 0.95rem; line-height: 1.5; margin: 0;" id="gas-print-co-desc">The declared installation does not feature unvented space heaters or critical hot water flue venting anomalies.</p>
+  </div>
+
+  <div style="background: rgba(255, 122, 0, 0.1); padding: 20px; border-radius: 8px; border-left: 5px solid #FF7A00; margin-bottom: 30px;">
+    <h3 style="margin-top: 0; color: #FF7A00;">Regulator Sizing & Safety Diagnosis (NAG-200)</h3>
+    <p style="font-size: 1.2rem; margin-bottom: 10px;"><strong>Recommended Pressure Regulator:</strong> <span id="gas-print-regulador"></span></p>
+    <p style="font-size: 0.95rem; line-height: 1.5;" id="gas-print-regulador-desc"></p>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Technical Note: Sizing is calculated based on national gas standards (NAG-200). Sizing of internal piping, diameters, and installation of mandatory safety ventilation grilles must be carried out on-site by a certified gas fitter.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">To schedule a revision or compliance inspection, technical contact is available at <strong>www.n3i.com.ar</strong> or via WhatsApp at +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Local Overrides for Gas Theme */
+  .qty-input {
+    background: transparent !important;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .gas-toggle-group {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px;
+    border-radius: 30px;
+    border: 1px solid var(--border-color);
+  }
+
+  .gas-toggle-label {
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    user-select: none;
+  }
+
+  .gas-toggle-label:hover {
+    color: var(--text-primary);
+  }
+
+  .gas-toggle-label.active {
+    background: #FF7A00;
+    color: #000000;
+    box-shadow: 0 4px 15px rgba(255, 122, 0, 0.35);
+  }
+
+  .pilot-checkbox-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    cursor: pointer;
+  }
+
+  .pilot-checkbox-wrapper input {
+    accent-color: #FF7A00;
+    width: 16px;
+    height: 16px;
+  }
+
+  .gas-appliances-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .gas-appliance-item {
+    background: var(--bg-alt, #111416);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.03);
+    transition: var(--transition-smooth);
+  }
+
+  .gas-appliance-item:hover {
+    border-color: rgba(255, 122, 0, 0.25);
+    background: rgba(255, 122, 0, 0.02);
+  }
+
+  .gas-app-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .gas-app-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .gas-app-icon {
+    font-size: 1.5rem;
+    background: rgba(255, 122, 0, 0.1);
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .gas-app-name {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+  }
+
+  .gas-app-kcal {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  .gas-app-slider-container {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    display: none; /* Hidden when quantity is 0 */
+  }
+
+  .gas-app-slider-container.active {
+    display: block;
+  }
+
+  .gas-slider-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+  }
+
+  .gas-hours-display {
+    color: #FF7A00;
+  }
+
+  .gas-slider {
+    width: 100%;
+    accent-color: #FF7A00;
+    background: rgba(255,255,255,0.08);
+    height: 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+
+  .gas-slider::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+  }
+
+  .gas-primary-result {
+    background: linear-gradient(135deg, rgba(255, 122, 0, 0.12) 0%, rgba(255, 122, 0, 0.04) 100%);
+    border: 1px solid #FF7A00 !important;
+  }
+
+  /* Tips Grid */
+  .gas-tips-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .gas-tips-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .gas-tip-card {
+    display: flex;
+    gap: 15px;
+    background: rgba(255,255,255,0.02);
+    padding: 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+
+  .gas-tip-icon {
+    font-size: 1.6rem;
+    color: #FF7A00;
+    flex-shrink: 0;
+  }
+
+  .gas-tip-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .gas-tip-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Print Styles Specific for Gas */
+  .print-only-gas {
+    display: none;
+  }
+
+  @media (max-width: 991px) {
+    .results-sticky {
+      position: static !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gas-appliance-item {
+      padding: 12px;
+    }
+    .gas-app-main {
+      gap: 8px;
+    }
+    .gas-app-info {
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+    .gas-app-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
+    }
+    .gas-app-name {
+      font-size: 0.85rem;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .gas-app-kcal {
+      font-size: 0.75rem;
+    }
+    .app-controls {
+      gap: 4px;
+    }
+    .btn-qty {
+      width: 28px;
+      height: 28px;
+      font-size: 0.9rem;
+    }
+    .qty-input {
+      width: 35px;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media print {
+    body.printing-gas .header, 
+    body.printing-gas .footer, 
+    body.printing-gas .section-header, 
+    body.printing-gas .calculator-grid, 
+    body.printing-gas #calc-consumo-gas,
+    body.printing-gas .section { 
+      display: none !important; 
+    }
+    body.printing-gas .print-only-gas {
+      display: block !important;
+      font-family: Arial, sans-serif;
+    }
+    .print-only-gas .print-header { display: flex; align-items: center; border-bottom: 2px solid #FF7A00; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-gas .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-gas .print-header p { margin: 5px 0 0 0; color: #666; }
+    .print-only-gas .print-details { margin-bottom: 30px; font-size: 0.9rem; }
+    .print-only-gas .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-gas .print-table th, .print-only-gas .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-gas .print-table th { background-color: #f5f5f5; color: #333; }
+    .print-only-gas .print-footer { border-top: 1px solid #ddd; padding-top: 20px; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const labelRed = document.getElementById('label-gas-red');
+    const labelEnvasado = document.getElementById('label-gas-envasado');
+    const radioRed = document.querySelector('input[name="tipo-gas"][value="red"]');
+    const radioEnvasado = document.querySelector('input[name="tipo-gas"][value="envasado"]');
+    
+    const checkPilotos = document.getElementById('gas-incluir-pilotos') as HTMLInputElement;
+    const qtyInputs = document.querySelectorAll('.gas-qty');
+    const btnMinus = document.querySelectorAll('.gas-minus');
+    const btnPlus = document.querySelectorAll('.gas-plus');
+    const sliders = document.querySelectorAll('.gas-slider');
+
+    const resKcal = document.getElementById('gas-res-kcal');
+    const resCaudal = document.getElementById('gas-res-caudal');
+    const resCaudalUnit = document.getElementById('gas-res-caudal-unit');
+    const resMensual = document.getElementById('gas-res-mensual');
+    const resMensualUnit = document.getElementById('gas-res-mensual-unit');
+    const resEquivGlp = document.getElementById('gas-res-equivalente-glp');
+    const resCosto = document.getElementById('gas-res-costo');
+    const resCostoDesc = document.getElementById('gas-res-costo-desc');
+    const resCo2 = document.getElementById('gas-res-co2');
+    
+    const regulatorAlert = document.getElementById('gas-regulator-alert');
+    const regulatorText = document.getElementById('gas-regulator-text');
+    const regulatorDesc = document.getElementById('gas-regulator-desc');
+    const btnPrint = document.getElementById('gas-btn-print');
+
+    // New safety and sizing elements
+    const checkCalefonDefect = document.getElementById('gas-calefon-evac-defect') as HTMLInputElement;
+    const checkTermoDefect = document.getElementById('gas-termo-evac-defect') as HTMLInputElement;
+
+    const resRejillaInf = document.getElementById('gas-res-rejilla-inf');
+    const resRejillaInfDim = document.getElementById('gas-res-rejilla-inf-dim');
+    const resRejillaSup = document.getElementById('gas-res-rejilla-sup');
+    const resRejillaSupDim = document.getElementById('gas-res-rejilla-sup-dim');
+    const resPotAbierta = document.getElementById('gas-res-pot-abierta');
+
+    const coAlert = document.getElementById('gas-co-alert');
+    const coBadge = document.getElementById('gas-co-badge');
+    const coText = document.getElementById('gas-co-text');
+
+
+    let tipoGas = 'red'; // 'red' or 'envasado'
+
+    // Shared variables for gas print report and calculation
+    let potenciaAbierta = 0;
+    let rejillaArea = 0;
+    let rejillaDimension = 'No requirement';
+    let coStatus = 'SAFE';
+    let coColor = '#2ed573';
+    let coBg = 'rgba(46, 213, 115, 0.08)';
+    let coMessage = 'Installation does not contain high-risk (unvented) appliances. Keep standard ventilation active.';
+
+    function formatNumber(num: number, decimals: number = 0): string {
+      return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    // Toggle Suministro
+    if (labelRed && labelEnvasado && radioRed && radioEnvasado) {
+      labelRed.addEventListener('click', () => {
+        labelRed.classList.add('active');
+        labelEnvasado.classList.remove('active');
+        (radioRed as HTMLInputElement).checked = true;
+        tipoGas = 'red';
+        calculateGas();
+      });
+
+      labelEnvasado.addEventListener('click', () => {
+        labelEnvasado.classList.add('active');
+        labelRed.classList.remove('active');
+        (radioEnvasado as HTMLInputElement).checked = true;
+        tipoGas = 'envasado';
+        calculateGas();
+      });
+    }
+
+    // Quantities +/-
+    btnMinus.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-target');
+        if (!id) return;
+        const input = document.getElementById(id) as HTMLInputElement;
+        if (input && parseInt(input.value) > 0) {
+          input.value = (parseInt(input.value) - 1).toString();
+          toggleSliderVisibility(id, parseInt(input.value));
+          calculateGas();
+        }
+      });
+    });
+
+    btnPlus.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-target');
+        if (!id) return;
+        const input = document.getElementById(id) as HTMLInputElement;
+        if (input && parseInt(input.value) < 99) {
+          input.value = (parseInt(input.value) + 1).toString();
+          toggleSliderVisibility(id, parseInt(input.value));
+          calculateGas();
+        }
+      });
+    });
+
+    qtyInputs.forEach(input => {
+      input.addEventListener('input', () => {
+        const target = input as HTMLInputElement;
+        if (parseInt(target.value) < 0) target.value = '0';
+        toggleSliderVisibility(target.id, parseInt(target.value) || 0);
+        calculateGas();
+      });
+    });
+
+    // Sliders
+    sliders.forEach(slider => {
+      slider.addEventListener('input', (e) => {
+        const target = e.target as HTMLInputElement;
+        const displayId = target.id.replace('-hours', '-display');
+        const display = document.getElementById(displayId);
+        if (display) {
+          display.textContent = parseFloat(target.value).toFixed(1);
+        }
+        calculateGas();
+      });
+    });
+
+    // Checkbox Pilotos and Evacuación
+    if (checkPilotos) {
+      checkPilotos.addEventListener('change', calculateGas);
+    }
+    if (checkCalefonDefect) {
+      checkCalefonDefect.addEventListener('change', calculateGas);
+    }
+    if (checkTermoDefect) {
+      checkTermoDefect.addEventListener('change', calculateGas);
+    }
+
+    function toggleSliderVisibility(id: string, qty: number) {
+      const item = document.querySelector(`.gas-appliance-item[data-id="${id}"]`);
+      if (!item) return;
+      const sliderContainer = item.querySelector('.gas-app-slider-container');
+      if (sliderContainer) {
+        if (qty > 0) {
+          sliderContainer.classList.add('active');
+        } else {
+          sliderContainer.classList.remove('active');
+        }
+      }
+    }
+
+    // Mathematical Logic
+    function calculateGas() {
+      let totalKcal = 0;
+      let totalKcalMes = 0;
+      let qtyPilotosCount = 0;
+      potenciaAbierta = 0;
+
+      const qtyCalefon = parseInt((document.getElementById('gas-calefon') as HTMLInputElement)?.value || '0');
+      const qtyTermo = parseInt((document.getElementById('gas-termo') as HTMLInputElement)?.value || '0');
+      const qtyEstufaSS = parseInt((document.getElementById('gas-estufa-ss') as HTMLInputElement)?.value || '0');
+
+      const items = document.querySelectorAll('.gas-appliance-item');
+      items.forEach(item => {
+        const id = item.getAttribute('data-id') || '';
+        const kcal = parseFloat(item.getAttribute('data-kcal') || '0');
+        const qtyInput = document.getElementById(id) as HTMLInputElement;
+        const qty = parseInt(qtyInput?.value || '0');
+
+        if (qty > 0) {
+          totalKcal += qty * kcal;
+          
+          const hoursSlider = document.getElementById(`${id}-hours`) as HTMLInputElement;
+          const hours = parseFloat(hoursSlider?.value || '0');
+          
+          totalKcalMes += qty * kcal * hours * 30;
+          qtyPilotosCount += qty;
+
+          // Open-chamber classification for NAG-200 ventilation
+          if (id !== 'gas-tb-chico' && id !== 'gas-tb-med' && id !== 'gas-tb-grn') {
+            potenciaAbierta += qty * kcal;
+          }
+        }
+      });
+
+      // Pilot Flame
+      if (checkPilotos && checkPilotos.checked && qtyPilotosCount > 0) {
+        const kcalPiloto = 150;
+        // Pilot lights run 24 hours a day
+        totalKcal += qtyPilotosCount * kcalPiloto;
+        totalKcalMes += qtyPilotosCount * kcalPiloto * 24 * 30;
+      }
+
+      // Ventilation grille sizing calculation (NAG-200)
+      rejillaArea = 0;
+      rejillaDimension = 'No requirement';
+
+      if (potenciaAbierta > 0) {
+        if (potenciaAbierta <= 10000) {
+          rejillaArea = 100;
+          rejillaDimension = '15x15 cm / 6x6" (commercial)';
+        } else if (potenciaAbierta <= 20000) {
+          rejillaArea = 150;
+          rejillaDimension = '15x30 cm / 6x12" or 20x20 cm / 8x8"';
+        } else {
+          // 8 cm2 per 1,000 kcal/h
+          rejillaArea = Math.round((potenciaAbierta / 1000) * 8);
+          // Suggest commercial sizes based on free area
+          if (rejillaArea <= 200) {
+            rejillaDimension = '20x20 cm / 8x8" or 20x30 cm / 8x12"';
+          } else if (rejillaArea <= 300) {
+            rejillaDimension = '20x30 cm / 8x12" (2 u.) or 30x30 cm / 12x12"';
+          } else {
+            rejillaDimension = 'Special dimension / Consult installer';
+          }
+        }
+      }
+
+      // Update ventilation UI
+      if (resRejillaInf) resRejillaInf.textContent = potenciaAbierta > 0 ? rejillaArea.toString() : '0';
+      if (resRejillaInfDim) resRejillaInfDim.textContent = potenciaAbierta > 0 ? `(${rejillaDimension})` : '-';
+      if (resRejillaSup) resRejillaSup.textContent = potenciaAbierta > 0 ? rejillaArea.toString() : '0';
+      if (resRejillaSupDim) resRejillaSupDim.textContent = potenciaAbierta > 0 ? `(${rejillaDimension})` : '-';
+      if (resPotAbierta) resPotAbierta.textContent = formatNumber(potenciaAbierta);
+
+      // Carbon Monoxide (CO) Safety Logic and Risk Assessment
+      coStatus = 'SAFE';
+      coColor = '#2ed573';
+      coBg = 'rgba(46, 213, 115, 0.08)';
+      coMessage = 'Installation does not contain high-risk (unvented) appliances. Keep standard ventilation active.';
+
+      const hasDefect = (qtyCalefon > 0 && checkCalefonDefect?.checked) || (qtyTermo > 0 && checkTermoDefect?.checked);
+      const hasEstufaSS = qtyEstufaSS > 0;
+
+      if (hasDefect || hasEstufaSS) {
+        coStatus = 'CRITICAL HAZARD';
+        coColor = '#ff4757';
+        coBg = 'rgba(255, 71, 87, 0.08)';
+        if (hasEstufaSS && !hasDefect) {
+          coMessage = '⚠️ Unvented Space Heater active. Prohibited in bedrooms and bathrooms. Requires a 100 cm² lower air inlet and periodic burner checks.';
+        } else if (hasDefect && !hasEstufaSS) {
+          coMessage = '⚠️ Defective/obstructed hot water flue venting. Extreme risk of Carbon Monoxide (CO) poisoning. Turn off the appliance and contact a certified gas fitter immediately.';
+        } else {
+          coMessage = '⚠️ Unvented heater and defective hot water flue detected. Extreme CO poisoning risk. Ventilate the room immediately and shut off all gas appliances.';
+        }
+      } else if (potenciaAbierta > 0) {
+        coStatus = 'WARNING';
+        coColor = '#FFA500';
+        coBg = 'rgba(255, 165, 0, 0.08)';
+        coMessage = 'Open-chamber appliances are active. Permanent lower/upper safety grilles (NAG-200) are required by code to ensure constant air renewal.';
+      }
+
+      if (coAlert && coBadge && coText) {
+        coAlert.style.background = coBg;
+        coAlert.style.borderLeftColor = coColor;
+        coBadge.style.background = coColor;
+        coBadge.textContent = coStatus;
+        coText.innerHTML = coMessage;
+      }
+
+      // Sizing & Consumption based on Gas Type
+      let caudalMax = 0;
+      let consumoMensual = 0;
+      let co2 = 0;
+      let costoMensual = 0;
+      let descCosto = '';
+
+      // Reference rates in Argentina as of June 2026
+      const COSTO_M3_RED = 361.63;     // Average residential rate per m3 (Camuzzi R1)
+      const CARGO_FIJO_RED = 13034.97; // Average monthly fixed fee residential Camuzzi R1
+      const PRECIO_GARRAFA_10 = 25000; // Average deregulated 10kg cylinder price
+      const PRECIO_TUBO_45 = 100000;   // Average 45kg tank price
+
+      if (tipoGas === 'red') {
+        caudalMax = totalKcal / 9300;
+        consumoMensual = totalKcalMes / 9300;
+        co2 = consumoMensual * 1.9; // 1.9 kg CO2 per m3 of natural gas
+        
+        costoMensual = consumoMensual > 0 ? CARGO_FIJO_RED + (consumoMensual * COSTO_M3_RED) : 0;
+        descCosto = `Includes $${formatNumber(Math.round(CARGO_FIJO_RED))} fixed fee and $${formatNumber(Math.round(COSTO_M3_RED))}/m³ variable (Approx. Camuzzi R1).`;
+        
+        if (resCaudalUnit) resCaudalUnit.textContent = 'm³/h';
+        if (resMensualUnit) resMensualUnit.textContent = 'm³';
+        if (resEquivGlp) resEquivGlp.style.display = 'none';
+      } else {
+        caudalMax = totalKcal / 11000;
+        consumoMensual = totalKcalMes / 11000;
+        co2 = consumoMensual * 3.0; // 3.0 kg CO2 per kg of LPG
+        
+        if (consumoMensual === 0) {
+          costoMensual = 0;
+          descCosto = 'No consumption selected.';
+        } else {
+          const garrafasNeeded = Math.ceil(consumoMensual / 10);
+          const costoGarrafas = garrafasNeeded * PRECIO_GARRAFA_10;
+          const tubosNeeded = Math.ceil(consumoMensual / 45);
+          const costoTubos = tubosNeeded * PRECIO_TUBO_45;
+
+          if (consumoMensual <= 20) {
+            costoMensual = costoGarrafas;
+            descCosto = `Recommended: 10kg cylinders ($${formatNumber(costoGarrafas)} for ${garrafasNeeded} u.). Alternative in 45kg cylinders: $${formatNumber(costoTubos)} (${tubosNeeded} u.).`;
+          } else {
+            costoMensual = costoTubos;
+            descCosto = `Recommended: 45kg cylinders ($${formatNumber(costoTubos)} for ${tubosNeeded} u.). Alternative in 10kg cylinders: $${formatNumber(costoGarrafas)} (${garrafasNeeded} u.).`;
+          }
+        }
+        
+        if (resCaudalUnit) resCaudalUnit.textContent = 'kg/h';
+        if (resMensualUnit) resMensualUnit.textContent = 'kg';
+        
+        if (resEquivGlp) {
+          resEquivGlp.style.display = 'block';
+          const garrafas = consumoMensual / 10;
+          const tubos = consumoMensual / 45;
+          resEquivGlp.innerHTML = `Equivalent to <strong>${garrafas.toFixed(1)}</strong> 10kg cylinders or <strong>${tubos.toFixed(1)}</strong> 45kg tanks per month.`;
+        }
+      }
+
+      // Update basic UI
+      if (resKcal) resKcal.textContent = formatNumber(totalKcal);
+      if (resCaudal) resCaudal.textContent = formatNumber(caudalMax, 2);
+      if (resMensual) resMensual.textContent = formatNumber(consumoMensual, 1);
+      if (resCosto) resCosto.textContent = formatNumber(Math.round(costoMensual));
+      if (resCostoDesc) resCostoDesc.textContent = descCosto;
+      if (resCo2) resCo2.textContent = formatNumber(co2, 1);
+
+      // Pressure Regulator Sizing recommendation
+      if (!regulatorAlert || !regulatorText || !regulatorDesc) return;
+
+      if (totalKcal === 0) {
+        regulatorText.textContent = 'No consumption';
+        regulatorDesc.innerHTML = 'Add appliances to suggest the regulatory pressure regulator.';
+        return;
+      }
+
+      if (tipoGas === 'red') {
+        if (caudalMax <= 6) {
+          regulatorText.textContent = 'Standard 6 m³/h Regulator';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> Ideal model for standard domestic use (e.g. Cooker + Water Heater + 1 Heater). Requires approved 40x60x30 cm external regulatory box on the municipal line.';
+        } else if (caudalMax <= 10) {
+          regulatorText.textContent = 'Reinforced 10 m³/h Regulator';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> Ideal for medium-to-large residential loads (Boiler + Cooker + Storage Heater + Space Heaters). Requires homologated cabinet and a double-stage safety regulator.';
+        } else if (caudalMax <= 25) {
+          regulatorText.textContent = 'Commercial 25 m³/h Regulator';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> Suitable for multi-family complexes, small buildings, or commercial units with high flow demands. Meter manifold and fast shutoff valve advised.';
+        } else if (caudalMax <= 50) {
+          regulatorText.textContent = 'Semi-Industrial 50 m³/h Regulator';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> For small factories or larger buildings. Requires installation in a regulatory cabinet with cross ventilation grilles and a pilot-operated regulator.';
+        } else {
+          regulatorText.textContent = 'Specialized Regulating & Metering Cabin (> 50 m³/h)';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> Very high gas flow. Requires technical blueprints signed by a Mechanical Engineer and Certified Gas Fitter from N3i for utility approval (e.g. Camuzzi).';
+        }
+      } else {
+        // Bottled LPG
+        if (caudalMax <= 2) {
+          regulatorText.textContent = 'Single Cylinder Regulator (2 kg/h)';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> Standard single-stage regulator with screw-on threads, suitable for one 10kg or 15kg cylinder. Recommended only for simple setups (e.g. Cooker only).';
+        } else if (caudalMax <= 4) {
+          regulatorText.textContent = '4 kg/h Regulator with Double Cylinder Manifold (45kg Tubo)';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> Regulatory manifold for 2 x 45kg cylinders with 4 kg/h regulator and automatic changeover valve (allows swapping empty cylinders without outage). Mandatory for water heaters or boilers.';
+        } else if (caudalMax <= 8) {
+          regulatorText.textContent = '8 kg/h Regulator for 4-Cylinder Manifold or Small Zeppelin';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> Manifold layout for 4 x 45kg cylinders (2 duty / 2 standby) or a small bulk tank (Zeppelin). Guarantees stable pressure when boiler/heaters kick in.';
+        } else if (caudalMax <= 12) {
+          regulatorText.textContent = 'High Capacity Regulator (12 kg/h) for Zeppelin';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> Recommended installation fed by a bulk propane storage tank (Zeppelin / Chancha). Offers maximum autonomy and pressure stability.';
+        } else {
+          regulatorText.textContent = 'Industrial Dual-Stage LPG Regulator (> 12 kg/h)';
+          regulatorDesc.innerHTML = '<strong>Fitter\'s advice:</strong> High industrial load. Requires first-stage pressure regulator at the LPG tank and second-stage regulators at the gas inlet of each commercial machine.';
+        }
+      }
+    }
+
+    // Print functionality
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        calculateGas();
+
+        const tbody = document.getElementById('gas-print-tbody');
+        const pDate = document.getElementById('gas-print-date');
+        const pTipo = document.getElementById('gas-print-tipo');
+        const pTotalKcal = document.getElementById('gas-print-total-kcal');
+        const pCaudal = document.getElementById('gas-print-caudal');
+        const pMensual = document.getElementById('gas-print-mensual');
+        const pRegulador = document.getElementById('gas-print-regulador');
+        const pReguladorDesc = document.getElementById('gas-print-regulador-desc');
+        
+        const pRejillaInf = document.getElementById('gas-print-rejilla-inf');
+        const pRejillaInfDim = document.getElementById('gas-print-rejilla-inf-dim');
+        const pRejillaSup = document.getElementById('gas-print-rejilla-sup');
+        const pRejillaSupDim = document.getElementById('gas-print-rejilla-sup-dim');
+        const pPotAbierta = document.getElementById('gas-print-pot-abierta');
+        const pCoSection = document.getElementById('gas-print-co-section');
+        const pCoTitle = document.getElementById('gas-print-co-title');
+        const pCoStatus = document.getElementById('gas-print-co-status');
+        const pCoDesc = document.getElementById('gas-print-co-desc');
+
+        if (!tbody || !pTotalKcal || !pCaudal) return;
+
+        // Clear table
+        tbody.innerHTML = '';
+        
+        const items = document.querySelectorAll('.gas-appliance-item');
+        items.forEach(item => {
+          const id = item.getAttribute('data-id') || '';
+          const kcal = parseFloat(item.getAttribute('data-kcal') || '0');
+          const qtyInput = document.getElementById(id) as HTMLInputElement;
+          const qty = parseInt(qtyInput?.value || '0');
+
+          if (qty > 0) {
+            const name = item.querySelector('.gas-app-name')?.textContent || 'Appliance';
+            const hoursSlider = document.getElementById(`${id}-hours`) as HTMLInputElement;
+            const hours = parseFloat(hoursSlider?.value || '0');
+            const subtotalKcal = qty * kcal;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${qty}</td>
+              <td>${name}</td>
+              <td>${formatNumber(kcal)} kcal/h</td>
+              <td>${hours.toFixed(1)} hrs/day</td>
+              <td>${formatNumber(subtotalKcal)} kcal/h</td>
+            `;
+            tbody.appendChild(tr);
+          }
+        });
+
+        // Add pilots in report
+        if (checkPilotos && checkPilotos.checked) {
+          let qtyPilotos = 0;
+          qtyInputs.forEach(input => {
+            qtyPilotos += parseInt((input as HTMLInputElement).value) || 0;
+          });
+
+          if (qtyPilotos > 0) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${qtyPilotos}</td>
+              <td>Permanent pilot flames active</td>
+              <td>150 kcal/h</td>
+              <td>24.0 hrs/day</td>
+              <td>${formatNumber(qtyPilotos * 150)} kcal/h</td>
+            `;
+            tbody.appendChild(tr);
+          }
+        }
+
+        if (tbody.innerHTML === '') {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No appliances selected</td></tr>`;
+        }
+
+        // Header details
+        if (pTipo) pTipo.textContent = tipoGas === 'red' ? 'Natural Gas - Utility (9,300 kcal/m³)' : 'Bottled Propane - LPG (11,000 kcal/kg)';
+        if (pTotalKcal && resKcal) pTotalKcal.textContent = resKcal.textContent + ' kcal/h';
+        
+        if (pCaudal && resCaudal && resCaudalUnit) {
+          pCaudal.textContent = resCaudal.textContent + ' ' + resCaudalUnit.textContent;
+        }
+
+        if (pMensual && resMensual && resMensualUnit) {
+          let text = resMensual.textContent + ' ' + resMensualUnit.textContent;
+          if (tipoGas === 'envasado' && resEquivGlp) {
+            text += ` (${resEquivGlp.textContent})`;
+          }
+          pMensual.textContent = text;
+        }
+
+        const pCosto = document.getElementById('gas-print-costo');
+        if (pCosto && resCosto) {
+          pCosto.textContent = '$ ' + resCosto.textContent + ' ARS';
+        }
+
+        if (pRegulador && regulatorText) pRegulador.textContent = regulatorText.textContent;
+        if (pReguladorDesc && regulatorDesc) pReguladorDesc.innerHTML = regulatorDesc.innerHTML;
+
+        if (pRejillaInf) pRejillaInf.textContent = potenciaAbierta > 0 ? `${rejillaArea} cm²` : '0 cm²';
+        if (pRejillaInfDim) pRejillaInfDim.textContent = potenciaAbierta > 0 ? rejillaDimension : 'No requirement';
+        if (pRejillaSup) pRejillaSup.textContent = potenciaAbierta > 0 ? `${rejillaArea} cm²` : '0 cm²';
+        if (pRejillaSupDim) pRejillaSupDim.textContent = potenciaAbierta > 0 ? rejillaDimension : 'No requirement';
+        if (pPotAbierta) pPotAbierta.textContent = formatNumber(potenciaAbierta);
+
+        if (pCoSection && pCoTitle && pCoStatus && pCoDesc) {
+          pCoStatus.textContent = coStatus;
+          pCoDesc.innerHTML = coMessage;
+          pCoStatus.style.color = coColor;
+          pCoTitle.style.color = coColor;
+          pCoSection.style.borderColor = coColor;
+          pCoSection.style.background = coBg.replace('0.08', '0.05'); // soft color for print
+        }
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('en-US') + ' ' + today.toLocaleTimeString('en-US');
+        }
+
+        // Trigger print
+        document.body.classList.add('printing-gas');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-gas'), { once: true });
+      });
+    }
+
+    // Initial calculation
+    calculateGas();
+  });
+</script>

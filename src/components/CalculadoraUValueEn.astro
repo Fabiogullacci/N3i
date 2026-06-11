@@ -1,0 +1,500 @@
+---
+// src/components/CalculadoraUValueEn.astro
+// Thermal Transmittance (U-Value) & Energy Loss Calculator - Theme Thermal/Tomato (#FF5722)
+---
+<section class="section section-alt" id="calc-uvalue">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #FF5722;">Energy Efficiency</span>
+      <h2 class="section-title">Thermal Transmittance (U-Value) & Insulation Calculator</h2>
+      <p class="section-desc">
+        Evaluate how much heat energy (and money) is lost through your home's walls and ceilings, and calculate your exact monthly savings by adding insulation materials.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Input Form -->
+      <div class="calc-appliances card reveal">
+        <h3 style="color: #FF5722; border-bottom: 1px solid rgba(255, 87, 34, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          Wall / Ceiling Parameters
+        </h3>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Surface Area (m²)</label>
+            <input type="number" id="uval-en-area" class="calc-input" value="20" min="1" step="1" style="border-color: #FF5722;" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Total area of the wall or ceiling exposed to the outdoors.</small>
+          </div>
+          <div class="form-group">
+            <label>Main Core Wall Material</label>
+            <select id="uval-en-material" class="calc-select">
+              <option value="hueco18" selected>Hollow Clay Brick 18cm (U ≈ 1.8)</option>
+              <option value="hueco12">Hollow Clay Brick 12cm (U ≈ 2.1)</option>
+              <option value="comun15">Common Solid Brick 15cm (U ≈ 2.7)</option>
+              <option value="comun30">Common Solid Brick 30cm (U ≈ 1.8)</option>
+              <option value="hormigon15">Reinforced Concrete 15cm (U ≈ 3.5)</option>
+              <option value="hcca15">AAC / Celular Concrete Blocks 15cm (U ≈ 0.8)</option>
+              <option value="steelframe">Steel Frame (Plasterboard + Cement board, uninsulated) (U ≈ 1.9)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Indoor Temperature (°C)</label>
+            <input type="number" id="uval-en-temp-in" class="calc-input" value="21" min="15" max="30" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Desired indoor comfort temperature.</small>
+          </div>
+          <div class="form-group">
+            <label>Outdoor Temperature (°C)</label>
+            <input type="number" id="uval-en-temp-out" class="calc-input" value="5" min="-15" max="20" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Average outdoor winter temperature.</small>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Additional Insulation Layer</label>
+            <select id="uval-en-aislante" class="calc-select">
+              <option value="no">No insulation</option>
+              <option value="lana50">Glasswool 50mm (2") (λ = 0.040)</option>
+              <option value="lana100">Glasswool 100mm (4") (λ = 0.040)</option>
+              <option value="eps20">Expanded Polystyrene (EPS) 20mm (λ = 0.038)</option>
+              <option value="eps50">Expanded Polystyrene (EPS) 50mm (λ = 0.038)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Heating Energy Source</label>
+            <select id="uval-en-calefaccion" class="calc-select">
+              <option value="gas" selected>Natural Gas (Heater / Boiler - 80% Efficiency)</option>
+              <option value="electrico">Electric Convector / Radiator (100% Efficiency)</option>
+              <option value="split">Heat Pump / Split AC (COP 3.2)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Gas Tariff ($ USD/m³)</label>
+            <input type="number" id="uval-en-cost-gas" class="calc-input" value="0.05" min="0.01" step="0.01" />
+            <small style="color: var(--text-light); margin-top: 5px; display: block; font-size: 0.72rem; line-height: 1.3;">* Unit cost per m³ (excluding fixed fees) from your gas bill.</small>
+          </div>
+          <div class="form-group">
+            <label>Electricity Tariff ($ USD/kWh)</label>
+            <input type="number" id="uval-en-cost-elec" class="calc-input" value="0.12" min="0.01" step="0.01" />
+            <small style="color: var(--text-light); margin-top: 5px; display: block; font-size: 0.72rem; line-height: 1.3;">* Unit cost per kWh (excluding fixed fees) from your electric bill.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="color: #FF5722; border-bottom: 1px solid rgba(255, 87, 34, 0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem;">
+            Thermal Performance & Savings
+          </h3>
+          
+          <div class="result-summary" style="background: rgba(255, 87, 34, 0.08); border-left: 4px solid #FF5722; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; line-height: 1.5;">
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Total Thermal Resistance (R): <strong id="uval-en-res-r" style="color: var(--text-primary);">0.00 m²K/W</strong></p>
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Heat Loss Rate (Q): <strong id="uval-en-res-q" style="color: var(--text-primary);">0 Watts</strong></p>
+            <p style="margin: 0; color: var(--text-secondary);">Monthly Energy Lost: <strong id="uval-en-res-kwh" style="color: var(--text-primary);">0.0 kWh/month</strong></p>
+          </div>
+
+          <!-- Transmittance U -->
+          <div class="main-result" style="text-align: center; margin: 15px 0;">
+            <span style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 3px;">Thermal Transmittance (U-Value):</span>
+            <div id="uval-en-res-u" style="font-size: 2.5rem; font-weight: 800; color: #FF5722; line-height: 1;">0.00 W/m²K</div>
+            <span id="uval-en-res-clase" style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-top: 4px;">Conformance Class: -</span>
+          </div>
+
+          <!-- Cost of the Loss -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+            <span style="font-size: 0.78rem; color: var(--text-secondary); display: block; margin-bottom: 4px;">Monthly Heating Waste Cost:</span>
+            <strong id="uval-en-res-costo" style="font-size: 1.2rem; color: var(--text-primary);">$ 0 USD/month</strong>
+            <small style="color: var(--text-muted); font-size: 0.7rem; display: block; margin-top: 2px;">Money wasted due to poor insulation.</small>
+          </div>
+
+          <!-- Projected Savings -->
+          <div class="result-summary" id="uval-en-saving-box" style="background: rgba(76, 175, 80, 0.08); border-left: 4px solid #4CAF50; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.82rem; line-height: 1.45; display: none;">
+            <span style="color: #4CAF50; font-weight: 700; display: block; margin-bottom: 5px;">🌿 Estimated Potential Savings</span>
+            Recommended insulation cuts energy losses by <strong id="uval-en-res-ahorro-perc">0%</strong>.
+            <br>
+            Economic savings: <strong style="color:#4CAF50;">$ <span id="uval-en-res-ahorro-pesos">0</span> USD/month</strong>.
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; background: #FF5722; color: #fff; box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3);">
+              Inquire Insulation Services
+              <span class="btn-icon">🏗️</span>
+            </a>
+            <button type="button" id="uval-en-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; border-color: #FF5722; color: var(--text-primary); background: transparent;">
+              Print Thermal Diagnostic
+              <span class="btn-icon" style="background: transparent;">🖨️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insulation Advice -->
+    <div class="card reveal" style="margin-top: 40px; border-top: 3px solid #FF5722;">
+      <h3 style="color: #FF5722; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+        <span>💡</span> Thermal Insulation & Comfort Tips
+      </h3>
+      <div class="gas-tips-grid">
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FF5722;">❄️</div>
+          <div>
+            <h4 class="gas-tip-title">What is the U-Value?</h4>
+            <p class="gas-tip-desc">It is the rate of heat transfer through a structure. It measures the heat energy passing through 1 m² in 1 hour when there is a 1°C difference between inside and outside. **Lower U-value = better insulation**.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FF5722;">🧱</div>
+          <div>
+            <h4 class="gas-tip-title">AAC vs. Traditional Bricks</h4>
+            <p class="gas-tip-desc">Autoclaved Aerated Concrete (AAC / Retak) features internal air pockets that reduce thermal conductivity, offering up to 3 times more insulation than solid clay bricks of the same thickness.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FF5722;">🌿</div>
+          <div>
+            <h4 class="gas-tip-title">Vapor Barriers</h4>
+            <p class="gas-tip-desc">When installing glasswool insulation, place the aluminum foil facing the **heated interior**. This prevents interior humidity from condensing inside the wall structure.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FF5722;">💸</div>
+          <div>
+            <h4 class="gas-tip-title">Insulation Amortization</h4>
+            <p class="gas-tip-desc">Insulating a building reduces heating and cooling energy use permanently. The cost of installing glasswool or EPS panels is often recovered in **2 to 3 winters** through direct bill savings.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Printed Report -->
+<div id="print-area-uval-en" class="print-only-uval-en">
+  <div class="print-header" style="border-bottom-color: #FF5722;">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #FF5722;">Thermal Transmittance & Heat Loss Report</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Date:</strong> <span id="uval-en-print-date"></span></p>
+    <p><strong>Reference Standards:</strong> IRAM 11601 / 11605 (Thermal Performance of Buildings)</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Thermal Design Metric</th>
+        <th>Configured / Calculated Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Evaluated Surface Area</strong></td>
+        <td><span id="uval-en-print-area">-</span> m²</td>
+      </tr>
+      <tr>
+        <td><strong>Main Core Wall Structure</strong></td>
+        <td><span id="uval-en-print-muro">-</span></td>
+      </tr>
+      <tr>
+        <td><strong>Additional Insulation</strong></td>
+        <td><span id="uval-en-print-aislante">-</span></td>
+      </tr>
+      <tr>
+        <td><strong>Temp Difference (ΔT)</strong></td>
+        <td><span id="uval-en-print-dt">-</span> °C</td>
+      </tr>
+      <tr>
+        <td><strong>Total Thermal Resistance (R)</strong></td>
+        <td><strong><span id="uval-en-print-r">-</span> m²K/W</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Transmittance Coefficient (U-Value)</strong></td>
+        <td><strong><span id="uval-en-print-u">-</span> W/m²K</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Thermal Comfort Class</strong></td>
+        <td><span id="uval-en-print-clase">-</span></td>
+      </tr>
+      <tr>
+        <td><strong>Instant Heat Loss Flow (Q)</strong></td>
+        <td><span id="uval-en-print-q">-</span> Watts</td>
+      </tr>
+      <tr>
+        <td><strong>Estimated Monthly Energy Lost</strong></td>
+        <td><strong><span id="uval-en-print-kwh">-</span> kWh/month</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Monthly Cost of Thermal Waste</strong></td>
+        <td><strong>$ <span id="uval-en-print-costo">-</span> USD/month</strong></td>
+      </tr>
+      <tr id="uval-en-print-saving-row" style="display: none; background: rgba(76,175,80,0.05);">
+        <td><strong>Projected Insulation Savings</strong></td>
+        <td><strong style="color: #2e7d32;"><span id="uval-en-print-ahorro-perc">-</span>% ($ <span id="uval-en-print-ahorro-pesos">-</span> USD/month)</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Note: The thermal resistance calculation includes standard values for surface resistances (Rsi = 0.13 and Rse = 0.04) for horizontal flow through walls. Structural thermal bridges (concrete columns or beams) are not modeled and may increase local heat loss.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">For certified insulation installations and dry lining quotes in Bahía Blanca, technical contact is available at <strong>www.n3i.com.ar</strong> or via WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Print Styles for English U-Value */
+  .print-only-uval-en { display: none; }
+  @media print {
+    body.printing-uval-en .header, 
+    body.printing-uval-en .footer, 
+    body.printing-uval-en .section-header, 
+    body.printing-uval-en .calculator-grid, 
+    body.printing-uval-en .section { 
+      display: none !important; 
+    }
+    body.printing-uval-en .print-only-uval-en {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+    }
+    .print-only-uval-en .print-header { display: flex; align-items: center; border-bottom: 2px solid #FF5722; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-uval-en .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-uval-en .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-uval-en .print-table th, .print-only-uval-en .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-uval-en .print-table th { background-color: #f5f5f5; color: #333; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iArea = document.getElementById('uval-en-area') as HTMLInputElement;
+    const iMaterial = document.getElementById('uval-en-material') as HTMLSelectElement;
+    const iTempIn = document.getElementById('uval-en-temp-in') as HTMLInputElement;
+    const iTempOut = document.getElementById('uval-en-temp-out') as HTMLInputElement;
+    const iAislante = document.getElementById('uval-en-aislante') as HTMLSelectElement;
+    const iCalefaccion = document.getElementById('uval-en-calefaccion') as HTMLSelectElement;
+    const iCostGas = document.getElementById('uval-en-cost-gas') as HTMLInputElement;
+    const iCostElec = document.getElementById('uval-en-cost-elec') as HTMLInputElement;
+
+    const rR = document.getElementById('uval-en-res-r');
+    const rQ = document.getElementById('uval-en-res-q');
+    const rKwh = document.getElementById('uval-en-res-kwh');
+    const rU = document.getElementById('uval-en-res-u');
+    const rClase = document.getElementById('uval-en-res-clase');
+    const rCosto = document.getElementById('uval-en-res-costo');
+    
+    const savingBox = document.getElementById('uval-en-saving-box');
+    const rAhorroPerc = document.getElementById('uval-en-res-ahorro-perc');
+    const rAhorroPesos = document.getElementById('uval-en-res-ahorro-pesos');
+
+    let globalUData: any = {};
+
+    function calculateU() {
+      if (!iArea || !rU) return;
+
+      const area = parseFloat(iArea.value) || 0;
+      const material = iMaterial.value;
+      const tempIn = parseFloat(iTempIn.value) || 21;
+      const tempOut = parseFloat(iTempOut.value) || 5;
+      const aislante = iAislante.value;
+      const calefaccion = iCalefaccion.value;
+      const costGas = parseFloat(iCostGas.value) || 0.05;
+      const costElec = parseFloat(iCostElec.value) || 0.12;
+
+      const dT = tempIn - tempOut;
+
+      // Base Resistance
+      let rBase = 0.40;
+      if (material === 'hueco12') rBase = 0.27;
+      else if (material === 'comun15') rBase = 0.19;
+      else if (material === 'comun30') rBase = 0.37;
+      else if (material === 'hormigon15') rBase = 0.09;
+      else if (material === 'hcca15') rBase = 1.07;
+      else if (material === 'steelframe') rBase = 0.35;
+
+      // Insulation Resistance
+      let rAisl = 0;
+      if (aislante === 'lana50') rAisl = 0.05 / 0.040;
+      else if (aislante === 'lana100') rAisl = 0.10 / 0.040;
+      else if (aislante === 'eps20') rAisl = 0.02 / 0.038;
+      else if (aislante === 'eps50') rAisl = 0.05 / 0.038;
+
+      // R_T
+      const R_T = 0.13 + rBase + rAisl + 0.04;
+      const U = 1 / R_T;
+
+      // Q (Watts)
+      const Q = U * area * dT;
+
+      // Monthly kWh
+      const kwhMensual = (Q / 1000) * 24 * 30;
+
+      // Cost calculation
+      let costo = 0;
+      if (calefaccion === 'gas') {
+        const m3Necesarios = kwhMensual / (10.8 * 0.80);
+        costo = m3Necesarios * costGas;
+      } else if (calefaccion === 'electrico') {
+        costo = kwhMensual * costElec;
+      } else {
+        const kwhElectricidad = kwhMensual / 3.2;
+        costo = kwhElectricidad * costElec;
+      }
+
+      // Recommended Insulation comparison
+      let rAislComparativa = 0.05 / 0.040;
+      const R_T_recomendado = 0.13 + rBase + rAislComparativa + 0.04;
+      const U_recomendado = 1 / R_T_recomendado;
+      const Q_recomendado = U_recomendado * area * dT;
+      const kwhRecomendado = (Q_recomendado / 1000) * 24 * 30;
+      
+      let costoRecomendado = 0;
+      if (calefaccion === 'gas') {
+        costoRecomendado = (kwhRecomendado / (10.8 * 0.80)) * costGas;
+      } else if (calefaccion === 'electrico') {
+        costoRecomendado = kwhRecomendado * costElec;
+      } else {
+        costoRecomendado = (kwhRecomendado / 3.2) * costElec;
+      }
+
+      let showSaving = false;
+      let ahorroPerc = 0;
+      let ahorroPesos = 0;
+
+      if (aislante === 'no') {
+        showSaving = true;
+        ahorroPesos = costo - costoRecomendado;
+        ahorroPerc = ((U - U_recomendado) / U) * 100;
+      } else {
+        showSaving = true;
+        const R_T_desnudo = 0.13 + rBase + 0.04;
+        const U_desnudo = 1 / R_T_desnudo;
+        const Q_desnudo = U_desnudo * area * dT;
+        const kwhDesnudo = (Q_desnudo / 1000) * 24 * 30;
+        let costoDesnudo = 0;
+        if (calefaccion === 'gas') {
+          costoDesnudo = (kwhDesnudo / (10.8 * 0.80)) * costGas;
+        } else if (calefaccion === 'electrico') {
+          costoDesnudo = kwhDesnudo * costElec;
+        } else {
+          costoDesnudo = (kwhDesnudo / 3.2) * costElec;
+        }
+        ahorroPesos = costoDesnudo - costo;
+        ahorroPerc = ((U_desnudo - U) / U_desnudo) * 100;
+      }
+
+      let clase = "Insuficiente (Level C - High heat loss)";
+      if (U <= 0.40) {
+        clase = "Excellent (Level A - Premium Comfort)";
+      } else if (U <= 1.00) {
+        clase = "Acceptable (Level B - Medium Comfort)";
+      }
+
+      // Render UI
+      if (rR) rR.textContent = `${R_T.toFixed(2)} m²K/W`;
+      if (rQ) rQ.textContent = `${Math.round(Q)} Watts`;
+      if (rKwh) rKwh.textContent = `${kwhMensual.toFixed(1)} kWh/month`;
+      rU.textContent = `${U.toFixed(2)} W/m²K`;
+      if (rClase) rClase.textContent = `Conformance Class: ${clase}`;
+      if (rCosto) rCosto.textContent = `$ ${costo.toFixed(2)} USD/month`;
+
+      if (savingBox && rAhorroPerc && rAhorroPesos) {
+        if (showSaving && ahorroPesos > 0) {
+          savingBox.style.display = 'block';
+          rAhorroPerc.textContent = `${ahorroPerc.toFixed(0)}%`;
+          rAhorroPesos.textContent = ahorroPesos.toFixed(2);
+        } else {
+          savingBox.style.display = 'none';
+        }
+      }
+
+      globalUData = {
+        area,
+        muroText: iMaterial.options[iMaterial.selectedIndex].text,
+        aislanteText: iAislante.options[iAislante.selectedIndex].text,
+        dT,
+        R_T,
+        U,
+        clase,
+        Q,
+        kwhMensual,
+        costo,
+        showSaving,
+        ahorroPerc,
+        ahorroPesos
+      };
+    }
+
+    // Attach events
+    const inputs = [iArea, iMaterial, iTempIn, iTempOut, iAislante, iCalefaccion, iCostGas, iCostElec];
+    inputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateU);
+    });
+
+    // Init
+    calculateU();
+
+    // Print event
+    const btnPrint = document.getElementById('uval-en-btn-print');
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        const pDate = document.getElementById('uval-en-print-date');
+        const pArea = document.getElementById('uval-en-print-area');
+        const pMuro = document.getElementById('uval-en-print-muro');
+        const pAislanteText = document.getElementById('uval-en-print-aislante');
+        const pDt = document.getElementById('uval-en-print-dt');
+        const pR = document.getElementById('uval-en-print-r');
+        const pU = document.getElementById('uval-en-print-u');
+        const pClase = document.getElementById('uval-en-print-clase');
+        const pQ = document.getElementById('uval-en-print-q');
+        const pKwh = document.getElementById('uval-en-print-kwh');
+        const pCostoText = document.getElementById('uval-en-print-costo');
+        const pPrintSavingRow = document.getElementById('uval-en-print-saving-row');
+        const pAhorroPerc = document.getElementById('uval-en-print-ahorro-perc');
+        const pAhorroPesos = document.getElementById('uval-en-print-ahorro-pesos');
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('en-US') + ' ' + today.toLocaleTimeString('en-US');
+        }
+
+        if (globalUData.U) {
+          if (pArea) pArea.textContent = globalUData.area.toString();
+          if (pMuro) pMuro.textContent = globalUData.muroText;
+          if (pAislanteText) pAislanteText.textContent = globalUData.aislanteText;
+          if (pDt) pDt.textContent = globalUData.dT.toString();
+          if (pR) pR.textContent = globalUData.R_T.toFixed(2);
+          if (pU) pU.textContent = globalUData.U.toFixed(2);
+          if (pClase) pClase.textContent = globalUData.clase;
+          if (pQ) pQ.textContent = Math.round(globalUData.Q).toString();
+          if (pKwh) pKwh.textContent = globalUData.kwhMensual.toFixed(1);
+          if (pCostoText) pCostoText.textContent = globalUData.costo.toFixed(2);
+
+          if (pPrintSavingRow && pAhorroPerc && pAhorroPesos) {
+            if (globalUData.showSaving && globalUData.ahorroPesos > 0) {
+              pPrintSavingRow.style.display = 'table-row';
+              pAhorroPerc.textContent = `${globalUData.ahorroPerc.toFixed(0)}`;
+              pAhorroPesos.textContent = globalUData.ahorroPesos.toFixed(2);
+            } else {
+              pPrintSavingRow.style.display = 'none';
+            }
+          }
+        }
+
+        document.body.classList.add('printing-uval-en');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-uval-en'), { once: true });
+      });
+    }
+  });
+</script>

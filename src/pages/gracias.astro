@@ -1,0 +1,143 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="¡Postulación Recibida! | N3i Engineering & Maintenance" description="La postulación ha sido enviada con éxito. Se analizarán los datos provistos para coordinar una posible entrevista en futuras obras.">
+  <Header />
+
+  <!-- Success Section -->
+  <section class="section" style="padding-top: 160px; padding-bottom: 120px; min-height: 85vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container reveal" style="max-width: 700px; text-align: center;">
+      
+      <div class="success-card">
+        <!-- Animated Checkmark Container -->
+        <div class="checkmark-wrapper">
+          <div class="checkmark-circle">
+            <svg class="checkmark-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+              <circle class="checkmark-circle-svg" cx="26" cy="26" r="25" fill="none"/>
+              <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+          </div>
+        </div>
+
+        <span class="section-subtitle" style="margin-top: 20px;">Registro Completado</span>
+        <h1 class="hero-title" style="font-size: 2.5rem; margin-bottom: 20px; background: linear-gradient(135deg, #ffffff 40%, #a3abb2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          ¡Muchas gracias por registrar sus datos!
+        </h1>
+        
+        <p class="success-text" style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.8; margin-bottom: 35px; max-width: 600px; margin-left: auto; margin-right: auto;">
+          El perfil técnico y de oficio se ha recibido correctamente.
+          <br><br>
+          El departamento de <strong>Ingeniería y Mantenimiento</strong> de N3i analizará la especialidad y experiencia ingresadas para evaluar la incorporación en futuras obras y ubicaciones según los proyectos en desarrollo. De surgir una vacante compatible, se establecerá contacto para pautar una entrevista técnica.
+        </p>
+
+        <!-- Actions -->
+        <div class="success-actions" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <a href="/" class="btn btn-primary" style="padding: 14px 28px;">
+            Volver al Inicio
+            <span class="btn-icon">🏠</span>
+          </a>
+          <a href="/obras" class="btn btn-secondary" style="padding: 14px 28px;">
+            Ver Obras en Curso
+            <span class="btn-icon">🏗️</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .success-card {
+    background: var(--bg-card, rgba(25, 28, 30, 0.65));
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-md, 16px);
+    padding: 50px 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(140, 198, 63, 0.05);
+    backdrop-filter: blur(10px);
+    transition: var(--transition-smooth, all 0.4s cubic-bezier(0.16, 1, 0.3, 1));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .success-card:hover {
+    border-color: var(--border-color-hover, rgba(140, 198, 63, 0.4));
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(140, 198, 63, 0.15);
+  }
+
+  /* Animated Checkmark CSS */
+  .checkmark-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+  }
+
+  .checkmark-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(140, 198, 63, 0.08);
+    border: 2px solid rgba(140, 198, 63, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(140, 198, 63, 0.1);
+    animation: scale-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .checkmark-icon {
+    width: 50px;
+    height: 50px;
+    display: block;
+  }
+
+  .checkmark-circle-svg {
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #8CC63F;
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.2s forwards;
+  }
+
+  .checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke: #8CC63F;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+  }
+
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes scale-up {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .success-card {
+      padding: 40px 20px;
+    }
+    .hero-title {
+      font-size: 2rem !important;
+    }
+  }
+</style>

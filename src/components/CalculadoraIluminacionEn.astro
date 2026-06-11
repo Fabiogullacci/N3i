@@ -1,0 +1,637 @@
+---
+// CalculadoraIluminacionEn.astro
+---
+<section class="section section-alt" id="calc-lighting">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle">Energy Efficiency</span>
+      <h2 class="section-title">LED Lighting Calculator (Lux/Lumen)</h2>
+      <p class="section-desc">
+        Determine the exact number of light fixtures needed to guarantee professional lighting levels according to visual comfort standards.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Input Form -->
+      <div class="calc-appliances card reveal">
+        <h3>Space Configuration</h3>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+          Enter the dimensions and conditions of your room.
+        </p>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Length (m)</label>
+            <input type="number" id="ilum-largo" class="calc-input" value="10" min="1" step="0.5" />
+          </div>
+          <div class="form-group">
+            <label>Width (m)</label>
+            <input type="number" id="ilum-ancho" class="calc-input" value="5" min="1" step="0.5" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Room Type (Required Lux)</label>
+          <select id="ilum-ambiente" class="calc-select" style="border-color: #ffd700;">
+            <option value="500">Offices / Classrooms / Reading Areas (500 Lux)</option>
+            <option value="750">Precision Workshop / Laboratory (750 Lux)</option>
+            <option value="300">Retail Store / Showroom (300 Lux)</option>
+            <option value="150">Warehouse / Industrial Depot (150 Lux)</option>
+            <option value="100">Hallways / Common Areas / Parking (100 Lux)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>LED Fixture Type</label>
+          <select id="ilum-luminaria" class="calc-select">
+            <option value="4000">LED Panel 60x60cm 40W (~4,000 Lumens)</option>
+            <option value="10000">Industrial UFO High Bay 100W (~10,000 Lumens)</option>
+            <option value="1800">LED Tube 1.20m 18W (~1,800 Lumens)</option>
+            <option value="3500">High Power LED Bulb 40W (~3,500 Lumens)</option>
+            <option value="1000">Standard LED Bulb 12W (~1,000 Lumens)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Colors & Reflectance (Ceiling/Walls)</label>
+          <select id="ilum-reflectancia" class="calc-select">
+            <option value="0.70">Light Colors (White/Cream) - High Reflectance</option>
+            <option value="0.55">Medium Colors - Standard Reflectance</option>
+            <option value="0.40">Dark Colors / Unfinished Industrial Ceilings</option>
+          </select>
+          <small style="color: var(--text-light); margin-top: 5px; display: block;">* Dark walls absorb light and require more fixtures.</small>
+        </div>
+
+        <!-- Retrofit Simulator Section (Efficient Replacement) -->
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+          <label class="pilot-checkbox-wrapper" style="font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="ilum-hay-previo" style="accent-color: #ffd700;" />
+            <span style="color: var(--text-primary);">⚡ Replace existing lighting? (Calculate Savings)</span>
+          </label>
+        </div>
+
+        <div id="ilum-retrofit-container" style="display: none; margin-top: 20px; padding: 15px; background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 215, 0, 0.2); border-radius: 8px;">
+          <h4 style="font-size: 0.95rem; color: #ffd700; margin-bottom: 15px;">Previous Lighting Details</h4>
+          <div class="form-group">
+            <label style="font-size: 0.8rem; color: var(--text-secondary);">Old Bulb Type</label>
+            <select id="ilum-previo-tipo" class="calc-select">
+              <option value="75">Incandescent Bulb (75W)</option>
+              <option value="50">Halogen Spot / Reflector (50W)</option>
+              <option value="48">Fluorescent Tube (40W + Ballast = ~48W)</option>
+              <option value="20">CFL Compact Fluorescent (20W)</option>
+            </select>
+          </div>
+          <div class="form-group-grid" style="margin-top: 10px;">
+            <div class="form-group">
+              <label style="font-size: 0.8rem; color: var(--text-secondary);">Previous Quantity</label>
+              <input type="number" id="ilum-previo-cant" class="calc-input" value="10" min="1" />
+            </div>
+            <div class="form-group">
+              <label style="font-size: 0.8rem; color: var(--text-secondary);">Daily Use (hours)</label>
+              <input type="number" id="ilum-uso-horas" class="calc-input" value="6" min="0.5" max="24" step="0.5" />
+            </div>
+          </div>
+          <div class="form-group-grid" style="margin-top: 10px;">
+            <div class="form-group">
+              <label style="font-size: 0.8rem; color: var(--text-secondary);">New LED Cost per Unit ($)</label>
+              <input type="number" id="ilum-costo-unidad-led" class="calc-input" value="6500" min="0" step="100" />
+            </div>
+            <div class="form-group">
+              <label style="font-size: 0.8rem; color: var(--text-secondary);">Electricity Rate ($/kWh)</label>
+              <input type="number" id="ilum-costo-kwh" class="calc-input" value="115" min="1" step="1" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="margin-bottom: 20px;">Lighting Analysis</h3>
+          
+          <div class="result-summary" style="background: rgba(255, 215, 0, 0.1); border-left: 4px solid #ffd700; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-light);">Total Area: <strong id="ilum-res-area" style="color: var(--text-dark);">50 m²</strong></p>
+            <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-light);">Standard Requirement: <strong id="ilum-res-luxes" style="color: var(--text-dark);">500 Lux</strong></p>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--text-light);">Total Luminous Flux: <strong id="ilum-res-lumenes" style="color: var(--text-dark);">35,714 Lm</strong></p>
+          </div>
+
+          <div class="main-result" style="text-align: center; margin: 30px 0;">
+            <span style="font-size: 1rem; color: var(--text-light); display: block; margin-bottom: 10px;">Fixtures Required:</span>
+            <div id="ilum-res-artefactos" style="font-size: 3.5rem; font-weight: 800; color: #ffd700; line-height: 1;">9</div>
+            <span id="ilum-res-nombre" style="font-size: 1.1rem; color: var(--text-dark); display: block; margin-top: 10px; font-weight: 600;">LED Panels 60x60cm</span>
+          </div>
+
+          <!-- Suggested Color Temperature -->
+          <div class="result-box" style="margin-top: 15px; padding: 12px; border-radius: 8px; border-left: 4px solid #ffd700;" id="ilum-temp-box">
+            <span class="result-label" style="display: block; font-size: 0.8rem; color: var(--text-secondary);">Recommended Light Tone:</span>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+              <span id="ilum-temp-badge" class="ilum-color-badge" style="font-weight: 700; font-size: 0.9rem; padding: 2px 10px; border-radius: 12px; display: inline-block;">Neutral Light (4000K)</span>
+            </div>
+            <span id="ilum-temp-desc" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 5px; line-height: 1.3;">Recommended for work and concentration environments.</span>
+          </div>
+
+          <!-- Suggested Grid Distribution -->
+          <div class="result-box" style="margin-top: 15px; padding: 15px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 8px;">
+            <h4 style="font-size: 0.9rem; color: #ffd700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+              <span>📐</span> Grid Distribution
+            </h4>
+            <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary);">
+              <p>Pattern: <strong style="color: var(--text-primary);" id="ilum-grid-layout">3 x 3</strong> (Rows x Columns)</p>
+              <p>Distance between rows: <strong style="color: var(--text-primary);" id="ilum-grid-row-space">3.33 m</strong></p>
+              <p>Distance between columns: <strong style="color: var(--text-primary);" id="ilum-grid-col-space">2.50 m</strong></p>
+              <p>Separation to walls: <strong style="color: var(--text-primary);" id="ilum-grid-wall-space">1.67 m / 1.25 m</strong> (Length/Width)</p>
+            </div>
+            <span style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-top: 8px; line-height: 1.3;">
+              * This layout guarantees a uniform luminous distribution on the work plane.
+            </span>
+          </div>
+
+          <!-- Retrofit Savings Results (ROI) -->
+          <div id="ilum-res-retrofit-box" class="result-box" style="display: none; margin-top: 15px; border: 1px solid #3fc6b4; background: rgba(63, 198, 180, 0.08); padding: 15px; border-radius: 8px;">
+            <h4 style="font-size: 0.9rem; color: #3fc6b4; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+              <span>💵</span> Retrofit Savings Analysis
+            </h4>
+            <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary);">
+              <p>Previous Power: <strong style="color: var(--text-primary);" id="ilum-retro-w-ant">0 W</strong></p>
+              <p>New LED Power: <strong style="color: var(--text-primary);" id="ilum-retro-w-new">0 W</strong></p>
+              <p>Energy Saved: <strong style="color: #3fc6b4;" id="ilum-retro-kwh-save">0.0 kWh/mo</strong></p>
+              <p style="margin-top: 5px; font-size: 0.95rem;">Economic Savings: <strong style="color: #3fc6b4;" id="ilum-retro-money-save">$ 0 /mo</strong></p>
+              <p>Estimated Investment: <strong style="color: var(--text-primary);" id="ilum-retro-inversion">$ 0</strong></p>
+              <p style="margin-top: 5px; border-top: 1px dashed rgba(63, 198, 180, 0.3); padding-top: 5px; font-weight: 700;">
+                Payback Period: <span style="color: #3fc6b4;" id="ilum-retro-months">0.0 months</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="disclaimer mt-3" style="margin-top: 15px;">
+            <p><strong>⚠️ Technical Note:</strong> This calculation applies maintenance and reflectance loss factors. For warehouses or workshops, an even grid distribution will prevent disturbing shadows on work stations.</p>
+          </div>
+
+          <a href="/en/#contact" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 20px; background: #ffd700; color: #333; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);">
+            Request Installation
+            <span class="btn-icon">💡</span>
+          </a>
+          
+          <button id="ilum-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; margin-top: 10px; border-color: #ffd700; color: var(--text-primary); background: transparent;">
+            Print Report
+            <span class="btn-icon" style="background: transparent;">🖨️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Print Report Area -->
+<div id="print-area-ilum" class="print-only-ilum">
+  <div class="print-header" style="border-bottom-color: #ffd700;">
+    <img src="/assets/img/logo.webp" alt="N3i Logo" width="80" />
+    <div>
+      <h2 style="color: #ffd700;">Commercial / Industrial Lighting Study</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Date:</strong> <span id="ilum-print-date"></span></p>
+    <p><strong>Document Type:</strong> Estimated Lighting Calculation</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Calculated Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Space Dimensions</td>
+        <td id="ilum-print-dim">0 x 0 m</td>
+      </tr>
+      <tr>
+        <td>Total Area</td>
+        <td id="ilum-print-area">0 m²</td>
+      </tr>
+      <tr>
+        <td>Standard Lighting Level</td>
+        <td id="ilum-print-lux">0 Lux</td>
+      </tr>
+      <tr>
+        <td>Reflectance Factor (Environment)</td>
+        <td id="ilum-print-ref">0.0</td>
+      </tr>
+      <tr>
+        <td>Total Luminous Flux Required</td>
+        <td id="ilum-print-lumenes">0 Lumens</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <div style="background: rgba(255, 215, 0, 0.1); padding: 20px; border-radius: 8px; border-left: 5px solid #ffd700; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #b89b00;">Final Fixture Result</h3>
+    <p style="font-size: 1.1rem; margin-bottom: 5px;">Installation recommendation:</p>
+    <p style="font-size: 2rem; font-weight: bold; color: #333; margin: 10px 0;">
+      <span id="ilum-print-artefactos">0</span> x <span id="ilum-print-nombre">Fixture</span>
+    </p>
+    <p style="font-size: 1rem; color: #555;">(Based on specification of <span id="ilum-print-lum-unit">0</span> Lumens per fixture).</p>
+  </div>
+
+  <div style="background: #fcfcfc; padding: 15px; border-radius: 8px; border-left: 5px solid #444; margin-bottom: 20px;" id="ilum-print-grid-box">
+    <h4 style="margin-top: 0; color: #333; font-size: 1.1rem;">Physical Distribution Layout Plan</h4>
+    <p style="font-size: 1rem; margin-bottom: 5px;"><strong>Grid Pattern in Plan:</strong> <span id="ilum-print-grid-layout"></span></p>
+    <p style="font-size: 1rem; margin-bottom: 5px;"><strong>Row spacing:</strong> <span id="ilum-print-grid-row-space"></span></p>
+    <p style="font-size: 1rem; margin-bottom: 5px;"><strong>Column spacing:</strong> <span id="ilum-print-grid-col-space"></span></p>
+    <p style="font-size: 1rem; margin-bottom: 5px;"><strong>Wall separation:</strong> <span id="ilum-print-grid-wall-space"></span></p>
+  </div>
+
+  <div style="background: rgba(63, 198, 180, 0.08); padding: 15px; border-radius: 8px; border-left: 5px solid #3fc6b4; margin-bottom: 20px; display: none;" id="ilum-print-retrofit-box">
+    <h4 style="margin-top: 0; color: #0f766e; font-size: 1.1rem;">LED Retrofit Financial Analysis</h4>
+    <p style="font-size: 1rem; margin-bottom: 5px;"><strong>Estimated Savings:</strong> <span id="ilum-print-retro-ahorro"></span></p>
+    <p style="font-size: 1rem; margin-bottom: 5px;"><strong>New Investment Cost:</strong> <span id="ilum-print-retro-inversion"></span></p>
+    <p style="font-size: 1rem; margin-bottom: 5px;"><strong>Amortization Time (ROI):</strong> <span id="ilum-print-retro-roi"></span></p>
+    <p style="font-size: 0.9rem; color: #555; margin-top: 10px; line-height: 1.4;" id="ilum-print-retro-desc"></p>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Note: The calculation is theoretical based on the lumen method, applying a global maintenance factor. Final placement may vary due to structural interferences.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">To ensure a safe and code-compliant installation, hire certified Industrial Electricians. Technical contact is available at <strong>www.n3i.com.ar</strong> or via WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Calculator Grid Layout */
+  .calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  @media (min-width: 992px) {
+    .calculator-grid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+
+  .results-sticky {
+    position: sticky;
+    top: 100px;
+  }
+
+  @media (max-width: 991px) {
+    .results-sticky {
+      position: static !important;
+    }
+  }
+
+  .form-group-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  /* Specific Print Styles for Lighting */
+  .print-only-ilum {
+    display: none;
+  }
+  @media print {
+    @page { margin: 2cm; }
+    body.printing-ilum .header, 
+    body.printing-ilum .footer, 
+    body.printing-ilum .section-header, 
+    body.printing-ilum .calculator-grid, 
+    body.printing-ilum .section { 
+      display: none !important; 
+    }
+    body.printing-ilum .print-only-ilum {
+      display: block !important;
+      font-family: Arial, sans-serif;
+    }
+    .print-only-ilum .print-header { display: flex; align-items: center; border-bottom: 2px solid #ffd700; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-ilum .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-ilum .print-header p { margin: 5px 0 0 0; color: #666; }
+    .print-only-ilum .print-details { margin-bottom: 30px; font-size: 0.9rem; }
+    .print-only-ilum .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-ilum .print-table th, .print-only-ilum .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-ilum .print-table th { background-color: #f5f5f5; color: #333; }
+    .print-only-ilum .print-footer { border-top: 1px solid #ddd; padding-top: 20px; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iLargo = document.getElementById('ilum-largo') as HTMLInputElement;
+    const iAncho = document.getElementById('ilum-ancho') as HTMLInputElement;
+    const iAmbiente = document.getElementById('ilum-ambiente') as HTMLSelectElement;
+    const iLuminaria = document.getElementById('ilum-luminaria') as HTMLSelectElement;
+    const iReflectancia = document.getElementById('ilum-reflectancia') as HTMLSelectElement;
+
+    // Retrofit Elements
+    const checkRetrofit = document.getElementById('ilum-hay-previo') as HTMLInputElement;
+    const retrofitContainer = document.getElementById('ilum-retrofit-container');
+    const iPrevioTipo = document.getElementById('ilum-previo-tipo') as HTMLSelectElement;
+    const iPrevioCant = document.getElementById('ilum-previo-cant') as HTMLInputElement;
+    const iUsoHoras = document.getElementById('ilum-uso-horas') as HTMLInputElement;
+    const iCostoUnidadLed = document.getElementById('ilum-costo-unidad-led') as HTMLInputElement;
+    const iCostoKwh = document.getElementById('ilum-costo-kwh') as HTMLInputElement;
+
+    // UI results
+    const rArea = document.getElementById('ilum-res-area');
+    const rLuxes = document.getElementById('ilum-res-luxes');
+    const rLumenes = document.getElementById('ilum-res-lumenes');
+    const rArtefactos = document.getElementById('ilum-res-artefactos');
+    const rNombre = document.getElementById('ilum-res-nombre');
+
+    // UI color temperature
+    const tempBadge = document.getElementById('ilum-temp-badge');
+    const tempDesc = document.getElementById('ilum-temp-desc');
+    const tempBox = document.getElementById('ilum-temp-box');
+
+    // UI grid layout
+    const gridLayout = document.getElementById('ilum-grid-layout');
+    const gridRowSpace = document.getElementById('ilum-grid-row-space');
+    const gridColSpace = document.getElementById('ilum-grid-col-space');
+    const gridWallSpace = document.getElementById('ilum-grid-wall-space');
+
+    // UI retrofit
+    const retrofitResultBox = document.getElementById('ilum-res-retrofit-box');
+    const retroWAnt = document.getElementById('ilum-retro-w-ant');
+    const retroWNew = document.getElementById('ilum-retro-w-new');
+    const retroKwhSave = document.getElementById('ilum-retro-kwh-save');
+    const retroMoneySave = document.getElementById('ilum-retro-money-save');
+    const retroInversion = document.getElementById('ilum-retro-inversion');
+    const retroMonths = document.getElementById('ilum-retro-months');
+
+    // Print elements
+    const pDate = document.getElementById('ilum-print-date');
+    const pDim = document.getElementById('ilum-print-dim');
+    const pArea = document.getElementById('ilum-print-area');
+    const pLux = document.getElementById('ilum-print-lux');
+    const pRef = document.getElementById('ilum-print-ref');
+    const pLumenes = document.getElementById('ilum-print-lumenes');
+    const pArtefactos = document.getElementById('ilum-print-artefactos');
+    const pNombre = document.getElementById('ilum-print-nombre');
+    const pLumUnit = document.getElementById('ilum-print-lum-unit');
+
+    const btnPrint = document.getElementById('ilum-btn-print');
+
+    function calculateLighting() {
+      if (!iLargo) return;
+
+      const largo = parseFloat(iLargo.value) || 0;
+      const ancho = parseFloat(iAncho.value) || 0;
+      const luxes = parseInt(iAmbiente.value);
+      const lumenesFoco = parseInt(iLuminaria.value);
+      const reflectancia = parseFloat(iReflectancia.value);
+
+      let wattsFoco = 12;
+      let nombreLuminaria = "";
+      if (lumenesFoco === 4000) {
+        nombreLuminaria = "LED Panels 60x60cm (40W)";
+        wattsFoco = 40;
+      } else if (lumenesFoco === 10000) {
+        nombreLuminaria = "Industrial UFO High Bays (100W)";
+        wattsFoco = 100;
+      } else if (lumenesFoco === 1800) {
+        nombreLuminaria = "LED Tubes 1.20m (18W)";
+        wattsFoco = 18;
+      } else if (lumenesFoco === 3500) {
+        nombreLuminaria = "High Power LED Bulbs (40W)";
+        wattsFoco = 40;
+      } else if (lumenesFoco === 1000) {
+        nombreLuminaria = "Standard LED Bulbs (12W)";
+        wattsFoco = 12;
+      }
+
+      const area = largo * ancho;
+      // Formula: Total Lumens = (Area * Lux) / Factor (Utilization and Maintenance)
+      const lumenesRequeridos = Math.ceil((area * luxes) / reflectancia);
+      const artefactosRequeridos = Math.ceil(lumenesRequeridos / lumenesFoco);
+
+      // Update Screen
+      if (rArea) rArea.textContent = `${area.toFixed(2)} m²`;
+      if (rLuxes) rLuxes.textContent = `${luxes} Lux`;
+      if (rLumenes) rLumenes.textContent = `${lumenesRequeridos.toLocaleString()} Lm`;
+      if (rArtefactos) rArtefactos.textContent = area > 0 ? artefactosRequeridos.toString() : "0";
+      if (rNombre) rNombre.textContent = nombreLuminaria;
+
+      // Update Print
+      if (pDim) pDim.textContent = `${largo} x ${ancho} m`;
+      if (pArea) pArea.textContent = `${area.toFixed(2)} m²`;
+      if (pLux) pLux.textContent = `${luxes} Lux`;
+      if (pRef) pRef.textContent = `${reflectancia} (K)`;
+      if (pLumenes) pLumenes.textContent = `${lumenesRequeridos.toLocaleString()} Lumens`;
+      if (pArtefactos) pArtefactos.textContent = area > 0 ? artefactosRequeridos.toString() : "0";
+      if (pNombre) pNombre.textContent = nombreLuminaria;
+      if (pLumUnit) pLumUnit.textContent = lumenesFoco.toLocaleString();
+
+      // Calculate ideal grid R x C
+      let rows = 1;
+      let cols = 1;
+      if (area > 0 && artefactosRequeridos > 0) {
+        const aspect = largo / ancho; // Aspect ratio
+        let bestCost = Infinity;
+        let bestR = 1;
+        let bestC = 1;
+        
+        // Maximum allowed fixtures (up to 20% excess or at least +4 for small counts)
+        const maxAllowedFixtures = Math.max(artefactosRequeridos + 4, Math.ceil(artefactosRequeridos * 1.2));
+
+        for (let r = 1; r <= Math.max(maxAllowedFixtures, 20); r++) {
+          const c = Math.ceil(artefactosRequeridos / r);
+          const totalFixtures = r * c;
+          
+          if (totalFixtures <= maxAllowedFixtures) {
+            const gridAspect = r / c;
+            const aspectDiff = Math.abs(gridAspect - aspect);
+            const excess = totalFixtures - artefactosRequeridos;
+            
+            // Strong penalty for 1D layouts (1 row or 1 column) in medium/large spaces
+            let layout1DPenalty = 0;
+            if ((r === 1 || c === 1) && artefactosRequeridos > 3) {
+              layout1DPenalty = 10.0;
+            }
+            
+            // Cost: aspect difference + relative excess penalty + 1D layout penalty
+            const cost = aspectDiff * 15 + (excess / artefactosRequeridos) * 15 + layout1DPenalty;
+            
+            if (cost < bestCost) {
+              bestCost = cost;
+              bestR = r;
+              bestC = c;
+            }
+          }
+        }
+        rows = bestR;
+        cols = bestC;
+      }
+
+      const spacingRow = rows > 0 ? largo / rows : 0;
+      const spacingCol = cols > 0 ? ancho / cols : 0;
+      const wallDistanceRow = spacingRow / 2;
+      const wallDistanceCol = spacingCol / 2;
+
+      // Update Grid UI
+      if (gridLayout) gridLayout.textContent = area > 0 ? `${rows} x ${cols}` : "-";
+      if (gridRowSpace) gridRowSpace.textContent = area > 0 ? `${spacingRow.toFixed(2)} m` : "-";
+      if (gridColSpace) gridColSpace.textContent = area > 0 ? `${spacingCol.toFixed(2)} m` : "-";
+      if (gridWallSpace) gridWallSpace.textContent = area > 0 ? `${wallDistanceRow.toFixed(2)} m / ${wallDistanceCol.toFixed(2)} m` : "-";
+
+      // Update Print Grid UI
+      const printGridBox = document.getElementById('ilum-print-grid-box');
+      const pGridLayout = document.getElementById('ilum-print-grid-layout');
+      const pGridRowSpace = document.getElementById('ilum-print-grid-row-space');
+      const pGridColSpace = document.getElementById('ilum-print-grid-col-space');
+      const pGridWallSpace = document.getElementById('ilum-print-grid-wall-space');
+      
+      if (printGridBox) printGridBox.style.display = area > 0 ? 'block' : 'none';
+      if (pGridLayout) pGridLayout.textContent = `${rows} x ${cols} (Rows x Columns)`;
+      if (pGridRowSpace) pGridRowSpace.textContent = `${spacingRow.toFixed(2)} m`;
+      if (pGridColSpace) pGridColSpace.textContent = `${spacingCol.toFixed(2)} m`;
+      if (pGridWallSpace) pGridWallSpace.textContent = `Row-Wall: ${wallDistanceRow.toFixed(2)} m / Col-Wall: ${wallDistanceCol.toFixed(2)} m`;
+
+      // Recommended color temperature
+      let colorText = "Neutral Light (4000K)";
+      let colorBg = "#ffffff";
+      let colorFg = "#d97706";
+      let colorBorder = "#d97706";
+      let colorDescText = "Neutral Light (4000K) - Optimal for concentration and reduces visual fatigue in offices and classrooms.";
+
+      if (luxes === 500) {
+        colorText = "Neutral Light (4000K)";
+        colorBg = "#ffffff";
+        colorFg = "#d97706";
+        colorBorder = "#d97706";
+        colorDescText = "Neutral Light (4000K) - Optimal for concentration and reduces visual fatigue in offices and classrooms.";
+      } else if (luxes === 750) {
+        colorText = "Cool Light (6500K)";
+        colorBg = "#eff6ff";
+        colorFg = "#2563eb";
+        colorBorder = "#2563eb";
+        colorDescText = "Cool Light (6500K) - Maximum visual acuity for precision assembly and detail work in workshops and labs.";
+      } else if (luxes === 300) {
+        colorText = "Warm / Neutral (3000K - 4000K)";
+        colorBg = "#fffbeb";
+        colorFg = "#b45309";
+        colorBorder = "#b45309";
+        colorDescText = "Warm or Neutral - Enhances customer shopping experience and highlights products in retail spaces.";
+      } else if (luxes === 150) {
+        colorText = "Cool Light (6500K)";
+        colorBg = "#eff6ff";
+        colorFg = "#2563eb";
+        colorBorder = "#2563eb";
+        colorDescText = "Cool Light (6500K) - Provides a sense of openness and security in warehouses and industrial logistics.";
+      } else if (luxes === 100) {
+        colorText = "Warm / Neutral (3000K - 4000K)";
+        colorBg = "#fafaf9";
+        colorFg = "#78716c";
+        colorBorder = "#78716c";
+        colorDescText = "Warm or Neutral - Safe and welcoming transit lighting in hallways and common building areas.";
+      }
+
+      if (tempBadge) {
+        tempBadge.textContent = colorText;
+        tempBadge.style.backgroundColor = colorBg;
+        tempBadge.style.color = colorFg;
+        tempBadge.style.border = `1px solid ${colorBorder}`;
+      }
+      if (tempDesc) tempDesc.innerHTML = colorDescText;
+      if (tempBox) tempBox.style.borderColor = colorBorder;
+
+      // Retrofit & ROI Savings
+      const hayRetrofit = checkRetrofit?.checked || false;
+      if (retrofitContainer) {
+        retrofitContainer.style.display = hayRetrofit ? "block" : "none";
+      }
+
+      const printRetroBox = document.getElementById('ilum-print-retrofit-box');
+      if (printRetroBox) {
+        printRetroBox.style.display = (hayRetrofit && area > 0) ? "block" : "none";
+      }
+
+      if (hayRetrofit && area > 0) {
+        if (retrofitResultBox) retrofitResultBox.style.display = "block";
+
+        const wAntUnit = parseFloat(iPrevioTipo.value) || 0;
+        const cantAnt = parseInt(iPrevioCant.value) || 0;
+        const horasUso = parseFloat(iUsoHoras.value) || 0;
+        const costoUnidadLed = parseFloat(iCostoUnidadLed.value) || 0;
+        const costoKwh = parseFloat(iCostoKwh.value) || 0;
+
+        const wAntTotal = wAntUnit * cantAnt;
+        const wNewTotal = wattsFoco * artefactosRequeridos;
+        const wSaved = wAntTotal - wNewTotal;
+
+        const kwhSavedMes = Math.max(0, (wSaved / 1000) * horasUso * 30);
+        const dineroSavedMes = kwhSavedMes * costoKwh;
+        const costoInversion = costoUnidadLed * artefactosRequeridos;
+        const mesesRecupero = dineroSavedMes > 0 ? costoInversion / dineroSavedMes : 0;
+
+        // Update UI Retrofit
+        if (retroWAnt) retroWAnt.textContent = `${wAntTotal} W`;
+        if (retroWNew) retroWNew.textContent = `${wNewTotal} W`;
+        if (retroKwhSave) retroKwhSave.textContent = `${kwhSavedMes.toFixed(1)} kWh/mo`;
+        if (retroMoneySave) retroMoneySave.textContent = `$ ${Math.round(dineroSavedMes).toLocaleString('en-US')} /mo`;
+        if (retroInversion) retroInversion.textContent = `$ ${Math.round(costoInversion).toLocaleString('en-US')}`;
+        if (retroMonths) {
+          if (wSaved <= 0) {
+            retroMonths.textContent = "No savings (New power draws more)";
+            retroMonths.style.color = "var(--text-muted)";
+          } else {
+            retroMonths.textContent = `${mesesRecupero.toFixed(1)} months`;
+            retroMonths.style.color = "#3fc6b4";
+          }
+        }
+
+        // Update Print Retrofit
+        const pRetroAhorro = document.getElementById('ilum-print-retro-ahorro');
+        const pRetroInversion = document.getElementById('ilum-print-retro-inversion');
+        const pRetroRoi = document.getElementById('ilum-print-retro-roi');
+        const pRetroDesc = document.getElementById('ilum-print-retro-desc');
+
+        if (pRetroAhorro) pRetroAhorro.textContent = `$ ${Math.round(dineroSavedMes).toLocaleString('en-US')} /mo (${kwhSavedMes.toFixed(1)} kWh/mo)`;
+        if (pRetroInversion) pRetroInversion.textContent = `$ ${Math.round(costoInversion).toLocaleString('en-US')}`;
+        if (pRetroRoi) {
+          pRetroRoi.textContent = wSaved > 0 ? `${mesesRecupero.toFixed(1)} months` : "N/A (No savings)";
+        }
+        if (pRetroDesc) {
+          if (wSaved > 0) {
+            pRetroDesc.innerHTML = `By replacing ${cantAnt} old light fixtures of ${wAntUnit}W with the new recommended LED ones, you reduce lighting load from <strong>${wAntTotal}W</strong> to <strong>${wNewTotal}W</strong> (saving <strong>${wSaved}W</strong>). This reduces CO₂ emissions by approx. <strong>${(kwhSavedMes * 0.36).toFixed(1)} kg</strong> per month.`;
+          } else {
+            pRetroDesc.innerHTML = `The load of the new LED fixtures (${wNewTotal}W) is greater than or equal to the previous load (${wAntTotal}W). No direct electrical savings are projected, but visual and illumination quality is significantly improved.`;
+          }
+        }
+      } else {
+        if (retrofitResultBox) retrofitResultBox.style.display = "none";
+      }
+    }
+
+    // Attach events
+    const allInputs = document.querySelectorAll('#calc-lighting input, #calc-lighting select');
+    allInputs.forEach(el => {
+      el.addEventListener('input', calculateLighting);
+    });
+
+    if (checkRetrofit) {
+      checkRetrofit.addEventListener('change', calculateLighting);
+    }
+
+    // Initialize
+    calculateLighting();
+
+    // Print logic
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        if (pDate) {
+          const now = new Date();
+          pDate.textContent = now.toLocaleString('en-US');
+        }
+        document.body.classList.add('printing-ilum');
+        window.print();
+        setTimeout(() => {
+          document.body.classList.remove('printing-ilum');
+        }, 500);
+      });
+    }
+  });
+</script>

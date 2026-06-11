@@ -1,0 +1,525 @@
+---
+// CalculadoraSeguridad.astro
+---
+<section class="section section-alt" id="calc-cctv">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle">Seguridad & Videovigilancia</span>
+      <h2 class="section-title">Calculadora de Almacenamiento y Conectividad CCTV</h2>
+      <p class="section-desc">
+        Dimensione el almacenamiento, ancho de banda de internet y respaldo eléctrico (UPS) necesario para su sistema de cámaras.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Formulario de Entrada -->
+      <div class="calc-appliances card reveal">
+        <h3>Parámetros del Sistema</h3>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+          Complete los datos para estimar la capacidad, red y autonomía requeridas.
+        </p>
+
+        <div class="form-group">
+          <label>Tipo de Sistema</label>
+          <select id="seg-sistema" class="calc-select" style="border-color: #3FC6B4;">
+            <option value="nvr">Centralizado (NVR / DVR) - Graba en Disco Rígido</option>
+            <option value="wifi">Cámaras Independientes (Wi-Fi tipo Tapo/Imou) - Graba en MicroSD</option>
+          </select>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Resolución de Cámaras</label>
+            <select id="seg-resolucion" class="calc-select">
+              <option value="2">1080p (2 Megapíxeles)</option>
+              <option value="4">2K (4 Megapíxeles)</option>
+              <option value="8">4K (8 Megapíxeles)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Codificación</label>
+            <select id="seg-codec" class="calc-select">
+              <option value="h265">H.265 / H.265+ (Recomendado)</option>
+              <option value="h264">H.264 (Antiguo)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Nivel de Movimiento (Grabación por eventos)</label>
+          <select id="seg-movimiento" class="calc-select">
+            <option value="1">Continuo 24/7 (Siempre grabando)</option>
+            <option value="0.5">Alto (Ej: Locales comerciales, calles transitadas)</option>
+            <option value="0.25" selected>Medio (Ej: Oficinas, patios delanteros, pasillos)</option>
+            <option value="0.1">Bajo (Ej: Depósitos cerrados, cocheras privadas)</option>
+          </select>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group" id="group-camaras">
+            <label>Cant. de Cámaras</label>
+            <input type="number" id="seg-camaras" class="calc-input" value="4" min="1" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Días a Grabar</label>
+            <input type="number" id="seg-dias" class="calc-input" value="15" min="1" step="1" />
+          </div>
+        </div>
+
+        <h3 style="border-bottom-color: #3FC6B4; margin-top: 30px;">Red y Respaldo</h3>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+          Configure la transmisión y la autonomía ante cortes de suministro.
+        </p>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Transmisión Móvil</label>
+            <select id="seg-stream" class="calc-select">
+              <option value="sub" selected>Sub Stream (Fluido / Calidad Regular)</option>
+              <option value="main">Main Stream (HD / Calidad Máxima)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tasa de Cuadros (FPS)</label>
+            <select id="seg-fps" class="calc-select">
+              <option value="15" selected>15 FPS (Estándar CCTV)</option>
+              <option value="30">30 FPS (Tiempo Real / Fluido)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Respaldo por Cortes de Luz (Autonomía de Batería)</label>
+          <select id="seg-respaldo" class="calc-select">
+            <option value="0" selected>Sin respaldo (Se apaga al cortar la luz)</option>
+            <option value="4">4 Horas de autonomía</option>
+            <option value="8">8 Horas de autonomía</option>
+            <option value="12">12 Horas de autonomía</option>
+            <option value="24">24 Horas de autonomía</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Panel de Resultados -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="margin-bottom: 20px;">Recomendación Técnica N3i</h3>
+          
+          <div class="result-summary" style="background: rgba(63, 198, 180, 0.1); border-left: 4px solid #3FC6B4; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-light);">Consumo por Cámara: <strong id="seg-res-cam" style="color: var(--text-primary);">0 GB / Día</strong></p>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--text-light);" id="seg-label-total">Almacenamiento Total Bruto: <strong id="seg-res-total" style="color: var(--text-primary);">0 GB</strong></p>
+          </div>
+
+          <div class="main-result" style="text-align: center; margin: 20px 0;">
+            <span style="font-size: 0.95rem; color: var(--text-light); display: block; margin-bottom: 5px;" id="seg-unidad-titulo">Capacidad Sugerida:</span>
+            <div id="seg-res-capacidad" style="font-size: 3.5rem; font-weight: 800; color: #3FC6B4; line-height: 1;">0 TB</div>
+            <span style="font-size: 0.9rem; color: var(--text-secondary); display: block; margin-top: 10px;" id="seg-unidad-tipo">Disco Rígido (HDD) Serie Purple / SkyHawk</span>
+          </div>
+
+          <!-- Requerimiento de Red (Ancho de Banda) -->
+          <div class="result-box" style="border: 1px solid rgba(63, 198, 180, 0.2); background: rgba(63, 198, 180, 0.03); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px;">
+            <span class="result-label" style="color: #3FC6B4; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; margin-bottom: 10px;">
+              🌐 Requerimiento de Red (Subida)
+            </span>
+            <div style="font-size: 0.85rem; line-height: 1.6;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-light);">Ancho de Banda de Subida:</span>
+                <span id="seg-res-ancho-banda" style="color: var(--text-primary); font-weight: 600;">0 Mbps</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                <span style="color: var(--text-light);">Conexión Recomendada:</span>
+                <span id="seg-badge-red" style="background: rgba(63, 198, 180, 0.2); color: #3FC6B4; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Respaldo de Energía (Batería) -->
+          <div id="seg-res-bateria-box" class="result-box" style="display: none; border: 1px solid rgba(198, 166, 63, 0.2); background: rgba(198, 166, 63, 0.03); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px;">
+            <span class="result-label" style="color: #C6A63F; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; margin-bottom: 10px;">
+              🔋 Respaldo de Energía Sugerido
+            </span>
+            <div style="font-size: 0.85rem; line-height: 1.6;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-light);">Consumo de Carga:</span>
+                <span id="seg-res-carga-watts" style="color: var(--text-primary); font-weight: 600;">0 W</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-light);">Capacidad Batería (12V):</span>
+                <span id="seg-res-bateria-ah" style="color: #C6A63F; font-weight: 600;">0 Ah</span>
+              </div>
+              <p style="font-size: 0.72rem; color: var(--text-light); margin: 8px 0 0 0; line-height: 1.4;">
+                *Nota: Para ver las cámaras desde el celular durante un corte, el router de internet también debe estar conectado al UPS.
+              </p>
+            </div>
+          </div>
+
+          <div class="disclaimer mt-3">
+            <p><strong>⚠️ Nota Técnica:</strong> El cálculo de almacenamiento y red es estimado. La compresión de códecs varía según la complejidad visual del entorno. Se recomienda un margen de seguridad del 15%.</p>
+          </div>
+
+          <a href="/#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 20px; background: #3FC6B4; color: white; border: none; box-shadow: 0 4px 15px rgba(63, 198, 180, 0.3);">
+            Solicitar Presupuesto
+            <span class="btn-icon">📹</span>
+          </a>
+          
+          <button id="seg-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; margin-top: 10px; border-color: #3FC6B4; color: var(--text-primary);">
+            Imprimir Informe
+            <span class="btn-icon" style="background: transparent;">🖨️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Área oculta para el reporte impreso -->
+<div id="print-area-seg" class="print-only-seg">
+  <div class="print-header" style="border-bottom-color: #3FC6B4;">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #3FC6B4;">Dimensionamiento de Videovigilancia y Conectividad</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Fecha:</strong> <span id="seg-print-date"></span></p>
+    <p><strong>Tipo de documento:</strong> Reporte Técnico de Ingeniería de Seguridad</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Parámetro de Entrada</th>
+        <th>Valor Ingresado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tipo de Sistema</td>
+        <td id="seg-print-sistema">-</td>
+      </tr>
+      <tr>
+        <td>Cantidad de Cámaras</td>
+        <td id="seg-print-camaras">-</td>
+      </tr>
+      <tr>
+        <td>Resolución y Codificación</td>
+        <td id="seg-print-res">-</td>
+      </tr>
+      <tr>
+        <td>Nivel de Movimiento (Actividad)</td>
+        <td id="seg-print-mov">-</td>
+      </tr>
+      <tr>
+        <td>Transmisión y Tasa de Cuadros</td>
+        <td id="seg-print-stream">-</td>
+      </tr>
+      <tr>
+        <td>Autonomía Solicitada</td>
+        <td id="seg-print-dias">-</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <div style="background: rgba(63, 198, 180, 0.05); padding: 20px; border-radius: 8px; border-left: 5px solid #3FC6B4; margin-bottom: 20px; border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd;">
+    <h3 style="margin-top: 0; color: #2a8f82;">Consumo de Almacenamiento</h3>
+    <div style="display: flex; gap: 40px; margin-top: 15px;">
+      <div>
+        <p style="margin:0; color:#555;">Peso por Cámara (Día)</p>
+        <p style="margin:5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #333;"><span id="seg-print-gpc">0</span> GB</p>
+      </div>
+      <div>
+        <p style="margin:0; color:#555;">Capacidad Sugerida a Instalar</p>
+        <p style="margin:5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #3FC6B4;"><span id="seg-print-capacidad">0</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div style="background: rgba(63, 198, 180, 0.05); padding: 20px; border-radius: 8px; border-left: 5px solid #3FC6B4; margin-bottom: 20px; border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd;">
+    <h3 style="margin-top: 0; color: #2a8f82;">Requerimientos de Red (Subida)</h3>
+    <p style="margin:0;"><strong>Ancho de Banda de Subida Requerido:</strong> <strong id="seg-print-ancho-banda">0 Mbps</strong></p>
+    <p style="margin:5px 0 0 0;"><strong>Conexión Mínima Sugerida:</strong> <span id="seg-print-conexion-tipo">-</span></p>
+  </div>
+
+  <div id="seg-print-bateria-box" style="background: rgba(198, 166, 63, 0.05); padding: 20px; border-radius: 8px; border-left: 5px solid #C6A63F; margin-bottom: 20px; border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; display: none;">
+    <h3 style="margin-top: 0; color: #a3821a;">Respaldo Eléctrico Sugerido (UPS)</h3>
+    <div style="display: flex; gap: 40px; margin-top: 15px;">
+      <div>
+        <p style="margin:0; color:#555;">Carga Estimada del Sistema</p>
+        <p style="margin:5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #333;"><span id="seg-print-carga-watts">0 W</span></p>
+      </div>
+      <div>
+        <p style="margin:0; color:#555;">Capacidad de Batería Sugerida (12V)</p>
+        <p style="margin:5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #C6A63F;"><span id="seg-print-bateria-ah">0 Ah</span></p>
+      </div>
+    </div>
+    <p style="font-size: 0.8rem; color: #666; margin-top: 15px;" id="seg-print-notacap">*Nota: Para mantener la transmisión activa en cortes, respalde también el módem/router de internet con un UPS dedicado.</p>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Nota: El cálculo de almacenamiento y red es estimativo. En entornos con movimiento constante (árboles, luces móviles, tránsito intenso) el consumo puede ser mayor. Para sistemas NVR, se recomienda siempre la instalación de discos de la serie 'Surveillance' (como WD Purple o Seagate SkyHawk).</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">Para cotizar su sistema de seguridad o instalaciones complejas con fibra óptica, el contacto está disponible en <strong>www.n3i.com.ar</strong> o al WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Print and Mobile Resets */
+  @media (max-width: 991px) {
+    .results-sticky {
+      position: static !important;
+    }
+  }
+
+  /* Mobile: reduce oversized display font */
+  @media (max-width: 480px) {
+    #seg-res-capacidad {
+      font-size: 2rem !important;
+    }
+  }
+
+  .print-only-seg { display: none; }
+  @media print {
+    @page { margin: 2cm; }
+    body.printing-seg .header, body.printing-seg .footer, body.printing-seg .section-header, body.printing-seg .calculator-grid, body.printing-seg .section { display: none !important; }
+    body.printing-seg .print-only-seg { display: block !important; font-family: Arial, sans-serif; color: #000; background: #fff; }
+    .print-only-seg .print-header { display: flex; align-items: center; border-bottom: 2px solid #3FC6B4; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-seg .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-seg .print-header p { margin: 5px 0 0 0; color: #666; }
+    .print-only-seg .print-details { margin-bottom: 30px; font-size: 0.9rem; }
+    .print-only-seg .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-seg .print-table th, .print-only-seg .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-seg .print-table th { background-color: #f5f5f5; color: #333; }
+    .print-only-seg .print-footer { border-top: 1px solid #ddd; padding-top: 20px; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iSistema = document.getElementById('seg-sistema') as HTMLSelectElement;
+    const iRes = document.getElementById('seg-resolucion') as HTMLSelectElement;
+    const iCodec = document.getElementById('seg-codec') as HTMLSelectElement;
+    const iMov = document.getElementById('seg-movimiento') as HTMLSelectElement;
+    const iCamaras = document.getElementById('seg-camaras') as HTMLInputElement;
+    const iDias = document.getElementById('seg-dias') as HTMLInputElement;
+    const groupCamaras = document.getElementById('group-camaras');
+
+    // New inputs
+    const iStream = document.getElementById('seg-stream') as HTMLSelectElement;
+    const iFps = document.getElementById('seg-fps') as HTMLSelectElement;
+    const iRespaldo = document.getElementById('seg-respaldo') as HTMLSelectElement;
+
+    // UI results
+    const rCam = document.getElementById('seg-res-cam');
+    const rTotalLabel = document.getElementById('seg-label-total');
+    const rTotal = document.getElementById('seg-res-total');
+    const rCapacidad = document.getElementById('seg-res-capacidad');
+    const rUnidadTitulo = document.getElementById('seg-unidad-titulo');
+    const rUnidadTipo = document.getElementById('seg-unidad-tipo');
+
+    // New UI results
+    const rAnchoBanda = document.getElementById('seg-res-ancho-banda');
+    const rBadgeRed = document.getElementById('seg-badge-red');
+    const rBateriaBox = document.getElementById('seg-res-bateria-box');
+    const rCargaWatts = document.getElementById('seg-res-carga-watts');
+    const rBateriaAh = document.getElementById('seg-res-bateria-ah');
+
+    // Print elements
+    const pDate = document.getElementById('seg-print-date');
+    const pSis = document.getElementById('seg-print-sistema');
+    const pCam = document.getElementById('seg-print-camaras');
+    const pRes = document.getElementById('seg-print-res');
+    const pMov = document.getElementById('seg-print-mov');
+    const pDias = document.getElementById('seg-print-dias');
+    const pGpc = document.getElementById('seg-print-gpc');
+    const pGtt = document.getElementById('seg-print-gtt');
+    const pCap = document.getElementById('seg-print-capacidad');
+
+    // New Print elements
+    const pStream = document.getElementById('seg-print-stream');
+    const pAnchoBanda = document.getElementById('seg-print-ancho-banda');
+    const pConexionTipo = document.getElementById('seg-print-conexion-tipo');
+    const pPrintBateriaBox = document.getElementById('seg-print-bateria-box');
+    const pPrintCargaWatts = document.getElementById('seg-print-carga-watts');
+    const pPrintBateriaAh = document.getElementById('seg-print-bateria-ah');
+    
+    const btnPrint = document.getElementById('seg-btn-print');
+
+    function roundHDD(gb: number) {
+      const tb = gb / 1000; // Fabricantes usan 1000MB = 1GB
+      const sizes = [1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+      for (let s of sizes) {
+        if (tb <= s) return s;
+      }
+      return Math.ceil(tb);
+    }
+
+    function roundSD(gb: number) {
+      const sizes = [16, 32, 64, 128, 256, 512, 1024];
+      for (let s of sizes) {
+        if (gb <= s) return s;
+      }
+      return 1024;
+    }
+
+    function getSuggestedBattery(ah: number): string {
+      if (ah <= 0) return "Ninguna";
+      const sizes = [7, 12, 18, 33, 45, 65, 100, 120, 150, 200];
+      for (let s of sizes) {
+        if (ah <= s) return `${s} Ah`;
+      }
+      return `${ah} Ah (Banco de Baterías)`;
+    }
+
+    function calculateCCTV() {
+      if (!iCamaras) return;
+
+      const isWifi = iSistema.value === 'wifi';
+      
+      if (groupCamaras) {
+        groupCamaras.style.display = isWifi ? 'none' : 'block';
+      }
+
+      const resBaseMb = parseFloat(iRes.value); // 2, 4, 8 Mbps base
+      const isH264 = iCodec.value === 'h264';
+      const fpsVal = parseInt(iFps.value) === 30 ? 1.0 : 0.7; // 15 FPS consume ~70% del bitrate
+      const bitrate = isH264 ? resBaseMb * 1.8 * fpsVal : resBaseMb * fpsVal;
+      
+      const factorMovimiento = parseFloat(iMov.value);
+      const dias = parseInt(iDias.value) || 1;
+      const camaras = parseInt(iCamaras.value) || 1;
+
+      // Bitrate (Mbps) a GB por día (24h)
+      const gbDiaContinuo = (bitrate / 8) * 86400 / 1024;
+      const gbDiaReal = gbDiaContinuo * factorMovimiento;
+      
+      const totalGBCamara = gbDiaReal * dias;
+      
+      // Ancho de banda de subida (Mbps)
+      const streamType = iStream.value;
+      const streamBitrate = streamType === 'sub' ? 0.25 : bitrate;
+      const camCountForNet = isWifi ? 1 : camaras;
+      const netBandwidth = camCountForNet * streamBitrate * 1.25; // 25% overhead de red
+
+      if (rAnchoBanda) rAnchoBanda.textContent = `${netBandwidth.toFixed(2)} Mbps`;
+      
+      let redLabel = "-";
+      let badgeColor = "rgba(63, 198, 180, 0.2)";
+      let textColor = "#3FC6B4";
+
+      if (netBandwidth < 1.5) {
+        redLabel = "ADSL / 3G Básico (Fluido)";
+        badgeColor = "rgba(139, 195, 74, 0.15)";
+        textColor = "#8bc34a";
+      } else if (netBandwidth <= 5) {
+        redLabel = "Recomendado VDSL / 4G";
+        badgeColor = "rgba(63, 198, 180, 0.2)";
+        textColor = "#3FC6B4";
+      } else {
+        redLabel = "Fibra Óptica Requerida (Alta Velocidad)";
+        badgeColor = "rgba(244, 67, 54, 0.15)";
+        textColor = "#f44336";
+      }
+
+      if (rBadgeRed) {
+        rBadgeRed.textContent = redLabel;
+        rBadgeRed.style.backgroundColor = badgeColor;
+        rBadgeRed.style.color = textColor;
+      }
+
+      // Respaldo de Energía (Batería UPS)
+      const horasRespaldo = parseInt(iRespaldo.value) || 0;
+      const baseLoad = isWifi ? 15 : 25; // NVR/DVR 25W vs Router 15W
+      const camLoad = isWifi ? 5 : 7; // Domo PoE 7W vs Cámara WiFi 5W
+      const camCountForPower = isWifi ? 1 : camaras;
+      const totalLoadWatts = baseLoad + (camCountForPower * camLoad);
+
+      if (rBateriaBox) {
+        if (horasRespaldo > 0) {
+          rBateriaBox.style.display = 'block';
+          const batteryAh = (totalLoadWatts * horasRespaldo) / (12 * 0.75); // Eficiencia disipación e inversión ~75%
+          const suggestedBatteryStr = getSuggestedBattery(batteryAh);
+          
+          if (rCargaWatts) rCargaWatts.textContent = `${totalLoadWatts} W`;
+          if (rBateriaAh) rBateriaAh.textContent = suggestedBatteryStr;
+          
+          if (pPrintBateriaBox) {
+            pPrintBateriaBox.style.display = 'block';
+            if (pPrintCargaWatts) pPrintCargaWatts.textContent = `${totalLoadWatts} W`;
+            if (pPrintBateriaAh) pPrintBateriaAh.textContent = suggestedBatteryStr;
+          }
+        } else {
+          rBateriaBox.style.display = 'none';
+          if (pPrintBateriaBox) pPrintBateriaBox.style.display = 'none';
+        }
+      }
+
+      // Update Almacenamiento
+      if (isWifi) {
+        const sdSize = roundSD(totalGBCamara);
+        
+        if (rCam) rCam.textContent = `${gbDiaReal.toFixed(2)} GB / Día`;
+        if (rTotalLabel) rTotalLabel.innerHTML = `Consumo Total Esperado: <strong id="seg-res-total" style="color: var(--text-primary);">${totalGBCamara.toFixed(0)} GB / cámara</strong>`;
+        
+        if (rUnidadTitulo) rUnidadTitulo.textContent = "MicroSD Sugerida por Cámara:";
+        if (rCapacidad) rCapacidad.textContent = `${sdSize} GB`;
+        if (rUnidadTipo) rUnidadTipo.textContent = "Tarjeta MicroSD Clase 10 / V30 o superior";
+
+        // Print Updates
+        if (pSis) pSis.textContent = "Cámaras Independientes (Wi-Fi / Tapo / Imou)";
+        if (pCam) pCam.textContent = "Cálculo individual (Por cámara)";
+        if (pCap) pCap.textContent = `${sdSize} GB`;
+        if (pGtt) pGtt.textContent = `${totalGBCamara.toFixed(0)} (Por cámara)`;
+
+      } else {
+        const totalGBGlobal = totalGBCamara * camaras;
+        const hddTB = roundHDD(totalGBGlobal);
+
+        if (rCam) rCam.textContent = `${gbDiaReal.toFixed(2)} GB / Día`;
+        if (rTotalLabel) rTotalLabel.innerHTML = `Almacenamiento Total Bruto: <strong id="seg-res-total" style="color: var(--text-primary);">${totalGBGlobal.toFixed(0)} GB</strong>`;
+        
+        if (rUnidadTitulo) rUnidadTitulo.textContent = "Disco Rígido Sugerido:";
+        if (rCapacidad) rCapacidad.textContent = `${hddTB} TB`;
+        if (rUnidadTipo) rUnidadTipo.textContent = "Disco Rígido (HDD) Serie Especial Vigilancia";
+
+        // Print Updates
+        if (pSis) pSis.textContent = "Sistema Centralizado (NVR / DVR)";
+        if (pCam) pCam.textContent = camaras.toString();
+        if (pCap) pCap.textContent = `${hddTB} TB`;
+        if (pGtt) pGtt.textContent = totalGBGlobal.toFixed(0);
+      }
+
+      // Shared print updates
+      if (pRes) pRes.textContent = `${iRes.options[iRes.selectedIndex].text} | ${iCodec.options[iCodec.selectedIndex].text}`;
+      if (pMov) pMov.textContent = iMov.options[iMov.selectedIndex].text;
+      if (pDias) pDias.textContent = horasRespaldo > 0 ? `${horasRespaldo} Horas de Autonomía UPS` : "Sin Respaldo UPS";
+      if (pGpc) pGpc.textContent = gbDiaReal.toFixed(2);
+      
+      if (pStream) pStream.textContent = `${iStream.options[iStream.selectedIndex].text} a ${iFps.options[iFps.selectedIndex].text}`;
+      if (pAnchoBanda) pAnchoBanda.textContent = `${netBandwidth.toFixed(2)} Mbps`;
+      if (pConexionTipo) pConexionTipo.textContent = redLabel;
+    }
+
+    // Attach events
+    const allInputs = document.querySelectorAll('#calc-cctv input, #calc-cctv select');
+    allInputs.forEach(el => {
+      el.addEventListener('input', calculateCCTV);
+    });
+
+    // Inicializar
+    calculateCCTV();
+
+    // Print logic
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        if (pDate) {
+          const now = new Date();
+          pDate.textContent = now.toLocaleString('es-AR');
+        }
+        document.body.classList.add('printing-seg');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-seg'), { once: true });
+      });
+    }
+  });
+</script>

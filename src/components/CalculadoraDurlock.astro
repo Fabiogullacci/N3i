@@ -1,0 +1,669 @@
+---
+// CalculadoraDurlock.astro
+---
+<section class="section section-alt" id="calc-durlock">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle">Construcción en Seco</span>
+      <h2 class="section-title">Calculadora de Durlock, PVC y Aislamiento</h2>
+      <p class="section-desc">
+        Calculá materiales para paredes, tabiques y cielorrasos, junto con el diagnóstico de aislamiento termoacústico del sistema.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Formulario de Entrada -->
+      <div class="calc-appliances card reveal">
+        <h3>Configuración del Proyecto</h3>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+          Seleccioná qué vas a construir e ingresá las medidas.
+        </p>
+
+        <div class="form-group">
+          <label>¿Qué vas a construir?</label>
+          <select id="dur-tipo-proyecto" class="calc-select" style="border-color: #8bc34a;">
+            <option value="pared">Una o varias Paredes en línea (Tabique / Revestimiento)</option>
+            <option value="habitacion">Habitación Cerrada (4 Paredes + Techo)</option>
+            <option value="cielorraso">Solo Cielorraso (Techo)</option>
+          </select>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group" id="grp-largo">
+            <label id="lbl-largo">Largo Total (m)</label>
+            <input type="number" id="dur-largo" class="calc-input" value="4" min="0.1" step="0.1" />
+          </div>
+          <div class="form-group" id="grp-ancho" style="display: none;">
+            <label>Ancho (m)</label>
+            <input type="number" id="dur-ancho" class="calc-input" value="3" min="0.1" step="0.1" />
+          </div>
+          <div class="form-group" id="grp-alto">
+            <label>Alto (m)</label>
+            <input type="number" id="dur-alto" class="calc-input" value="2.6" min="0.1" step="0.1" />
+          </div>
+        </div>
+
+        <div class="form-group-grid" id="grp-aberturas">
+          <div class="form-group">
+            <label>Puertas (0.7x2m)</label>
+            <input type="number" id="dur-puertas" class="calc-input" value="0" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Ventanas (1.5x1.5m)</label>
+            <input type="number" id="dur-ventanas" class="calc-input" value="0" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Esquinas Externas</label>
+            <input type="number" id="dur-esquinas" class="calc-input" value="0" min="0" title="Para calcular perfiles Cantoneros" />
+          </div>
+        </div>
+
+        <div id="seccion-paredes">
+          <h4 style="margin: 15px 0 10px 0; font-size: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Detalles de Pared</h4>
+          <div class="form-group">
+            <label>Tipo de Placa (Ambiente)</label>
+            <select id="dur-ambiente" class="calc-select">
+              <option value="estandar_240">Estándar - Placa Gris (1.20 x 2.40m)</option>
+              <option value="estandar_260">Estándar - Placa Gris (1.20 x 2.60m)</option>
+              <option value="humedo">Húmedo (Baño, Cocina) - Placa Verde (RH)</option>
+              <option value="ignifugo">Alta Temp. (Sala Máquinas) - Placa Roja (RF)</option>
+            </select>
+          </div>
+
+          <div class="form-group-grid">
+            <div class="form-group">
+              <label>Tipo de Estructura</label>
+              <select id="dur-trabajo" class="calc-select">
+                <option value="tabique">Tabique Divisorio (2 caras)</option>
+                <option value="revestimiento">Revestimiento (1 cara)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Aislante Acústico/Térmico</label>
+              <select id="dur-aislante" class="calc-select">
+                <option value="no">No lleva</option>
+                <option value="si" selected>Lana de Vidrio Isover</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="seccion-cielorraso" style="display: none;">
+          <h4 style="margin: 15px 0 10px 0; font-size: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Detalles de Cielorraso</h4>
+          <div class="form-group-grid">
+            <div class="form-group">
+              <label>Tipo de Techo</label>
+              <select id="dur-cielorraso-tipo" class="calc-select">
+                <option value="ninguno">Ninguno</option>
+                <option value="durlock">Durlock (Junta Tomada)</option>
+                <option value="pvc">Placas de PVC</option>
+              </select>
+            </div>
+            <div class="form-group" id="grp-aislante-techo" style="display: none;">
+              <label>Aislante en Techo</label>
+              <select id="dur-aislante-techo" class="calc-select">
+                <option value="no">No lleva</option>
+                <option value="si" selected>Lana de Vidrio Isover</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panel de Resultados -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="margin-bottom: 20px;">Lista de Materiales</h3>
+          
+          <div id="dur-results-list" class="materials-list">
+            <!-- Items generados por JS -->
+          </div>
+
+          <!-- Diagnóstico Termoacústico -->
+          <div id="dur-res-termoacustico" class="result-box" style="border: 1px solid rgba(139, 195, 74, 0.2); background: rgba(139, 195, 74, 0.03); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px;">
+            <span class="result-label" style="color: #8bc34a; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; margin-bottom: 10px;">
+              🌿 Diagnóstico Termoacústico Estimado
+            </span>
+            <div style="font-size: 0.85rem; line-height: 1.6;">
+              <div style="display: flex; justify-content: space-between; flex-direction: column; margin-bottom: 5px;">
+                <span style="color: var(--text-light);">Transmitancia Térmica (Valor U):</span>
+                <span id="dur-res-u" style="color: var(--text-primary); font-weight: 600;">-</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; flex-direction: column; margin-bottom: 5px;">
+                <span style="color: var(--text-light);">Aislamiento Acústico (Atenuación):</span>
+                <span id="dur-res-db" style="color: #8bc34a; font-weight: 600;">-</span>
+              </div>
+              <div id="dur-ahorro-energy-row" style="display: none; justify-content: space-between; border-top: 1px solid rgba(139, 195, 74, 0.2); margin-top: 5px; padding-top: 5px;">
+                <span style="color: #8bc34a; font-weight: 700;">Ahorro de Climatización:</span>
+                <span id="dur-res-ahorro" style="color: #8bc34a; font-weight: 700;">~30% mensual</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="disclaimer mt-3">
+            <p><strong>⚠️ Nota Importante:</strong> El cálculo incluye un ~10% de desperdicio en placas. La estructura contempla perfiles perimetrales estándar. Verifique medidas finales en obra.</p>
+          </div>
+
+          <a href="/#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 20px; background: #8bc34a; box-shadow: 0 4px 15px rgba(139, 195, 74, 0.3);">
+            Solicitar Presupuesto
+            <span class="btn-icon">📋</span>
+          </a>
+          
+          <button id="dur-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; margin-top: 10px; border-color: #8bc34a; color: var(--text-primary);">
+            Imprimir Informe
+            <span class="btn-icon" style="background: transparent; color: #8bc34a;">🖨️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Área oculta para el reporte impreso -->
+<div id="print-area-dur" class="print-only-dur">
+  <div class="print-header">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #8bc34a;">Reporte de Materiales de Construcción en Seco</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Fecha:</strong> <span id="dur-print-date"></span></p>
+    <p><strong>Tipo de Proyecto:</strong> <span id="dur-print-tipo"></span></p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Material</th>
+        <th>Cantidad Recomendada</th>
+      </tr>
+    </thead>
+    <tbody id="dur-print-tbody">
+      <!-- Rellenado por JS -->
+    </tbody>
+  </table>
+
+  <!-- Diagnóstico Termoacústico Impreso -->
+  <div id="dur-print-acustico-box" style="background: rgba(139, 195, 74, 0.05); padding: 20px; border-radius: 8px; border: 1px solid #8bc34a; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #5a8e26;">Diagnóstico Termoacústico</h3>
+    <p style="margin:0;"><strong>Transmitancia Térmica (U):</strong> <span id="dur-print-u">-</span></p>
+    <p style="margin:5px 0 0 0;"><strong>Atenuación Acústica Estimada:</strong> <span id="dur-print-db">-</span></p>
+    <p style="margin:5px 0 0 0;"><strong>Ahorro Energético en Climatización:</strong> <span id="dur-print-ahorro">-</span></p>
+  </div>
+  
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Nota: Las cantidades son aproximadas e incluyen márgenes de corte. El cálculo de la perfilería asume modulaciones estándar (cada 40cm o 48cm).</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">Para coordinar la mano de obra, el contacto está disponible en <strong>www.n3i.com.ar</strong> o al WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Reuse classes from Frigorías where possible */
+  .materials-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+  
+  .materials-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  .materials-list::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 4px;
+  }
+  .materials-list::-webkit-scrollbar-thumb {
+    background: #8bc34a;
+    border-radius: 4px;
+  }
+
+  .dur-mat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(0,0,0, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid #8bc34a;
+  }
+  
+  .dark-mode .dur-mat-item {
+    background: rgba(255,255,255, 0.05);
+  }
+
+  .dur-mat-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    display: block;
+  }
+
+  .dur-mat-desc {
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+
+  .dur-mat-qty {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #8bc34a;
+    text-align: right;
+  }
+
+  /* Estilos de Impresión Específicos para Durlock */
+  .print-only-dur { display: none; }
+  @media print {
+    @page { margin: 2cm; }
+    body.printing-dur .header, 
+    body.printing-dur .footer, 
+    body.printing-dur .section-header, 
+    body.printing-dur .calculator-grid, 
+    body.printing-dur .section { 
+      display: none !important; 
+    }
+    body.printing-dur .print-only-dur {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+    }
+    .print-only-dur .print-header { display: flex; align-items: center; border-bottom: 2px solid #8bc34a; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-dur .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-dur .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-dur .print-table th, .print-only-dur .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-dur .print-table th { background-color: #f5f5f5; color: #333; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inputs
+    const iTipoProyecto = document.getElementById('dur-tipo-proyecto') as HTMLSelectElement;
+    const iLargo = document.getElementById('dur-largo') as HTMLInputElement;
+    const iAncho = document.getElementById('dur-ancho') as HTMLInputElement;
+    const iAlto = document.getElementById('dur-alto') as HTMLInputElement;
+    const iPuertas = document.getElementById('dur-puertas') as HTMLInputElement;
+    const iVentanas = document.getElementById('dur-ventanas') as HTMLInputElement;
+    const iEsquinas = document.getElementById('dur-esquinas') as HTMLInputElement;
+    
+    const iAmbiente = document.getElementById('dur-ambiente') as HTMLSelectElement;
+    const iTrabajo = document.getElementById('dur-trabajo') as HTMLSelectElement;
+    const iAislante = document.getElementById('dur-aislante') as HTMLSelectElement;
+    
+    const iCielorrasoTipo = document.getElementById('dur-cielorraso-tipo') as HTMLSelectElement;
+    const iAislanteTecho = document.getElementById('dur-aislante-techo') as HTMLSelectElement;
+
+    // Groups
+    const grpLargo = document.getElementById('grp-largo');
+    const lblLargo = document.getElementById('lbl-largo');
+    const grpAncho = document.getElementById('grp-ancho');
+    const grpAlto = document.getElementById('grp-alto');
+    const grpAberturas = document.getElementById('grp-aberturas');
+    
+    const secParedes = document.getElementById('seccion-paredes');
+    const secCielorraso = document.getElementById('seccion-cielorraso');
+    const grpAislanteTecho = document.getElementById('grp-aislante-techo');
+
+    const resultsList = document.getElementById('dur-results-list');
+    let lastResults: any[] = [];
+
+    // UI Results Termoacusticos
+    const rU = document.getElementById('dur-res-u');
+    const rDb = document.getElementById('dur-res-db');
+    const rAhorroRow = document.getElementById('dur-ahorro-energy-row');
+
+    // UI Toggles
+    function updateUI() {
+      const tipo = iTipoProyecto.value;
+      const cieloTipo = iCielorrasoTipo.value;
+
+      if (tipo === 'pared') {
+        lblLargo!.textContent = "Largo Total (m)";
+        grpAncho!.style.display = 'none';
+        grpAlto!.style.display = 'block';
+        grpAberturas!.style.display = 'grid';
+        secParedes!.style.display = 'block';
+        secCielorraso!.style.display = 'none';
+      } else if (tipo === 'habitacion') {
+        lblLargo!.textContent = "Largo (m)";
+        grpAncho!.style.display = 'block';
+        grpAlto!.style.display = 'block';
+        grpAberturas!.style.display = 'grid';
+        secParedes!.style.display = 'block';
+        secCielorraso!.style.display = 'block';
+      } else if (tipo === 'cielorraso') {
+        lblLargo!.textContent = "Largo (m)";
+        grpAncho!.style.display = 'block';
+        grpAlto!.style.display = 'none';
+        grpAberturas!.style.display = 'none';
+        secParedes!.style.display = 'none';
+        secCielorraso!.style.display = 'block';
+      }
+
+      if (cieloTipo !== 'ninguno') {
+        grpAislanteTecho!.style.display = 'block';
+      } else {
+        grpAislanteTecho!.style.display = 'none';
+      }
+
+      calculateMaterials();
+    }
+
+    // Calculation Logic
+    function calculateMaterials() {
+      if (!iLargo || !resultsList) return;
+
+      const tipo = iTipoProyecto.value;
+      const largo = parseFloat(iLargo.value) || 0;
+      const ancho = parseFloat(iAncho.value) || 0;
+      const alto = parseFloat(iAlto.value) || 0;
+      const puertas = parseInt(iPuertas.value) || 0;
+      const ventanas = parseInt(iVentanas.value) || 0;
+      const esquinas = parseInt(iEsquinas.value) || 0;
+
+      const esTabique = iTrabajo.value === 'tabique';
+      const llevaAislPared = iAislante.value === 'si';
+      
+      const cieloTipo = (tipo === 'pared') ? 'ninguno' : iCielorrasoTipo.value;
+      const llevaAislTecho = iAislanteTecho.value === 'si';
+
+      // Totales de perfilería estructurados
+      let wallMontantes69 = 0;  // Montantes de 69 mm (para Tabiques de 70mm)
+      let wallSoleras70 = 0;    // Soleras de 70 mm (para Tabiques de 70mm)
+      let wallMontantes34 = 0;  // Montantes de 34 mm (para Revestimientos de 35mm)
+      let wallSoleras35 = 0;    // Soleras de 35 mm (para Revestimientos de 35mm)
+      
+      let cieloMontantes34 = 0; // Montantes de 34 mm (para Cielorraso)
+      let cieloSoleras35 = 0;   // Soleras de 35 mm (para Cielorraso)
+
+      let tCantoneras = 0, tT1 = 0, tT2 = 0;
+      let tMasilla = 0, tCinta = 0, tFijaciones = 0, tIsover = 0;
+      
+      let cantPlacasPared = 0, nombrePlacaPared = "", descPlacaPared = "Para paredes (1.20x2.40m)";
+      let cantPlacasTechoDur = 0;
+      let cantPlacasPvc = 0, cantTablillasPvc = 0, molduraPvc = 0;
+
+      // 1. Cálculos de Pared
+      if (tipo === 'pared' || tipo === 'habitacion') {
+        let perimetro = 0;
+        if (tipo === 'pared') perimetro = largo;
+        if (tipo === 'habitacion') perimetro = (largo * 2) + (ancho * 2);
+
+        const areaBruta = perimetro * alto;
+        const aberturas = (puertas * 1.40) + (ventanas * 2.25);
+        let areaNeta = areaBruta - aberturas;
+        if (areaNeta < 0) areaNeta = 0;
+
+        const carasPlaca = esTabique ? 2 : 1;
+
+        // --- CÁLCULO PROFESIONAL DE PERFILERÍA DE PARED ---
+        // Montantes verticales espaciados cada 40 cm (0.4 m)
+        const montantesBase = Math.ceil(perimetro / 0.4) + 1;
+        // Refuerzos de esquinas: en habitación cerrada son 4 esquinas; en pared recta depende de "esquinas"
+        const esquinasEstructura = (tipo === 'habitacion') ? 4 : esquinas;
+        // Cada puerta/ventana requiere 2 montantes de refuerzo adicionales
+        const montantesRefuerzo = (puertas * 2) + (ventanas * 2);
+        
+        const totalMontantesVert = montantesBase + esquinasEstructura + montantesRefuerzo;
+        const metrosLinealesMontante = totalMontantesVert * alto;
+        const cantMontantesPared = Math.ceil((metrosLinealesMontante / 2.6) * 1.10); // 10% desperdicio
+
+        // Soleras horizontales (piso, techo, más dinteles de puertas y dinteles/antepechos de ventanas)
+        const solerasBase = perimetro * 2;
+        const solerasDinteles = (puertas * 0.70) + (ventanas * 1.50 * 2);
+        
+        const metrosLinealesSolera = solerasBase + solerasDinteles;
+        const cantSolerasPared = Math.ceil((metrosLinealesSolera / 2.6) * 1.10); // 10% desperdicio
+
+        // Asignar al grupo correspondiente según tipo de trabajo (Tabique de 70mm o Revestimiento de 35mm)
+        if (esTabique) {
+          wallMontantes69 = cantMontantesPared;
+          wallSoleras70 = cantSolerasPared;
+        } else {
+          wallMontantes34 = cantMontantesPared;
+          wallSoleras35 = cantSolerasPared;
+        }
+
+        // --- TORNILLOS Y FIJACIONES DE PARED ---
+        tT1 += Math.ceil(areaBruta * 15); // T1 metal-metal para perfilería
+        tT2 += Math.ceil(areaNeta * 30 * carasPlaca); // T2 placa-metal (30 por m² de placa)
+        
+        // Fijaciones perimetrales (Tarugos N°8 + tornillos) cada 60 cm
+        let perimetroFijacion = 0;
+        if (tipo === 'pared') {
+          perimetroFijacion = (perimetro * 2) + (alto * 2);
+        } else {
+          perimetroFijacion = (perimetro * 2) + (4 * alto);
+        }
+        tFijaciones += Math.ceil((perimetroFijacion / 0.6) * 1.10); // Fijaciones de perfilería perimetral + 10%
+
+        if (esquinas > 0) {
+          tCantoneras = Math.ceil((esquinas * alto) / 2.6);
+        }
+        
+        if (llevaAislPared) tIsover += (areaNeta * 1.1);
+
+        const amb = iAmbiente.value;
+        let areaPlaca = 2.88;
+        descPlacaPared = "Para paredes (1.20x2.40m)";
+
+        if (amb === 'estandar_240') {
+          nombrePlacaPared = "Placas de Yeso (Gris) 12.5mm";
+        } else if (amb === 'estandar_260') {
+          nombrePlacaPared = "Placas de Yeso (Gris) 12.5mm";
+          areaPlaca = 3.12;
+          descPlacaPared = "Para paredes (1.20x2.60m)";
+        } else if (amb === 'humedo') {
+          nombrePlacaPared = "Placas Resist. Humedad (Verde)";
+        } else if (amb === 'ignifugo') {
+          nombrePlacaPared = "Placas Ignífugas (Roja)";
+        }
+
+        cantPlacasPared = Math.ceil(((areaNeta * 1.1) / areaPlaca) * carasPlaca);
+        
+        tMasilla += (areaNeta * 0.9 * carasPlaca);
+        tCinta += (areaNeta * 1.6 * carasPlaca);
+      }
+
+      // 2. Cálculos de Cielorraso
+      if ((tipo === 'habitacion' || tipo === 'cielorraso') && cieloTipo !== 'ninguno') {
+        const areaTecho = largo * ancho;
+        const perimetroTecho = (largo * 2) + (ancho * 2);
+
+        // --- CÁLCULO PROFESIONAL DE ESTRUCTURA DE CIELORRASO ---
+        // Perfilería perimetral (Soleras de 35 mm fijadas a la pared)
+        const solerasTechoM = perimetroTecho;
+        cieloSoleras35 = Math.ceil((solerasTechoM / 2.6) * 1.10); // 10% desperdicio
+
+        // Montantes de 34 mm para la estructura portante (espaciados cada 40 cm para Durlock, y cada 50 cm para PVC)
+        const espaciamiento = (cieloTipo === 'durlock') ? 0.4 : 0.5;
+        // Rows = Math.ceil(largo / espaciamiento) + 1, cada una con longitud "ancho"
+        const rowsTecho = Math.ceil(largo / espaciamiento) + 1;
+        const metrosLinealesTechoMontante = rowsTecho * ancho;
+        
+        // Velas rígidas (tensores verticales de cuelgue): 1 vela de montante cada 1.0 m en cada fila de perfil
+        const velasPorMontante = Math.ceil(ancho / 1.0) + 1;
+        const totalVelas = rowsTecho * velasPorMontante;
+        const metrosLinealesVelas = totalVelas * 0.5; // Altura promedio de vela = 0.50m
+
+        const totalTechoMontanteM = metrosLinealesTechoMontante + metrosLinealesVelas;
+        cieloMontantes34 = Math.ceil((totalTechoMontanteM / 2.6) * 1.10); // 10% desperdicio
+
+        // --- TORNILLOS Y FIJACIONES DE CIELORRASO ---
+        tT1 += Math.ceil(areaTecho * 15);
+        
+        // Fijaciones perimetrales y de velas a la losa (1 por vela + contornos)
+        tFijaciones += Math.ceil(((perimetroTecho / 0.6) + totalVelas) * 1.10);
+
+        if (cieloTipo === 'durlock') {
+          cantPlacasTechoDur = Math.ceil((areaTecho * 1.1) / 2.88);
+          tT2 += Math.ceil(areaTecho * 30); // 30 tornillos por m² de placa en cielorraso
+          tMasilla += (areaTecho * 0.9);
+          tCinta += (areaTecho * 1.6);
+          if (llevaAislTecho) tIsover += (areaTecho * 1.1);
+        } else if (cieloTipo === 'pvc') {
+          cantPlacasPvc = Math.ceil(areaTecho * 1.1);
+          cantTablillasPvc = Math.ceil(cantPlacasPvc / 1.2); // Tablillas de 20cm x 6m (1.2m²)
+          molduraPvc = Math.ceil(perimetroTecho);
+          tT2 += Math.ceil(areaTecho * 20); // Fijación de tablillas a perfiles
+          if (llevaAislTecho) tIsover += (areaTecho * 1.1);
+        }
+      }
+
+      // 3. Diagnóstico Termoacústico (Fórmulas de Transmitancia Térmica U y Atenuación dB)
+      let uValue = "1.80 W/m²K (Alto paso térmico)";
+      let dbValue = "~35 dB (Ruido aéreo traspasa con facilidad)";
+      let showAhorro = false;
+
+      if (tipo === 'pared' || tipo === 'habitacion') {
+        if (llevaAislPared) {
+          showAhorro = true;
+          if (esTabique) {
+            uValue = "0.38 W/m²K (Excelente aislamiento térmico)";
+            dbValue = "~52 dB (Atenuación profesional, apto dormitorios)";
+          } else {
+            uValue = "0.45 W/m²K (Buen aislamiento térmico)";
+            dbValue = "~46 dB (Atenuación media, reduce ruidos)";
+          }
+        } else {
+          uValue = "1.80 W/m²K (Sin lana de vidrio, alta pérdida)";
+          dbValue = "~35 dB (Atenuación baja, placa desnuda)";
+        }
+      } else if (tipo === 'cielorraso') {
+        if (llevaAislTecho) {
+          showAhorro = true;
+          uValue = "0.42 W/m²K (Excelente retención de calor en techos)";
+          dbValue = "~44 dB (Reduce ruido de lluvias y techos de chapa)";
+        } else {
+          uValue = "1.90 W/m²K (Paso de calor descontrolado por cielorraso)";
+          dbValue = "~32 dB (Paso libre de ruidos perimetrales superiores)";
+        }
+      }
+
+      if (rU) rU.textContent = uValue;
+      if (rDb) rDb.textContent = dbValue;
+      if (rAhorroRow) rAhorroRow.style.display = showAhorro ? 'flex' : 'none';
+
+      // Guardar globales de Termoacústica para imprimir
+      (window as any).durTermoData = { uValue, dbValue, showAhorro };
+
+      // Renderizar Lista
+      resultsList.innerHTML = '';
+      lastResults = [];
+
+      function addResult(name: string, qty: string, desc: string) {
+        lastResults.push({name, qty, desc});
+        resultsList.innerHTML += `
+          <div class="dur-mat-item">
+            <div>
+              <span class="dur-mat-name">${name}</span>
+              <span class="dur-mat-desc">${desc}</span>
+            </div>
+            <div class="dur-mat-qty">${qty}</div>
+          </div>
+        `;
+      }
+
+      if (cantPlacasPared > 0) addResult(nombrePlacaPared, `${cantPlacasPared} uds`, descPlacaPared);
+      if (cantPlacasTechoDur > 0) addResult("Placas Durlock Cielorraso", `${cantPlacasTechoDur} uds`, "Placa de Yeso estándar 9.5mm (1.20x2.40m)");
+      
+      if (cantPlacasPvc > 0) addResult("Machimbre de PVC", `${cantPlacasPvc} m²`, `Aprox. ${cantTablillasPvc} tablillas de 20cm x 6m`);
+      if (molduraPvc > 0) addResult("Moldura Perimetral PVC", `${molduraPvc} m`, "Terminación perimetral");
+      
+      // Renderizar Perfilería separando anchos comercializados en Argentina
+      const totMontantes34 = wallMontantes34 + cieloMontantes34;
+      const totSoleras35 = wallSoleras35 + cieloSoleras35;
+
+      if (wallMontantes69 > 0) {
+        addResult("Montantes de 69 mm", `${wallMontantes69} uds`, "Estructura vertical para Tabique (2.60m)");
+      }
+      if (wallSoleras70 > 0) {
+        addResult("Soleras de 70 mm", `${wallSoleras70} uds`, "Guías horizontales de fijación (2.60m)");
+      }
+      if (totMontantes34 > 0) {
+        addResult("Montantes de 34 mm", `${totMontantes34} uds`, "Estructura portante/vela de Revestimiento/Cielorraso (2.60m)");
+      }
+      if (totSoleras35 > 0) {
+        addResult("Soleras de 35 mm", `${totSoleras35} uds`, "Guías perimetrales de fijación (2.60m)");
+      }
+
+      if (tCantoneras > 0) addResult("Cantoneras (Esquineros)", `${tCantoneras} uds`, "Perfiles cantoneros para esquinas externas (2.60m)");
+      
+      if (tT1 > 0) addResult("Tornillos T1 (Estructura)", `${tT1} uds`, "Tornillos metal-metal aguja (para perfilería)");
+      if (tT2 > 0) addResult("Tornillos T2 (Placas)", `${tT2} uds`, "Tornillos placa-metal aguja (25mm para placas)");
+      if (tFijaciones > 0) addResult("Fijaciones Completas", `${tFijaciones} uds`, "Tarugos N°8 con tope + Tornillos de fijación");
+      
+      if (tMasilla > 0) addResult("Masilla Lista Durlock", `${Math.ceil(tMasilla)} kg`, "Para tomado de juntas y tapado de tornillos");
+      if (tCinta > 0) addResult("Cinta de Papel", `${Math.ceil(tCinta)} m`, "Cinta microporosa de papel para juntas");
+      if (tIsover > 0) addResult("Aislante Isover", `${Math.ceil(tIsover)} m²`, "Fieltro de lana de vidrio termoacústica (50mm)");
+
+      if (lastResults.length === 0) {
+        resultsList.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-light);">Ingresá dimensiones mayores a 0 para ver resultados.</div>`;
+      }
+    }
+
+    // Attach events
+    const allInputs = document.querySelectorAll('#calc-durlock input, #calc-durlock select');
+    allInputs.forEach(el => {
+      el.addEventListener('input', () => {
+        if (el.id === 'dur-tipo-proyecto' || el.id === 'dur-cielorraso-tipo') {
+          updateUI();
+        } else {
+          calculateMaterials();
+        }
+      });
+    });
+
+    // Init
+    updateUI();
+
+    // Botón de imprimir
+    const btnPrintDur = document.getElementById('dur-btn-print');
+    if (btnPrintDur) {
+      btnPrintDur.addEventListener('click', () => {
+        const tbody = document.getElementById('dur-print-tbody');
+        const pDate = document.getElementById('dur-print-date');
+        const pTipo = document.getElementById('dur-print-tipo');
+
+        const pU = document.getElementById('dur-print-u');
+        const pDb = document.getElementById('dur-print-db');
+        const pAhorro = document.getElementById('dur-print-ahorro');
+        
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        
+        lastResults.forEach(res => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><strong>${res.name}</strong><br><span style="font-size:0.8rem;color:#666;">${res.desc}</span></td><td>${res.qty}</td>`;
+          tbody.appendChild(tr);
+        });
+
+        const termo = (window as any).durTermoData;
+        if (termo) {
+          if (pU) pU.textContent = termo.uValue;
+          if (pDb) pDb.textContent = termo.dbValue;
+          if (pAhorro) pAhorro.textContent = termo.showAhorro ? "Aproximadamente 30% de reducción en consumo de calefacción/aire acondicionado." : "Sin ahorro térmico proyectado (Se sugiere lana de vidrio).";
+        }
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('es-AR') + ' ' + today.toLocaleTimeString('es-AR');
+        }
+        
+        if (pTipo) {
+          pTipo.textContent = iTipoProyecto.options[iTipoProyecto.selectedIndex].text;
+        }
+
+        document.body.classList.add('printing-dur');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-dur'), { once: true });
+      });
+    }
+  });
+</script>

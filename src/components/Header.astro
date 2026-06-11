@@ -1,0 +1,107 @@
+---
+const { lang = 'es' } = Astro.props;
+
+const t = {
+  es: {
+    inicio: "Inicio",
+    nosotros: "Nosotros",
+    servicios: "Servicios",
+    abonos: "Abonos",
+    obras: "Portfolio",
+    herramientas: "Herramientas",
+    clientes: "Clientes",
+    contacto: "Contacto",
+    link_inicio: "/#inicio",
+    link_nosotros: "/#nosotros",
+    link_servicios: "/#servicios",
+    link_abonos: "/#abonos",
+    link_obras: "/obras",
+    link_herramientas: "/herramientas",
+    link_clientes: "/#clientes",
+    link_contacto: "/#contacto",
+    link_portal: "/portal",
+    link_en: "/en",
+    link_es: "/"
+  },
+  en: {
+    inicio: "Home",
+    nosotros: "About Us",
+    servicios: "Services",
+    abonos: "Plans",
+    obras: "Portfolio",
+    herramientas: "Tools",
+    clientes: "Clients",
+    contacto: "Contact",
+    link_inicio: "/en#inicio",
+    link_nosotros: "/en#nosotros",
+    link_servicios: "/en#servicios",
+    link_abonos: "/en#abonos",
+    link_obras: "/en/works",
+    link_herramientas: "/en/tools",
+    link_clientes: "/en#clientes",
+    link_contacto: "/en#contacto",
+    link_portal: "/portal",
+    link_en: "/en",
+    link_es: "/"
+  }
+}[lang];
+---
+<header class="header" id="header">
+  <div class="container">
+    <a href={t.link_inicio} class="logo" id="logo-link">
+      <img src="/assets/img/logo.webp" alt="Logo de N3i Engineering & Maintenance" width="84" height="84">
+      <div class="logo-text">
+        N3i
+        <span>Engineering & Maintenance</span>
+      </div>
+    </a>
+    
+    <div class="header-actions">
+      <div class="lang-switcher-mobile" id="lang-switcher-mobile-header">
+        <a href={t.link_es} class="lang-flag" title="Español (Argentina)">
+          <img src="https://flagcdn.com/w20/ar.png" alt="Argentina" width="20" height="15">
+        </a>
+        <span class="lang-divider">|</span>
+        <a href={t.link_en} class="lang-flag" title="English (US)">
+          <img src="https://flagcdn.com/w20/us.png" alt="USA" width="20" height="15">
+        </a>
+      </div>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú de navegación">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="nav" id="nav">
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href={t.link_inicio} class="nav-link active">{t.inicio}</a></li>
+        <li><a href={t.link_nosotros} class="nav-link">{t.nosotros}</a></li>
+        <li><a href={t.link_servicios} class="nav-link">{t.servicios}</a></li>
+        <li><a href={t.link_abonos} class="nav-link">{t.abonos}</a></li>
+        <li><a href={t.link_obras} class="nav-link">{t.obras}</a></li>
+        <li><a href={t.link_herramientas} class="nav-link">{t.herramientas}</a></li>
+        <li><a href={t.link_clientes} class="nav-link">{t.clientes}</a></li>
+        <li><a href={t.link_contacto} class="nav-link">{t.contacto}</a></li>
+        <li class="lang-switcher-container">
+          <div class="lang-switcher">
+            <a href={t.link_es} class="lang-btn" title="Español (Argentina)">
+              <img src="https://flagcdn.com/w20/ar.png" alt="Argentina" width="20" height="15">
+            </a>
+            <span class="lang-divider">|</span>
+            <a href={t.link_en} class="lang-btn" title="English (US)">
+              <img src="https://flagcdn.com/w20/us.png" alt="USA" width="20" height="15">
+            </a>
+          </div>
+        </li>
+        <li>
+          <a href={t.link_portal} class="btn btn-outline" style="padding: 8px 15px; border: 1px solid var(--primary-color); color: #ffffff; font-weight: normal; white-space: nowrap;">
+            Portal 🔒
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

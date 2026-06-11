@@ -1,0 +1,491 @@
+---
+// src/components/CalculadoraHidricaEn.astro
+// Water Tank, Pump & Pressure Calculator N3i (Turquoise Theme) - English Version
+---
+<section class="section section-alt" id="calc-water">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #3FC6B4;">Water Management & Plumbing</span>
+      <h2 class="section-title">Water Tank & Pressure Sizing Calculator</h2>
+      <p class="section-desc">
+        Size your reserve tank volumes (cistern and roof tank) and elevation pump. Analyze shower pressure performance and estimate monthly pump power billing costs.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Input Form (Property Parameters) -->
+      <div class="calc-appliances card reveal">
+        <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          Installation Parameters
+        </h3>
+        
+        <div class="form-group">
+          <label>Property Type (Water Allowance)</label>
+          <select id="hid-inmueble" class="calc-select" style="border-color: #3FC6B4;">
+            <option value="250">Single-Family Home (250 Lts/person/day)</option>
+            <option value="300">Apartment Building (300 Lts/person/day)</option>
+            <option value="150">Industry / Warehouse (150 Lts per worker/day)</option>
+            <option value="100">Office / Administration (100 Lts per employee/day)</option>
+          </select>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Number of People / Users</label>
+            <input type="number" id="hid-personas" class="calc-input" value="4" min="1" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Elevation Height (m)</label>
+            <input type="number" id="hid-altura" class="calc-input" value="6.0" min="1" step="0.5" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">From elevation pump outlet up to the roof tank inlet.</small>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Full Bathrooms</label>
+            <input type="number" id="hid-banos" class="calc-input" value="2" min="0" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Kitchens / Laundries</label>
+            <input type="number" id="hid-cocinas" class="calc-input" value="1" min="0" step="1" />
+          </div>
+        </div>
+
+        <!-- Comfort and Pressure Evaluation -->
+        <h4 style="font-size: 0.95rem; margin-top: 15px; margin-bottom: 12px; color: var(--text-primary);">Plumbing Pressure Assessment</h4>
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Max Simultaneous Showers</label>
+            <input type="number" id="hid-duchas-sim" class="calc-input" value="1" min="1" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Height to Highest Bathroom</label>
+            <select id="hid-altura-libre" class="calc-select">
+              <option value="alta">Sufficient (Roof tank $\ge$ 4m above the highest shower head)</option>
+              <option value="baja">Insufficient (Roof tank &lt; 4m above highest shower - Low pressure)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sizing Results Panel & Operational Energy Rates -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          
+          <!-- Reference Electricity Rate -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 8px; margin-bottom: 15px;">
+            <label for="hid-cost-kwh" style="display: block; font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 5px;">Reference Utility Rate ($/kWh):</label>
+            <input type="number" id="hid-cost-kwh" class="calc-input" value="115" min="1" style="padding: 8px 12px; font-size: 0.9rem;" />
+          </div>
+
+          <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem;">
+            Suggested Sizing
+          </h3>
+          
+          <div class="result-summary" style="background: rgba(63, 198, 180, 0.08); border-left: 4px solid #3FC6B4; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; line-height: 1.5;">
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Total Daily Reserve (RTD): <strong id="hid-res-rtd" style="color: var(--text-primary);">0 Lts/day</strong></p>
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Lower Cistern Volume (40%): <strong id="hid-res-cisterna" style="color: var(--text-primary);">0 Liters</strong></p>
+            <p style="margin: 0; color: var(--text-secondary);">Elevated Roof Tank (60%): <strong id="hid-res-elevado" style="color: var(--text-primary);">0 Liters</strong></p>
+          </div>
+
+          <!-- Main recommended pump -->
+          <div class="main-result" style="text-align: center; margin: 15px 0;">
+            <span style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 3px;">Recommended Pump Power:</span>
+            <div id="hid-res-hp" style="font-size: 2.8rem; font-weight: 800; color: #3FC6B4; line-height: 1;">0.5 HP</div>
+            <span style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 4px;">Type: Centrifugal or Silent Booster Pump</span>
+          </div>
+
+          <!-- Suggested Pipe Size -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+            <span style="font-size: 0.78rem; color: var(--text-secondary);">Suggested Thermofusion Pipe (Impulsion):</span>
+            <strong id="hid-res-cano" style="display: block; font-size: 1.1rem; color: var(--text-primary); margin-top: 3px;">3/4" (25 mm)</strong>
+          </div>
+
+          <!-- WHO Footprint Diagnostic -->
+          <div class="result-alert" id="hid-water-footprint-alert" style="padding: 10px 12px; border-radius: 8px; font-size: 0.8rem; line-height: 1.4; margin-bottom: 12px;">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Pressurizer recommendation -->
+          <div class="result-alert" id="hid-pressure-alert" style="padding: 10px 12px; border-radius: 8px; font-size: 0.8rem; line-height: 1.4; border-left: 4px solid #00bcd4; background: rgba(0, 188, 212, 0.06); color: var(--text-primary); margin-bottom: 12px;">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Operational Cost -->
+          <div style="background: rgba(63, 198, 180, 0.05); border: 1px solid rgba(63, 198, 180, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 15px;" id="hid-pump-energy-card">
+            <h4 style="color: #3fc6b4; font-size: 0.82rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; font-family: var(--font-title);">
+              <span>⚡</span> Pumping Electrical Consumption
+            </h4>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45;">
+              Motor daily runtime: <strong>~<span id="hid-pump-hours-daily">1.2</span> hrs/day</strong> to refill roof tank.
+              <br>
+              Estimated monthly power: <strong><span id="hid-pump-kwh-mensual">0.0</span> kWh/month</strong>.
+              <br>
+              Monthly pumping bill cost: <strong style="color: #3fc6b4;">$ <span id="hid-pump-cost-mensual">0</span> ARS</strong>.
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="/en#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; background: #3FC6B4; color: #000; box-shadow: 0 4px 15px rgba(63, 198, 180, 0.3);">
+              Request Certified Plumber
+              <span class="btn-icon">💧</span>
+            </a>
+            <button type="button" id="hid-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; border-color: #3FC6B4; color: var(--text-primary); background: transparent;">
+              Print Water Report
+              <span class="btn-icon" style="background: transparent;">🖨️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Professional Plumbing Tips -->
+    <div class="card reveal" style="margin-top: 40px; border-top: 3px solid #3FC6B4;">
+      <h3 style="color: #3FC6B4; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+        <span>💡</span> Hydraulic Engineer Tips for Your Piping
+      </h3>
+      <div class="gas-tips-grid">
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">🚰</div>
+          <div>
+            <h4 class="gas-tip-title">Faucet Aerators</h4>
+            <p class="gas-tip-desc">Installing flow aerators on bathroom and kitchen taps limits water output by up to 50% by mixing it with air. You enjoy the same pressure feel while saving thousands of liters monthly.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">🧼</div>
+          <div>
+            <h4 class="gas-tip-title">Annual Tank Sanitization</h4>
+            <p class="gas-tip-desc">Water tanks collect sediments (sand, lime scale, biofilms) over time. Flush and sanitize your tanks at least once a year to prevent pipe clogging and protect family health.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">🔌</div>
+          <div>
+            <h4 class="gas-tip-title">Safe Level Switches</h4>
+            <p class="gas-tip-desc">Always use automatic level float switches running at **low voltage (24V)** via a step-down transformer on the panel. Do not run 220V lines to the roof; it is a severe shock hazard in wet weather.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">🛡️</div>
+          <div>
+            <h4 class="gas-tip-title">Non-Return Check Valve</h4>
+            <p class="gas-tip-desc">Mounting a non-return check valve at the pump outlet prevents vertical column water from flowing back into the cistern when the motor turns off, preventing water hammer and dry-run pump damage.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hidden English Print Layout -->
+<div id="print-area-hid" class="print-only-hid">
+  <div class="print-header" style="border-bottom-color: #3FC6B4;">
+    <img src="/assets/img/logo.webp" alt="N3i Logo" width="80" />
+    <div>
+      <h2 style="color: #3FC6B4;">Hydraulic Sizing & Pressure Sizing Report</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Date:</strong> <span id="hid-print-date"></span></p>
+    <p><strong>Document Type:</strong> Sanitary Sizing Sheet & Pump Demand Estimation</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Sanitary Input Parameter</th>
+        <th>Detail / Entered Value</th>
+      </tr>
+    </thead>
+    <tbody id="hid-print-tbody">
+      <!-- Populated by JS -->
+    </tbody>
+    <tfoot>
+      <tr>
+        <td style="text-align: right;"><strong>Estimated Daily Consumption (RTD):</strong></td>
+        <td><strong id="hid-print-rtd">0 Lts/day</strong></td>
+      </tr>
+      <tr>
+        <td style="text-align: right;"><strong>Lower Cistern Volume (40%):</strong></td>
+        <td><strong id="hid-print-cisterna">0 Lts</strong></td>
+      </tr>
+      <tr>
+        <td style="text-align: right;"><strong>Elevated Roof Tank (60%):</strong></td>
+        <td><strong id="hid-print-elevado">0 Lts</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <div style="background: rgba(63, 198, 180, 0.08); padding: 15px; border-radius: 8px; border-left: 5px solid #3FC6B4; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #2a8f82; font-size: 1.1rem;">Recommended Elevation System</h3>
+    <p style="font-size: 1.1rem; margin-bottom: 5px;"><strong>Suggested Pump Rating:</strong> <span id="hid-print-hp" style="font-weight: 800;"></span></p>
+    <p style="font-size: 0.9rem; margin-bottom: 5px;"><strong>Suggested Thermofusion Piping:</strong> <span id="hid-print-cano" style="font-weight: 700;"></span></p>
+    <p style="font-size: 0.9rem; color: #555;">(Sized to lift water to a height of <span id="hid-print-altura"></span> meters in a target 2-hour pumping window).</p>
+  </div>
+
+  <div style="background: rgba(0, 188, 212, 0.08); padding: 15px; border-radius: 8px; border-left: 5px solid #00bcd4; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #00bcd4; font-size: 1.1rem;">Confort, Pressure & Water Footprint Analysis</h3>
+    <p style="font-size: 1rem; margin-bottom: 5px;" id="hid-print-footprint-text"></p>
+    <p style="font-size: 1rem; margin-bottom: 5px;" id="hid-print-pressure-text"></p>
+  </div>
+
+  <div style="background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #444; font-size: 1.1rem;">Motor Operational Power Costs</h3>
+    <p style="font-size: 0.95rem; margin: 0;">Projected Power Usage: <strong id="hid-print-pump-kwh">0 kWh/month</strong> (Duty cycle: <span id="hid-print-pump-hours">0</span> hrs/day).</p>
+    <p style="font-size: 1.1rem; margin-top: 5px; color: #3FC6B4;"><strong>Estimated Monthly Pump Bill Impact: $ <span id="hid-print-pump-cost">0</span> ARS/month</strong>.</p>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Technical Note: Sizing calculations comply with National Sanitary regulations (OSN/AEA standards). Final layout design, physical valve placement, and pipe routing must be completed on-site by a certified N3i Plumber.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">To schedule a piping layout or on-site inspections, technical contact is available at <strong>www.n3i.com.ar</strong> or via WhatsApp at +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  .print-only-hid {
+    display: none;
+  }
+
+  @media print {
+    body.printing-hid .header, 
+    body.printing-hid .footer, 
+    body.printing-hid .section-header, 
+    body.printing-hid .calculator-grid, 
+    body.printing-hid .section { 
+      display: none !important; 
+    }
+    body.printing-hid .print-only-hid {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      background: white !important;
+      color: black !important;
+      padding: 1.5cm;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inputs
+    const iInmueble = document.getElementById('hid-inmueble') as HTMLSelectElement;
+    const iPersonas = document.getElementById('hid-personas') as HTMLInputElement;
+    const iAltura = document.getElementById('hid-altura') as HTMLInputElement;
+    const iBanos = document.getElementById('hid-banos') as HTMLInputElement;
+    const iCocinas = document.getElementById('hid-cocinas') as HTMLInputElement;
+    const iDuchasSim = document.getElementById('hid-duchas-sim') as HTMLInputElement;
+    const iAlturaLibre = document.getElementById('hid-altura-libre') as HTMLSelectElement;
+
+    const costKwhInput = document.getElementById('hid-cost-kwh') as HTMLInputElement;
+
+    // Outputs UI
+    const rRtd = document.getElementById('hid-res-rtd');
+    const rCisterna = document.getElementById('hid-res-cisterna');
+    const rElevado = document.getElementById('hid-res-elevado');
+    const rHp = document.getElementById('hid-res-hp');
+    const rCano = document.getElementById('hid-res-cano');
+    
+    const rFootprintAlert = document.getElementById('hid-water-footprint-alert');
+    const rPressureAlert = document.getElementById('hid-pressure-alert');
+
+    const rPumpHoursDaily = document.getElementById('hid-pump-hours-daily');
+    const rPumpKwhMensual = document.getElementById('hid-pump-kwh-mensual');
+    const rPumpCostMensual = document.getElementById('hid-pump-cost-mensual');
+
+    const btnPrint = document.getElementById('hid-btn-print');
+
+    function formatNumber(num: number, decimals: number = 0): string {
+      return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function roundTank(liters: number) {
+      const standard = [500, 750, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 10000];
+      for (let s of standard) {
+        if (liters <= s) return s;
+      }
+      return Math.ceil(liters / 1000) * 1000;
+    }
+
+    function calculatePumpHp(caudal_lh: number, height_m: number) {
+      const H = height_m * 1.2;
+      const Q_ls = caudal_lh / 3600;
+      const hp_calc = (Q_ls * H) / 45;
+      
+      const standardHp = [0.5, 0.75, 1.0, 1.5, 2.0, 3.0];
+      for (let h of standardHp) {
+        if (hp_calc <= h) return h;
+      }
+      return Math.ceil(hp_calc); 
+    }
+
+    function calculatePipe(caudal_lh: number) {
+      if (caudal_lh <= 1500) return '3/4" (25 mm)';
+      if (caudal_lh <= 3000) return '1" (32 mm)';
+      if (caudal_lh <= 5500) return '1 1/4" (40 mm)';
+      if (caudal_lh <= 9000) return '1 1/2" (50 mm)';
+      return '2" (63 mm)';
+    }
+
+    function calculateWater() {
+      if (!iPersonas) return;
+
+      const litrosPerPersona = parseInt(iInmueble.value) || 250;
+      const personas = parseInt(iPersonas.value) || 0;
+      const altura = parseFloat(iAltura.value) || 0;
+      const banos = parseInt(iBanos.value) || 0;
+      const cocinas = parseInt(iCocinas.value) || 0;
+      const duchasSim = parseInt(iDuchasSim.value) || 1;
+      const alturaLibre = iAlturaLibre.value || 'alta';
+
+      const costKwh = parseFloat(costKwhInput?.value) || 115;
+
+      const rtd = (personas * litrosPerPersona) + (banos * 150) + (cocinas * 50);
+      
+      const rawCisterna = rtd * 0.4;
+      const rawElevado = rtd * 0.6;
+
+      const volCisterna = roundTank(rawCisterna);
+      const volElevado = roundTank(rawElevado);
+
+      const caudalBombaLh = volElevado / 2;
+
+      const hp = calculatePumpHp(caudalBombaLh, altura);
+      const cano = calculatePipe(caudalBombaLh);
+
+      // Update basic screen
+      if (rRtd) rRtd.textContent = `${formatNumber(rtd)} Lts/day`;
+      if (rCisterna) rCisterna.textContent = `${formatNumber(volCisterna)} Liters (Minimum)`;
+      if (rElevado) rElevado.textContent = `${formatNumber(volElevado)} Liters (Minimum)`;
+      if (rHp) rHp.textContent = `${hp} HP`;
+      if (rCano) rCano.textContent = cano;
+
+      // 1. Water Footprint Sizing (WHO Guidelines)
+      if (rFootprintAlert) {
+        const footprint = personas > 0 ? rtd / personas : 0;
+        if (footprint === 0) {
+          rFootprintAlert.style.display = 'none';
+        } else {
+          rFootprintAlert.style.display = 'block';
+          if (footprint <= 150) {
+            rFootprintAlert.style.backgroundColor = 'rgba(139, 195, 74, 0.08)';
+            rFootprintAlert.style.borderLeft = '4px solid var(--accent)';
+            rFootprintAlert.innerHTML = `🟢 <strong>Efficient Water Footprint:</strong> ${footprint.toFixed(0)} Lts/person/day. Meets the sustainable standards recommended by the WHO (150 Lts).`;
+          } else {
+            rFootprintAlert.style.backgroundColor = 'rgba(255, 152, 0, 0.08)';
+            rFootprintAlert.style.borderLeft = '4px solid #ff9800';
+            rFootprintAlert.innerHTML = `⚠️ <strong>High Water Footprint:</strong> ${footprint.toFixed(0)} Lts/person/day (Exceeds WHO guideline of 150 Lts). Installing faucet aerators is suggested to save up to 45% in volume.`;
+          }
+        }
+      }
+
+      // 2. Booster pump recommendation
+      if (rPressureAlert) {
+        if (rtd === 0) {
+          rPressureAlert.style.display = 'none';
+        } else {
+          rPressureAlert.style.display = 'block';
+          if (alturaLibre === 'baja' || duchasSim > 1) {
+            rPressureAlert.style.backgroundColor = 'rgba(0, 188, 212, 0.08)';
+            rPressureAlert.style.borderLeft = '4px solid #00bcd4';
+            rPressureAlert.innerHTML = `🚨 <strong>Booster Pump Required:</strong> Due to insufficient height or simultaneous showers, the highest shower head will suffer low pressure. A <strong>0.33 HP or 0.5 HP Automatic Booster Pump</strong> is recommended.`;
+          } else {
+            rPressureAlert.style.backgroundColor = 'rgba(139, 195, 74, 0.08)';
+            rPressureAlert.style.borderLeft = '4px solid var(--accent)';
+            rPressureAlert.innerHTML = `✅ <strong>Sufficient Gravity Pressure:</strong> A clearance height of $\ge$ 4 meters guarantees stable natural pressure ($\ge$ 0.4 bar) for basic home comfort.`;
+          }
+        }
+      }
+
+      // 3. Pumping electrical calculations
+      const hpWattsMap: Record<number, number> = { 0.5: 570, 0.75: 860, 1: 1150, 1.5: 1720, 2: 2300, 3: 3450 };
+      const wattsBomba = hpWattsMap[hp] || (hp * 1150);
+      
+      const dailyHours = rtd > 0 ? (rtd * 0.6) / (volElevado / 2) : 0;
+      const kwhMensualBomba = (wattsBomba / 1000) * dailyHours * 30;
+      const costoMensualBomba = kwhMensualBomba * costKwh;
+
+      if (rPumpHoursDaily) rPumpHoursDaily.textContent = dailyHours.toFixed(1);
+      if (rPumpKwhMensual) rPumpKwhMensual.textContent = kwhMensualBomba.toFixed(1);
+      if (rPumpCostMensual) rPumpCostMensual.textContent = formatNumber(Math.round(costoMensualBomba));
+    }
+
+    const allInputs = document.querySelectorAll('#calc-water input, #calc-water select');
+    allInputs.forEach(el => {
+      el.addEventListener('input', calculateWater);
+    });
+
+    calculateWater();
+
+    // Print logic
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        calculateWater();
+
+        const tbody = document.getElementById('hid-print-tbody');
+        const pDate = document.getElementById('hid-print-date');
+        const pRtd = document.getElementById('hid-print-rtd');
+        const pCisterna = document.getElementById('hid-print-cisterna');
+        const pElevado = document.getElementById('hid-print-elevado');
+        const pHp = document.getElementById('hid-print-hp');
+        const pCano = document.getElementById('hid-print-cano');
+        const pAltura = document.getElementById('hid-print-altura');
+
+        const pFootprintText = document.getElementById('hid-print-footprint-text');
+        const pPressureText = document.getElementById('hid-print-pressure-text');
+
+        const pPumpKwh = document.getElementById('hid-print-pump-kwh');
+        const pPumpHours = document.getElementById('hid-print-pump-hours');
+        const pPumpCost = document.getElementById('hid-print-pump-cost');
+        
+        if (!tbody || !pRtd) return;
+
+        tbody.innerHTML = '';
+        
+        const rows = [
+          { label: 'Property Type', value: iInmueble.options[iInmueble.selectedIndex].text },
+          { label: 'Occupants / Users', value: `${iPersonas.value} users` },
+          { label: 'Consumption Points', value: `${iBanos.value} Bathrooms and ${iCocinas.value} Kitchens/Laundries` },
+          { label: 'Elevation Height Sized', value: `${iAltura.value} meters (vertical)` },
+          { label: 'Max Simultaneous Showers', value: `${iDuchasSim.value} shower(s)` },
+          { label: 'Highest Bathroom Clearance Height', value: iAlturaLibre.options[iAlturaLibre.selectedIndex].text }
+        ];
+
+        rows.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><strong>${row.label}</strong></td><td>${row.value}</td>`;
+          tbody.appendChild(tr);
+        });
+
+        // Totales
+        const rtdVal = parseInt(rRtd?.textContent?.replace(/\./g, '') || '0');
+        pRtd.textContent = rtdVal > 0 ? formatNumber(rtdVal) + ' Lts/day' : "0 Lts/day";
+        if (pCisterna && rCisterna) pCisterna.textContent = rCisterna.textContent || "";
+        if (pElevado && rElevado) pElevado.textContent = rElevado.textContent || "";
+
+        if (pHp && rHp) pHp.textContent = rHp.textContent || "";
+        if (pCano && rCano) pCano.textContent = rCano.textContent || "";
+        if (pAltura && iAltura) pAltura.textContent = `${(parseFloat(iAltura.value) * 1.2).toFixed(1)} m.c.a. (includes 20% friction head loss)`;
+
+        // Warnings & metrics
+        if (pFootprintText && rFootprintAlert) pFootprintText.innerHTML = rFootprintAlert.innerHTML;
+        if (pPressureText && rPressureAlert) pPressureText.innerHTML = rPressureAlert.innerHTML;
+
+        // Pump energy
+        if (pPumpKwh && rPumpKwhMensual) pPumpKwh.textContent = rPumpKwhMensual.textContent + ' kWh/month';
+        if (pPumpHours && rPumpHoursDaily) pPumpHours.textContent = rPumpHoursDaily.textContent;
+        if (pPumpCost && rPumpCostMensual) pPumpCost.textContent = rPumpCostMensual.textContent;
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('en-US') + ' ' + today.toLocaleTimeString('en-US');
+        }
+
+        document.body.classList.add('printing-hid');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-hid'), { once: true });
+      });
+    }
+  });
+</script>

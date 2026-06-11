@@ -1,0 +1,409 @@
+---
+// src/components/CalculadoraMantenimientoEn.astro
+// Preventive Maintenance Scheduler - Theme Blue/Teal (#00E5FF)
+---
+<section class="section section-alt" id="calc-mantenimiento">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #00E5FF;">Preventive Maintenance</span>
+      <h2 class="section-title">Preventive Maintenance & Facility Integrity Advisory</h2>
+      <p class="section-desc">
+        Avoid catastrophic failures and high-cost emergency breakdowns. Register your building's systems and generate a custom schedule of technical preventative warnings.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Input Form -->
+      <div class="calc-appliances card reveal">
+        <h3 style="color: #00E5FF; border-bottom: 1px solid rgba(0, 229, 255, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          Facility Systems Status
+        </h3>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Property Age (Years)</label>
+            <input type="number" id="maint-en-antiguedad" class="calc-input" value="8" min="0" max="100" style="border-color: #00E5FF;" />
+          </div>
+          <div class="form-group">
+            <label>Property Type</label>
+            <select id="maint-en-inmueble" class="calc-select">
+              <option value="casa" selected>Single-Family Home</option>
+              <option value="departamento">Apartment / Condo</option>
+              <option value="comercial">Commercial Store / Office</option>
+              <option value="galpon">Warehouse / Industrial Facility</option>
+            </select>
+          </div>
+        </div>
+
+        <h4 style="font-size: 0.95rem; margin-top: 15px; margin-bottom: 12px; color: var(--text-primary);">Active Systems & Last Inspection</h4>
+
+        <!-- Termotanque -->
+        <div class="form-group-grid" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 12px;">
+          <div class="form-group" style="margin-bottom:0; display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="maint-en-chk-termo" checked style="width:18px; height:18px; cursor:pointer; accent-color:#00E5FF;" />
+            <label for="maint-en-chk-termo" style="margin:0; font-weight:600; cursor:pointer;">🔥 Water Heater / Boiler (Gas or Elec.)</label>
+          </div>
+          <div class="form-group" style="margin-bottom:0;" id="grp-en-last-termo">
+            <label style="font-size:0.75rem; color:var(--text-light);">Last flushing / anode change?</label>
+            <select id="maint-en-last-termo" class="calc-select" style="padding: 6px 10px; font-size: 0.82rem;">
+              <option value="6m">Less than 6 months ago</option>
+              <option value="1a" selected>Approx. 1 year ago</option>
+              <option value="2a">2 years or more ago</option>
+              <option value="nunca">Never / Don't know</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Bomba -->
+        <div class="form-group-grid" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 12px;">
+          <div class="form-group" style="margin-bottom:0; display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="maint-en-chk-bomba" checked style="width:18px; height:18px; cursor:pointer; accent-color:#00E5FF;" />
+            <label for="maint-en-chk-bomba" style="margin:0; font-weight:600; cursor:pointer;">💧 Water Pump (Elevator/Irrigation)</label>
+          </div>
+          <div class="form-group" style="margin-bottom:0;" id="grp-en-last-bomba">
+            <label style="font-size:0.75rem; color:var(--text-light);">Last check for leaks/noise?</label>
+            <select id="maint-en-last-bomba" class="calc-select" style="padding: 6px 10px; font-size: 0.82rem;">
+              <option value="1a">Less than 1 year ago</option>
+              <option value="2a" selected>2 years or more ago</option>
+              <option value="nunca">Never / Long ago</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tablero -->
+        <div class="form-group-grid" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 12px;">
+          <div class="form-group" style="margin-bottom:0; display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="maint-en-chk-tablero" checked style="width:18px; height:18px; cursor:pointer; accent-color:#00E5FF;" />
+            <label for="maint-en-chk-tablero" style="margin:0; font-weight:600; cursor:pointer;">⚡ Breaker Panel / GFCI</label>
+          </div>
+          <div class="form-group" style="margin-bottom:0;" id="grp-en-last-tablero">
+            <label style="font-size:0.75rem; color:var(--text-light);">Last GFCI test / screw tightening?</label>
+            <select id="maint-en-last-tablero" class="calc-select" style="padding: 6px 10px; font-size: 0.82rem;">
+              <option value="6m">Less than 6 months ago</option>
+              <option value="1a" selected>1 year ago</option>
+              <option value="2a">2 years or more ago</option>
+              <option value="nunca">Never</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Techo -->
+        <div class="form-group-grid" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 12px;">
+          <div class="form-group" style="margin-bottom:0; display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="maint-en-chk-techo" checked style="width:18px; height:18px; cursor:pointer; accent-color:#00E5FF;" />
+            <label for="maint-en-chk-techo" style="margin:0; font-weight:600; cursor:pointer;">🏗️ Roof, Gutters & Downspouts</label>
+          </div>
+          <div class="form-group" style="margin-bottom:0;" id="grp-en-last-techo">
+            <label style="font-size:0.75rem; color:var(--text-light);">Last gutter cleanout?</label>
+            <select id="maint-en-last-techo" class="calc-select" style="padding: 6px 10px; font-size: 0.82rem;">
+              <option value="6m">Less than 6 months ago</option>
+              <option value="1a" selected>Approx. 1 year ago</option>
+              <option value="nunca">Never</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Pintura -->
+        <div class="form-group-grid" style="padding-bottom: 12px;">
+          <div class="form-group" style="margin-bottom:0; display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="maint-en-chk-pintura" checked style="width:18px; height:18px; cursor:pointer; accent-color:#00E5FF;" />
+            <label for="maint-en-chk-pintura" style="margin:0; font-weight:600; cursor:pointer;">🎨 Wall Paint & Waterproofing</label>
+          </div>
+          <div class="form-group" style="margin-bottom:0;" id="grp-en-last-pintura">
+            <label style="font-size:0.75rem; color:var(--text-light);">Last exterior painting?</label>
+            <select id="maint-en-last-pintura" class="calc-select" style="padding: 6px 10px; font-size: 0.82rem;">
+              <option value="3a">Less than 3 years ago</option>
+              <option value="5a" selected>3 to 5 years ago</option>
+              <option value="nunca">More than 5 years ago / never</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="color: #00E5FF; border-bottom: 1px solid rgba(0, 229, 255, 0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem;">
+            Technical Alerts Schedule
+          </h3>
+          
+          <div class="materials-list" id="maint-en-results-list" style="margin-bottom: 15px;">
+            <!-- Items generated by JS -->
+          </div>
+
+          <!-- Financial Analysis -->
+          <div style="background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 15px;">
+            <h4 style="color: #00E5FF; font-size: 0.82rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <span>📈</span> Financial Analysis: Preventive vs Reactive
+            </h4>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45;">
+              Annual Preventive Maintenance Cost: <strong>$ <span id="maint-en-cost-preventive">0</span> USD/year</strong>.
+              <br>
+              Emergency Repair Cost Risk: <strong style="color: #c65353;">$ <span id="maint-en-cost-reactive">0</span> USD</strong>.
+              <br>
+              Projected Lifetime Savings: <strong style="color: #00E5FF;">Up to 80% on major repairs</strong>.
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; background: #00E5FF; color: #000; box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3); font-weight: 700;">
+              Request Maintenance Plan
+              <span class="btn-icon">🔧</span>
+            </a>
+            <button type="button" id="maint-en-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; border-color: #00E5FF; color: var(--text-primary); background: transparent;">
+              Print Maintenance Schedule
+              <span class="btn-icon" style="background: transparent;">🖨️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Print Area -->
+<div id="print-area-maint-en" class="print-only-maint-en">
+  <div class="print-header" style="border-bottom-color: #00E5FF;">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #00E5FF;">Preventative Maintenance Schedule</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Report Date:</strong> <span id="maint-en-print-date"></span></p>
+    <p><strong>Property Type:</strong> <span id="maint-en-print-tipo">-</span></p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>System / Asset</th>
+        <th>Recommended Preventive Task</th>
+        <th>Frequency</th>
+        <th>Priority</th>
+      </tr>
+    </thead>
+    <tbody id="maint-en-print-tbody">
+      <!-- Generated by JS -->
+    </tbody>
+  </table>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Note: This schedule is for reference only and is based on the typical lifespan cycles of residential, commercial, and industrial installations. Neglecting these tasks will accelerate property aging and void equipment warranties.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">For comprehensive monthly maintenance plans for stores, offices, and industrial complexes, technical contact is available at <strong>www.n3i.com.ar</strong> or via WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Print Styles for English Maintenance */
+  .print-only-maint-en { display: none; }
+  @media print {
+    body.printing-maint-en .header, 
+    body.printing-maint-en .footer, 
+    body.printing-maint-en .section-header, 
+    body.printing-maint-en .calculator-grid, 
+    body.printing-maint-en .section { 
+      display: none !important; 
+    }
+    body.printing-maint-en .print-only-maint-en {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+    }
+    .print-only-maint-en .print-header { display: flex; align-items: center; border-bottom: 2px solid #00E5FF; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-maint-en .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-maint-en .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-maint-en .print-table th, .print-only-maint-en .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-maint-en .print-table th { background-color: #f5f5f5; color: #333; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const chkTermo = document.getElementById('maint-en-chk-termo') as HTMLInputElement;
+    const chkBomba = document.getElementById('maint-en-chk-bomba') as HTMLInputElement;
+    const chkTablero = document.getElementById('maint-en-chk-tablero') as HTMLInputElement;
+    const chkTecho = document.getElementById('maint-en-chk-techo') as HTMLInputElement;
+    const chkPintura = document.getElementById('maint-en-chk-pintura') as HTMLInputElement;
+
+    const iAntiguedad = document.getElementById('maint-en-antiguedad') as HTMLInputElement;
+    const iInmueble = document.getElementById('maint-en-inmueble') as HTMLSelectElement;
+
+    const iLastTermo = document.getElementById('maint-en-last-termo') as HTMLSelectElement;
+    const iLastBomba = document.getElementById('maint-en-last-bomba') as HTMLSelectElement;
+    const iLastTablero = document.getElementById('maint-en-last-tablero') as HTMLSelectElement;
+    const iLastTecho = document.getElementById('maint-en-last-techo') as HTMLSelectElement;
+    const iLastPintura = document.getElementById('maint-en-last-pintura') as HTMLSelectElement;
+
+    const resultsList = document.getElementById('maint-en-results-list');
+    const rCostPreventive = document.getElementById('maint-en-cost-preventive');
+    const rCostReactive = document.getElementById('maint-en-cost-reactive');
+
+    let lastMaintTasks: any[] = [];
+
+    function updateVisibility() {
+      const gTermo = document.getElementById('grp-en-last-termo');
+      const gBomba = document.getElementById('grp-en-last-bomba');
+      const gTablero = document.getElementById('grp-en-last-tablero');
+      const gTecho = document.getElementById('grp-en-last-techo');
+      const gPintura = document.getElementById('grp-en-last-pintura');
+
+      if (gTermo) gTermo.style.visibility = chkTermo.checked ? 'visible' : 'hidden';
+      if (gBomba) gBomba.style.visibility = chkBomba.checked ? 'visible' : 'hidden';
+      if (gTablero) gTablero.style.visibility = chkTablero.checked ? 'visible' : 'hidden';
+      if (gTecho) gTecho.style.visibility = chkTecho.checked ? 'visible' : 'hidden';
+      if (gPintura) gPintura.style.visibility = chkPintura.checked ? 'visible' : 'hidden';
+
+      calculateMaint();
+    }
+
+    function calculateMaint() {
+      if (!resultsList) return;
+
+      resultsList.innerHTML = '';
+      lastMaintTasks = [];
+
+      let costPreventive = 0;
+      let costReactive = 0;
+
+      const age = parseInt(iAntiguedad.value) || 0;
+
+      // Helper
+      function addTask(system: string, taskName: string, freq: string, priority: 'High' | 'Medium' | 'Low', desc: string, costPrev: number, costReact: number) {
+        lastMaintTasks.push({ system, taskName, freq, priority, desc });
+        costPreventive += costPrev;
+        costReactive += costReact;
+
+        const borderCol = priority === 'High' ? '#c65353' : (priority === 'Medium' ? '#ff9800' : '#00E5FF');
+        const badgeBg = priority === 'High' ? 'rgba(198, 83, 83, 0.1)' : (priority === 'Medium' ? 'rgba(255, 152, 0, 0.1)' : 'rgba(0, 229, 255, 0.1)');
+        
+        resultsList!.innerHTML += `
+          <div class="dur-mat-item" style="border-left: 3px solid ${borderCol}; margin-bottom: 10px; flex-direction: column; align-items: flex-start; gap: 5px;">
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+              <span class="dur-mat-name" style="color:${borderCol};">${system}: ${taskName}</span>
+              <span style="font-size:0.7rem; padding: 2px 8px; border-radius:12px; background:${badgeBg}; color:${borderCol}; font-weight:600;">${priority}</span>
+            </div>
+            <p style="font-size:0.78rem; color:var(--text-secondary); margin:0;">${desc}</p>
+            <span class="dur-mat-desc">Frequency: ${freq}</span>
+          </div>
+        `;
+      }
+
+      // 1. Water Heater
+      if (chkTermo.checked) {
+        const val = iLastTermo.value;
+        if (val === 'nunca' || val === '2a') {
+          addTask("Water Heater", "Replace magnesium anode", "Annual", "High", "The anode protects the tank from corrosion. If never replaced, the tank can rust through, leading to costly water damage and replacement.", 45, 480);
+          addTask("Water Heater", "Sediment and scale flushing", "Every 6 months", "High", "Open the drain valve at the base to remove scale build-up which drastically reduces heating efficiency.", 15, 250);
+        } else if (val === '1a') {
+          addTask("Water Heater", "Inspect anode and burners", "Annual", "Medium", "Visually check the anode's remaining volume and ensure a proper blue flame combustion.", 25, 300);
+        } else {
+          addTask("Water Heater", "Routinary general check", "Every 6 months", "Low", "Check connections for minor leaks or pressure relief valve issues.", 10, 150);
+        }
+      }
+
+      // 2. Pump
+      if (chkBomba.checked) {
+        const val = iLastBomba.value;
+        if (val === 'nunca' || val === '2a') {
+          addTask("Water Pump", "Mechanical seal and capacitor inspection", "Annual", "High", "Seal wear allows water into the electric motor, causing it to burn out. Preventive service is highly advised.", 35, 280);
+        } else {
+          addTask("Water Pump", "Lubrication and noise check", "Annual", "Low", "Check bearings for metallic grinding sounds.", 15, 180);
+        }
+      }
+
+      // 3. Breaker Panel
+      if (chkTablero.checked) {
+        const val = iLastTablero.value;
+        if (val === 'nunca' || val === '2a') {
+          addTask("Breaker Panel", "Tighten terminal screws", "Every 2 years", "High", "Loose terminals cause resistive heating that melts breakers and presents a severe fire hazard.", 20, 150);
+        }
+        addTask("Breaker Panel", "GFCI Test Button execution", "Monthly", "Medium", "Press the 'Test' button to ensure the GFCI trips mechanically and protects against lethal shocks.", 0, 120);
+      }
+
+      // 4. Roof & Gutters
+      if (chkTecho.checked) {
+        const val = iLastTecho.value;
+        if (val === 'nunca' || val === '1a') {
+          addTask("Roof & Gutters", "Gutter leaf cleanout", "Every 6 months", "High", "Clear out leaves and debris before heavy rains to prevent water pooling and ceiling infiltration.", 25, 380);
+        } else {
+          addTask("Roof & Gutters", "Inspect flashing and seals", "Annual", "Low", "Check joint sealants and flashing integrity to prevent slow leaks.", 12, 190);
+        }
+      }
+
+      // 5. Paint
+      if (chkPintura.checked) {
+        const val = iLastPintura.value;
+        if (val === 'nunca') {
+          addTask("Exterior Paint", "Waterproof coating and crack sealing", "Every 5 years", "High", "Cracks allow rain penetration, damaging structural concrete rebars and internal plaster.", 120, 950);
+        } else if (val === '5a') {
+          addTask("Exterior Paint", "Micro-crack seal touch-ups", "Every 3 years", "Medium", "Apply elastomeric waterproof paint to maintain wall integrity.", 80, 600);
+        }
+      }
+
+      if (age > 20) {
+        addTask("Structure", "Inspect old metallic water/gas lines", "Every 5 years", "Medium", "Older properties with galvanized steel or lead piping are prone to rust and blockages.", 50, 1200);
+      }
+
+      if (lastMaintTasks.length === 0) {
+        resultsList.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-light);">Select active systems to view recommended tasks.</div>`;
+      }
+
+      if (rCostPreventive) rCostPreventive.textContent = costPreventive.toLocaleString('en-US');
+      if (rCostReactive) rCostReactive.textContent = costReactive.toLocaleString('en-US');
+    }
+
+    // Attach events
+    const checks = [chkTermo, chkBomba, chkTablero, chkTecho, chkPintura];
+    checks.forEach(chk => {
+      if (chk) chk.addEventListener('change', updateVisibility);
+    });
+
+    const inputs = [iAntiguedad, iInmueble, iLastTermo, iLastBomba, iLastTablero, iLastTecho, iLastPintura];
+    inputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateMaint);
+    });
+
+    // Init
+    updateVisibility();
+
+    // Print event
+    const btnPrint = document.getElementById('maint-en-btn-print');
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        const pDate = document.getElementById('maint-en-print-date');
+        const pTipo = document.getElementById('maint-en-print-tipo');
+        const tbody = document.getElementById('maint-en-print-tbody');
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('en-US') + ' ' + today.toLocaleTimeString('en-US');
+        }
+
+        if (pTipo) {
+          pTipo.textContent = iInmueble.options[iInmueble.selectedIndex].text + ` (Age: ${iAntiguedad.value} years)`;
+        }
+
+        if (tbody) {
+          tbody.innerHTML = '';
+          lastMaintTasks.forEach(task => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><strong>${task.system}</strong></td>
+              <td><strong>${task.taskName}</strong><br><span style="font-size:0.78rem;color:#666;">${task.desc}</span></td>
+              <td>${task.freq}</td>
+              <td style="color:${task.priority === 'High' ? '#c65353' : (task.priority === 'Medium' ? '#ff9800' : '#00E5FF')}; font-weight:bold;">${task.priority}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        document.body.classList.add('printing-maint-en');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-maint-en'), { once: true });
+      });
+    }
+  });
+</script>

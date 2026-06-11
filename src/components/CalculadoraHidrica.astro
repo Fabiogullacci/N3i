@@ -1,0 +1,507 @@
+---
+// src/components/CalculadoraHidrica.astro
+// Calculadora de Tanques, Bombas de Agua y Presión N3i (Turquesa Theme)
+---
+<section class="section section-alt" id="calc-hidrica">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #3FC6B4;">Gestión Hídrica & Plomería</span>
+      <h2 class="section-title">Calculadora de Reserva Hídrica y Presión</h2>
+      <p class="section-desc">
+        Dimensione el volumen de sus tanques de reserva (cisterna y elevado) y la bomba elevadora. Analice la presión de sus duchas y estime el costo eléctrico mensual de bombeo.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Formulario de Entrada (Parámetros del Inmueble) -->
+      <div class="calc-appliances card reveal">
+        <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          Parámetros de la Instalación
+        </h3>
+        
+        <div class="form-group">
+          <label>Tipo de Inmueble (Dotación de Agua)</label>
+          <select id="hid-inmueble" class="calc-select" style="border-color: #3FC6B4;">
+            <option value="250">Vivienda Unifamiliar / Casa (250 Lts/persona/día)</option>
+            <option value="300">Edificio de Departamentos (300 Lts/persona/día)</option>
+            <option value="150">Industria / Galpón (150 Lts por operario/día)</option>
+            <option value="100">Oficina / Administración (100 Lts por empleado/día)</option>
+          </select>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Nº de Personas / Usuarios</label>
+            <input type="number" id="hid-personas" class="calc-input" value="4" min="1" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Altura a Elevar (m)</label>
+            <input type="number" id="hid-altura" class="calc-input" value="6.0" min="1" step="0.5" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Desde la bomba hasta la entrada del tanque de techo.</small>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Baños Completos</label>
+            <input type="number" id="hid-banos" class="calc-input" value="2" min="0" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Cocinas / Lavaderos</label>
+            <input type="number" id="hid-cocinas" class="calc-input" value="1" min="0" step="1" />
+          </div>
+        </div>
+
+        <!-- Nueva Sección: Presión y Confort -->
+        <h4 style="font-size: 0.95rem; margin-top: 15px; margin-bottom: 12px; color: var(--text-primary);">Evaluación de Presión Sanitaria</h4>
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Duchas Simultáneas Máximas</label>
+            <input type="number" id="hid-duchas-sim" class="calc-input" value="1" min="1" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Altura al Baño más Alto</label>
+            <select id="hid-altura-libre" class="calc-select">
+              <option value="alta">Suficiente (Tanque de techo $\ge$ 4m sobre la ducha más alta)</option>
+              <option value="baja">Insuficiente (Tanque de techo &lt; 4m sobre la ducha - Presión escasa)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de Resultados y Costos de Energía -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          
+          <!-- Tarifa de Electricidad de referencia -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 8px; margin-bottom: 15px;">
+            <label for="hid-cost-kwh" style="display: block; font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 5px;">Costo de Energía de Referencia ($/kWh):</label>
+            <input type="number" id="hid-cost-kwh" class="calc-input" value="115" min="1" style="padding: 8px 12px; font-size: 0.9rem;" />
+          </div>
+
+          <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem;">
+            Dimensionamiento Sugerido
+          </h3>
+          
+          <div class="result-summary" style="background: rgba(63, 198, 180, 0.08); border-left: 4px solid #3FC6B4; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; line-height: 1.5;">
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Reserva Diaria Total: <strong id="hid-res-rtd" style="color: var(--text-primary);">0 Lts/día</strong></p>
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Tanque Cisterna Inferior (40%): <strong id="hid-res-cisterna" style="color: var(--text-primary);">0 Litros</strong></p>
+            <p style="margin: 0; color: var(--text-secondary);">Tanque Elevado de Techo (60%): <strong id="hid-res-elevado" style="color: var(--text-primary);">0 Litros</strong></p>
+          </div>
+
+          <!-- Bomba Recomendada Principal -->
+          <div class="main-result" style="text-align: center; margin: 15px 0;">
+            <span style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 3px;">Potencia de Bomba Elevadora:</span>
+            <div id="hid-res-hp" style="font-size: 2.8rem; font-weight: 800; color: #3FC6B4; line-height: 1;">0.5 HP</div>
+            <span style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 4px;">Tipo: Centrífuga o Elevadora Silenciosa</span>
+          </div>
+
+          <!-- Cañería sugerida -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+            <span style="font-size: 0.78rem; color: var(--text-secondary);">Cañería Termofusión Sugerida (Impulsión):</span>
+            <strong id="hid-res-cano" style="display: block; font-size: 1.1rem; color: var(--text-primary); margin-top: 3px;">3/4" (25 mm)</strong>
+          </div>
+
+          <!-- Diagnóstico de la Huella Hídrica (OMS) -->
+          <div class="result-alert" id="hid-water-footprint-alert" style="padding: 10px 12px; border-radius: 8px; font-size: 0.8rem; line-height: 1.4; margin-bottom: 12px;">
+            <!-- Dinámico por JS -->
+          </div>
+
+          <!-- Recomendación de Bomba Presurizadora -->
+          <div class="result-alert" id="hid-pressure-alert" style="padding: 10px 12px; border-radius: 8px; font-size: 0.8rem; line-height: 1.4; border-left: 4px solid #00bcd4; background: rgba(0, 188, 212, 0.06); color: var(--text-primary); margin-bottom: 12px;">
+            <!-- Dinámico por JS -->
+          </div>
+
+          <!-- Consumo y Costo Mensual de Bombeo -->
+          <div style="background: rgba(63, 198, 180, 0.05); border: 1px solid rgba(63, 198, 180, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 15px;" id="hid-pump-energy-card">
+            <h4 style="color: #3fc6b4; font-size: 0.82rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; font-family: var(--font-title);">
+              <span>⚡</span> Consumo Eléctrico de Bombeo
+            </h4>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45;">
+              Funcionamiento del motor: <strong>~<span id="hid-pump-hours-daily">1.2</span> hs/día</strong> para llenar el tanque.
+              <br>
+              Energía mensual estimada: <strong><span id="hid-pump-kwh-mensual">0.0</span> kWh/mes</strong>.
+              <br>
+              Costo de bombeo mensual: <strong style="color: #3fc6b4;">$ <span id="hid-pump-cost-mensual">0</span> ARS</strong>.
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="/#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; background: #3FC6B4; color: #000; box-shadow: 0 4px 15px rgba(63, 198, 180, 0.3);">
+              Solicitar Plomero Matriculado
+              <span class="btn-icon">💧</span>
+            </a>
+            <button type="button" id="hid-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; border-color: #3FC6B4; color: var(--text-primary); background: transparent;">
+              Imprimir Informe Hídrico
+              <span class="btn-icon" style="background: transparent;">🖨️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consejos Profesionales del Gasista/Plomero Matriculado -->
+    <div class="card reveal" style="margin-top: 40px; border-top: 3px solid #3FC6B4;">
+      <h3 style="color: #3FC6B4; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+        <span>💡</span> Consejos del Ingeniero Hidráulico para tus Cañerías
+      </h3>
+      <div class="gas-tips-grid">
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">🚰</div>
+          <div>
+            <h4 class="gas-tip-title">Aireadores en Griferías</h4>
+            <p class="gas-tip-desc">Colocar aireadores/atomizadores en la punta de las canillas de baño y cocina reduce el caudal físico hasta un 50%, mezclándolo con aire. Se siente la misma presión pero se ahorran miles de litros al mes.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">🧼</div>
+          <div>
+            <h4 class="gas-tip-title">Limpieza Anual de Tanques</h4>
+            <p class="gas-tip-desc">El tanque elevado acumula sedimentos (sarro, arena, bacterias) con el tiempo. Purge y desinfecte sus tanques al menos una vez al año para evitar obstrucciones en caños y cuidar la salud de su familia.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">🔌</div>
+          <div>
+            <h4 class="gas-tip-title">Automático de Tanque Seguro</h4>
+            <p class="gas-tip-desc">Use interruptores automáticos de nivel (flotantes eléctricos) trabajando a **bajo voltaje (24V)** con transformador en el tablero. Evite llevar 220V al techo; representa un grave peligro de electrocución en días de lluvia.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">🛡️</div>
+          <div>
+            <h4 class="gas-tip-title">Válvula de Retención (Clapet)</h4>
+            <p class="gas-tip-desc">Colocar una válvula de retención a la salida de la bomba evita que el agua del caño de subida retorne hacia la cisterna al apagarse el motor. Esto protege la bomba de golpes de ariete y previene que trabaje en seco.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Área oculta para el reporte impreso de Plomería e Hidráulica -->
+<div id="print-area-hid" class="print-only-hid">
+  <div class="print-header" style="border-bottom-color: #3FC6B4;">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #3FC6B4;">Reporte de Dimensionamiento Hidráulico y Presión</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Fecha:</strong> <span id="hid-print-date"></span></p>
+    <p><strong>Tipo de Documento:</strong> Memoria de Cálculo Sanitaria y Estimación de Bombeo</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Parámetro de Entrada Sanitario</th>
+        <th>Detalle / Valor Ingresado</th>
+      </tr>
+    </thead>
+    <tbody id="hid-print-tbody">
+      <!-- Rellenado por JS -->
+    </tbody>
+    <tfoot>
+      <tr>
+        <td style="text-align: right;"><strong>Consumo Diario Estimado (RTD):</strong></td>
+        <td><strong id="hid-print-rtd">0 Lts</strong></td>
+      </tr>
+      <tr>
+        <td style="text-align: right;"><strong>Tanque Cisterna Inferior (40%):</strong></td>
+        <td><strong id="hid-print-cisterna">0 Lts</strong></td>
+      </tr>
+      <tr>
+        <td style="text-align: right;"><strong>Tanque Elevado de Techo (60%):</strong></td>
+        <td><strong id="hid-print-elevado">0 Lts</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <div style="background: rgba(63, 198, 180, 0.08); padding: 15px; border-radius: 8px; border-left: 5px solid #3FC6B4; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #2a8f82; font-size: 1.1rem;">Sistema de Elevación Recomendado</h3>
+    <p style="font-size: 1.1rem; margin-bottom: 5px;"><strong>Potencia Sugerida de Bomba Elevadora:</strong> <span id="hid-print-hp" style="font-weight: 800;"></span></p>
+    <p style="font-size: 0.9rem; margin-bottom: 5px;"><strong>Cañería de Termofusión Sugerida:</strong> <span id="hid-print-cano" style="font-weight: 700;"></span></p>
+    <p style="font-size: 0.9rem; color: #555;">(Cálculo dimensionado para elevar agua a <span id="hid-print-altura"></span> metros físicos en un lapso de 2 horas de bombeo).</p>
+  </div>
+
+  <div style="background: rgba(0, 188, 212, 0.08); padding: 15px; border-radius: 8px; border-left: 5px solid #00bcd4; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #00bcd4; font-size: 1.1rem;">Análisis de Confort, Presión y Huella Hídrica</h3>
+    <p style="font-size: 1rem; margin-bottom: 5px;" id="hid-print-footprint-text"></p>
+    <p style="font-size: 1rem; margin-bottom: 5px;" id="hid-print-pressure-text"></p>
+  </div>
+
+  <div style="background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #444; font-size: 1.1rem;">Costos de Operación Eléctrica del Motor</h3>
+    <p style="font-size: 0.95rem; margin: 0;">Consumo Eléctrico Proyectado: <strong id="hid-print-pump-kwh">0 kWh/mes</strong> (Uso: <span id="hid-print-pump-hours">0</span> hs/día).</p>
+    <p style="font-size: 1.1rem; margin-top: 5px; color: #3FC6B4;"><strong>Gasto Eléctrico Estimado de Bombeo: $ <span id="hid-print-pump-cost">0</span> ARS/mes</strong>.</p>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Nota Técnica: Los cálculos sanitarios se realizan en base a las recomendaciones del Reglamento de Obras Sanitarias de la Nación (OSN). El tendido de cañerías definitivo y balance de caudales debe ser realizado en obra por un plomero o instalador matriculado de N3i.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">Para coordinar un tendido o inspección sanitaria presencial, el contacto está disponible en <strong>www.n3i.com.ar</strong> o al WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  .print-only-hid {
+    display: none;
+  }
+
+  @media print {
+    body.printing-hid .header, 
+    body.printing-hid .footer, 
+    body.printing-hid .section-header, 
+    body.printing-hid .calculator-grid, 
+    body.printing-hid .section { 
+      display: none !important; 
+    }
+    body.printing-hid .print-only-hid {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+      padding: 1.5cm;
+    }
+    .print-only-hid .print-header { display: flex; align-items: center; border-bottom: 2px solid #3FC6B4; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-hid .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-hid .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-hid .print-table th, .print-only-hid .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-hid .print-table th { background-color: #f5f5f5; color: #333; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inputs
+    const iInmueble = document.getElementById('hid-inmueble') as HTMLSelectElement;
+    const iPersonas = document.getElementById('hid-personas') as HTMLInputElement;
+    const iAltura = document.getElementById('hid-altura') as HTMLInputElement;
+    const iBanos = document.getElementById('hid-banos') as HTMLInputElement;
+    const iCocinas = document.getElementById('hid-cocinas') as HTMLInputElement;
+    const iDuchasSim = document.getElementById('hid-duchas-sim') as HTMLInputElement;
+    const iAlturaLibre = document.getElementById('hid-altura-libre') as HTMLSelectElement;
+
+    const costKwhInput = document.getElementById('hid-cost-kwh') as HTMLInputElement;
+
+    // Outputs UI
+    const rRtd = document.getElementById('hid-res-rtd');
+    const rCisterna = document.getElementById('hid-res-cisterna');
+    const rElevado = document.getElementById('hid-res-elevado');
+    const rHp = document.getElementById('hid-res-hp');
+    const rCano = document.getElementById('hid-res-cano');
+    
+    const rFootprintAlert = document.getElementById('hid-water-footprint-alert');
+    const rPressureAlert = document.getElementById('hid-pressure-alert');
+
+    const rPumpHoursDaily = document.getElementById('hid-pump-hours-daily');
+    const rPumpKwhMensual = document.getElementById('hid-pump-kwh-mensual');
+    const rPumpCostMensual = document.getElementById('hid-pump-cost-mensual');
+
+    const btnPrint = document.getElementById('hid-btn-print');
+
+    function formatNumber(num: number, decimals: number = 0): string {
+      return num.toLocaleString('es-AR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function roundTank(liters: number) {
+      const standard = [500, 750, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 10000];
+      for (let s of standard) {
+        if (liters <= s) return s;
+      }
+      return Math.ceil(liters / 1000) * 1000;
+    }
+
+    function calculatePumpHp(caudal_lh: number, height_m: number) {
+      // Altura manométrica (Altura física + 20% pérdidas de carga)
+      const H = height_m * 1.2;
+      const Q_ls = caudal_lh / 3600;
+      // HP = (Q_ls * H) / (75 * 0.65 eficiencia) => Q_ls * H / 48.75
+      const hp_calc = (Q_ls * H) / 45;
+      
+      const standardHp = [0.5, 0.75, 1.0, 1.5, 2.0, 3.0];
+      for (let h of standardHp) {
+        if (hp_calc <= h) return h;
+      }
+      return Math.ceil(hp_calc); 
+    }
+
+    function calculatePipe(caudal_lh: number) {
+      if (caudal_lh <= 1500) return '3/4" (25 mm)';
+      if (caudal_lh <= 3000) return '1" (32 mm)';
+      if (caudal_lh <= 5500) return '1 1/4" (40 mm)';
+      if (caudal_lh <= 9000) return '1 1/2" (50 mm)';
+      return '2" (63 mm)';
+    }
+
+    function calculateWater() {
+      if (!iPersonas) return;
+
+      const litrosPerPersona = parseInt(iInmueble.value) || 250;
+      const personas = parseInt(iPersonas.value) || 0;
+      const altura = parseFloat(iAltura.value) || 0;
+      const banos = parseInt(iBanos.value) || 0;
+      const cocinas = parseInt(iCocinas.value) || 0;
+      const duchasSim = parseInt(iDuchasSim.value) || 1;
+      const alturaLibre = iAlturaLibre.value || 'alta';
+
+      const costKwh = parseFloat(costKwhInput?.value) || 115;
+
+      // Reserva Total Diaria (RTD)
+      const rtd = (personas * litrosPerPersona) + (banos * 150) + (cocinas * 50);
+      
+      // Proporciones (40% cisterna inferior, 60% tanque de techo elevado)
+      const rawCisterna = rtd * 0.4;
+      const rawElevado = rtd * 0.6;
+
+      const volCisterna = roundTank(rawCisterna);
+      const volElevado = roundTank(rawElevado);
+
+      // Caudal de bombeo (llenar tanque en un lapso de 2 horas)
+      const caudalBombaLh = volElevado / 2;
+
+      const hp = calculatePumpHp(caudalBombaLh, altura);
+      const cano = calculatePipe(caudalBombaLh);
+
+      // Update Screen Básica
+      if (rRtd) rRtd.textContent = `${formatNumber(rtd)} Lts/día`;
+      if (rCisterna) rCisterna.textContent = `${formatNumber(volCisterna)} Litros (Mínimo)`;
+      if (rElevado) rElevado.textContent = `${formatNumber(volElevado)} Litros (Mínimo)`;
+      if (rHp) rHp.textContent = `${hp} HP`;
+      if (rCano) rCano.textContent = cano;
+
+      // 1. Diagnóstico de Huella Hídrica (OMS)
+      if (rFootprintAlert) {
+        const footprint = personas > 0 ? rtd / personas : 0;
+        if (footprint === 0) {
+          rFootprintAlert.style.display = 'none';
+        } else {
+          rFootprintAlert.style.display = 'block';
+          if (footprint <= 150) {
+            rFootprintAlert.style.backgroundColor = 'rgba(139, 195, 74, 0.08)';
+            rFootprintAlert.style.borderLeft = '4px solid var(--accent)';
+            rFootprintAlert.innerHTML = `🟢 <strong>Huella hídrica eficiente:</strong> ${footprint.toFixed(0)} Lts/persona/día. Cumple con los estándares sostenibles sugeridos por la OMS (150 Lts).`;
+          } else {
+            rFootprintAlert.style.backgroundColor = 'rgba(255, 152, 0, 0.08)';
+            rFootprintAlert.style.borderLeft = '4px solid #ff9800';
+            rFootprintAlert.innerHTML = `⚠️ <strong>Huella hídrica elevada:</strong> ${footprint.toFixed(0)} Lts/persona/día (Supera la recomendación de la OMS de 150 Lts). Se sugiere colocar aireadores en griferías para ahorrar hasta un 45%.`;
+          }
+        }
+      }
+
+      // 2. Recomendación de Presión / Presurizadora
+      if (rPressureAlert) {
+        if (rtd === 0) {
+          rPressureAlert.style.display = 'none';
+        } else {
+          rPressureAlert.style.display = 'block';
+          if (alturaLibre === 'baja' || duchasSim > 1) {
+            rPressureAlert.style.backgroundColor = 'rgba(0, 188, 212, 0.08)';
+            rPressureAlert.style.borderLeft = '4px solid #00bcd4';
+            rPressureAlert.innerHTML = `🚨 <strong>Presurización Requerida:</strong> Debido a la poca altura o duchas simultáneas, la ducha superior tendrá poca presión. Se recomienda instalar una <strong>Bomba Presurizadora de 0.33 HP o 0.5 HP</strong> bajo el colector de tanque de techo.`;
+          } else {
+            rPressureAlert.style.backgroundColor = 'rgba(139, 195, 74, 0.08)';
+            rPressureAlert.style.borderLeft = '4px solid var(--accent)';
+            rPressureAlert.innerHTML = `✅ <strong>Presión por Gravedad Correcta:</strong> La altura libre de $\ge$ 4 metros garantiza una presión natural estable ($\ge$ 0.4 bar) apta para el confort domiciliario básico.`;
+          }
+        }
+      }
+
+      // 3. Consumo Eléctrico de Bombeo
+      // Watts eléctricos estimando 65% de eficiencia del motor de la bomba
+      const hpWattsMap: Record<number, number> = { 0.5: 570, 0.75: 860, 1: 1150, 1.5: 1720, 2: 2300, 3: 3450 };
+      const wattsBomba = hpWattsMap[hp] || (hp * 1150);
+      
+      // Tiempo diario para bombear el 60% de RTD al tanque elevado a un caudal de (volElevado/2 L/h)
+      // Si el caudal es volElevado / 2, bombear el volumen elevado lleva exactamente 2 horas.
+      const dailyHours = rtd > 0 ? (rtd * 0.6) / (volElevado / 2) : 0;
+      const kwhMensualBomba = (wattsBomba / 1000) * dailyHours * 30;
+      const costoMensualBomba = kwhMensualBomba * costKwh;
+
+      if (rPumpHoursDaily) rPumpHoursDaily.textContent = dailyHours.toFixed(1);
+      if (rPumpKwhMensual) rPumpKwhMensual.textContent = kwhMensualBomba.toFixed(1);
+      if (rPumpCostMensual) rPumpCostMensual.textContent = formatNumber(Math.round(costoMensualBomba));
+    }
+
+    // Attach events
+    const allInputs = document.querySelectorAll('#calc-hidrica input, #calc-hidrica select');
+    allInputs.forEach(el => {
+      el.addEventListener('input', calculateWater);
+    });
+
+    // Inicializar
+    calculateWater();
+
+    // Print logic
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        calculateWater(); // Asegurar cálculo actualizado
+
+        const tbody = document.getElementById('hid-print-tbody');
+        const pDate = document.getElementById('hid-print-date');
+        const pRtd = document.getElementById('hid-print-rtd');
+        const pCisterna = document.getElementById('hid-print-cisterna');
+        const pElevado = document.getElementById('hid-print-elevado');
+        const pHp = document.getElementById('hid-print-hp');
+        const pCano = document.getElementById('hid-print-cano');
+        const pAltura = document.getElementById('hid-print-altura');
+
+        const pFootprintText = document.getElementById('hid-print-footprint-text');
+        const pPressureText = document.getElementById('hid-print-pressure-text');
+
+        const pPumpKwh = document.getElementById('hid-print-pump-kwh');
+        const pPumpHours = document.getElementById('hid-print-pump-hours');
+        const pPumpCost = document.getElementById('hid-print-pump-cost');
+        
+        if (!tbody || !pRtd) return;
+
+        // Limpiar tabla de impresión
+        tbody.innerHTML = '';
+        
+        const rows = [
+          { label: 'Destino del Inmueble', value: iInmueble.options[iInmueble.selectedIndex].text },
+          { label: 'Personas / Ocupantes', value: `${iPersonas.value} usuarios` },
+          { label: 'Puntos de Consumo', value: `${iBanos.value} Baños Completos y ${iCocinas.value} Cocinas/Lavaderos` },
+          { label: 'Altura Geométrica de Elevación', value: `${iAltura.value} metros físicos` },
+          { label: 'Uso de Duchas Simultáneas', value: `${iDuchasSim.value} ducha(s) corriendo` },
+          { label: 'Altura Disponible sobre Ducha Superior', value: iAlturaLibre.options[iAlturaLibre.selectedIndex].text }
+        ];
+
+        rows.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><strong>${row.label}</strong></td><td>${row.value}</td>`;
+          tbody.appendChild(tr);
+        });
+
+        // Totales de tanques
+        const rtdVal = parseInt(rRtd?.textContent?.replace(/\./g, '') || '0');
+        pRtd.textContent = rtdVal > 0 ? formatNumber(rtdVal) + ' Lts/día' : "0 Lts/día";
+        if (pCisterna && rCisterna) pCisterna.textContent = rCisterna.textContent || "";
+        if (pElevado && rElevado) pElevado.textContent = rElevado.textContent || "";
+
+        if (pHp && rHp) pHp.textContent = rHp.textContent || "";
+        if (pCano && rCano) pCano.textContent = rCano.textContent || "";
+        if (pAltura && iAltura) pAltura.textContent = `${(parseFloat(iAltura.value) * 1.2).toFixed(1)} m.c.a. (incluye 20% fricción)`;
+
+        // Huellas e Indicadores
+        if (pFootprintText && rFootprintAlert) pFootprintText.innerHTML = rFootprintAlert.innerHTML;
+        if (pPressureText && rPressureAlert) pPressureText.innerHTML = rPressureAlert.innerHTML;
+
+        // Bombeo eléctrico
+        if (pPumpKwh && rPumpKwhMensual) pPumpKwh.textContent = rPumpKwhMensual.textContent + ' kWh/mes';
+        if (pPumpHours && rPumpHoursDaily) pPumpHours.textContent = rPumpHoursDaily.textContent;
+        if (pPumpCost && rPumpCostMensual) pPumpCost.textContent = rPumpCostMensual.textContent;
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('es-AR') + ' ' + today.toLocaleTimeString('es-AR');
+        }
+
+        document.body.classList.add('printing-hid');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-hid'), { once: true });
+      });
+    }
+  });
+</script>

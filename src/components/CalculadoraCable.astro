@@ -1,0 +1,521 @@
+---
+// src/components/CalculadoraCable.astro
+// Calculadora de Caída de Tensión y Sección de Conductores (Cables) - Theme Copper/Orange (#FF6D00)
+---
+<section class="section section-alt" id="calc-cable">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #FF6D00;">Ingeniería Eléctrica</span>
+      <h2 class="section-title">Calculadora de Sección de Cable y Caída de Tensión</h2>
+      <p class="section-desc">
+        Dimensione la sección reglamentaria de conductores eléctricos (cables) de cobre o aluminio según su corriente admisible y el límite de caída de tensión de la AEA para evitar recalentamientos, peligro de incendio y pérdidas de energía.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Formulario de Entrada -->
+      <div class="calc-appliances card reveal">
+        <h3 style="color: #FF6D00; border-bottom: 1px solid rgba(255, 109, 0, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          Parámetros Eléctricos de la Carga
+        </h3>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Tipo de Red (Fases)</label>
+            <select id="cab-fase" class="calc-select" style="border-color: #FF6D00;">
+              <option value="monofasica" selected>Monofásica (220V)</option>
+              <option value="trifasica">Trifásica (380V)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tensión en Bornes (V)</label>
+            <input type="number" id="cab-tension" class="calc-input" value="220" min="110" max="440" />
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Potencia Consumida (Watts)</label>
+            <input type="number" id="cab-potencia" class="calc-input" value="4400" min="100" step="100" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Potencia total activa de la carga.</small>
+          </div>
+          <div class="form-group">
+            <label>Corriente Nominal (A)</label>
+            <input type="number" id="cab-corriente" class="calc-input" value="22.2" readonly style="background: rgba(255,255,255,0.02); opacity: 0.8;" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Corriente calculada en amperios.</small>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Longitud del Tendido (m)</label>
+            <input type="number" id="cab-largo" class="calc-input" value="40" min="1" step="1" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Distancia lineal de cables (ida/vuelta).</small>
+          </div>
+          <div class="form-group">
+            <label>Factor de Potencia (Cos φ)</label>
+            <input type="number" id="cab-cosphi" class="calc-input" value="0.9" min="0.5" max="1.0" step="0.05" />
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Material Conductor</label>
+            <select id="cab-material" class="calc-select">
+              <option value="cobre" selected>Cobre (Electrolítico)</option>
+              <option value="aluminio">Aluminio</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Instalación / Canalización</label>
+            <select id="cab-canalizacion" class="calc-select">
+              <option value="caneria" selected>En cañería embutida / Conductos</option>
+              <option value="subterraneo">Subterráneo (Enterrado directo)</option>
+              <option value="aire">Al aire libre / Bandeja perforada</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Límite Admisible de Caída de Tensión (ΔV)</label>
+          <select id="cab-caida-max" class="calc-select">
+            <option value="3" selected>3% - Fuerza motriz / Motores (Recomendado AEA)</option>
+            <option value="5">5% - Iluminación y usos generales</option>
+            <option value="1">1% - Circuitos de control y alta precisión</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Panel de Resultados -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="color: #FF6D00; border-bottom: 1px solid rgba(255, 109, 0, 0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem;">
+            Sección y Desempeño Calculado
+          </h3>
+          
+          <div class="result-summary" style="background: rgba(255, 109, 0, 0.08); border-left: 4px solid #FF6D00; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; line-height: 1.5;">
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Intensidad de Corriente (I): <strong id="cab-res-corriente" style="color: var(--text-primary);">0.0 A</strong></p>
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Corriente Admisible del Cable (Iz): <strong id="cab-res-admisible" style="color: var(--text-primary);">0.0 A</strong></p>
+            <p style="margin: 0; color: var(--text-secondary);">Resistencia del Conductor: <strong id="cab-res-resistencia" style="color: var(--text-primary);">0.00 \Omega</strong></p>
+          </div>
+
+          <!-- Sección Sugerida -->
+          <div class="main-result" style="text-align: center; margin: 15px 0;">
+            <span style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 3px;">Sección Sugerida de Conductor:</span>
+            <div id="cab-res-seccion" style="font-size: 2.8rem; font-weight: 800; color: #FF6D00; line-height: 1;">0.0 mm²</div>
+            <span id="cab-res-caida-real" style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-top: 4px;">Caída real: 0.0% (0.0 V)</span>
+          </div>
+
+          <!-- Pérdida Joule -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+            <span style="font-size: 0.78rem; color: var(--text-secondary); display: block; margin-bottom: 4px;">Pérdida de Potencia en Cable (Efecto Joule):</span>
+            <strong id="cab-res-perdida" style="font-size: 1.1rem; color: var(--text-primary);">0.0 Watts</strong>
+            <small style="color: var(--text-muted); font-size: 0.7rem; display: block; margin-top: 2px;">Calor disipado a lo largo del tendido.</small>
+          </div>
+
+          <!-- Alertas -->
+          <div class="result-alert" id="cab-warning-alert" style="padding: 10px 12px; border-radius: 8px; font-size: 0.8rem; line-height: 1.4; margin-bottom: 12px; display: none;">
+            <!-- Dinámico por JS -->
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="/#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; background: #FF6D00; color: #fff; box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);">
+              Consultar Electricista Matriculado
+              <span class="btn-icon">⚡</span>
+            </a>
+            <button type="button" id="cab-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; border-color: #FF6D00; color: var(--text-primary); background: transparent;">
+              Imprimir Memoria de Cálculo
+              <span class="btn-icon" style="background: transparent;">🖨️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consejos Eléctricos -->
+    <div class="card reveal" style="margin-top: 40px; border-top: 3px solid #FF6D00;">
+      <h3 style="color: #FF6D00; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+        <span>💡</span> Consejos del Electricista para un Cableado Seguro
+      </h3>
+      <div class="gas-tips-grid">
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FF6D00;">🔥</div>
+          <div>
+            <h4 class="gas-tip-title">Peligro Joule y Caída de Tensión</h4>
+            <p class="gas-tip-desc">Un cable demasiado fino tiene alta resistencia eléctrica. Al circular corriente, genera calor (Efecto Joule) provocando caídas de tensión que pueden dañar motores y causar cortocircuitos o incendios.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FF6D00;">🛡️</div>
+          <div>
+            <h4 class="gas-tip-title">Coordinación de Protecciones</h4>
+            <p class="gas-tip-desc">El fusible o la llave termomagnética (térmica) del tablero debe elegirse para proteger el cable, no la carga. Se debe cumplir la regla: **$I_n \le I_z$** (la térmica debe cortar antes de que el cable supere su corriente admisible).</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FF6D00;">📏</div>
+          <div>
+            <h4 class="gas-tip-title">Cables Subterráneos (Sintenax)</h4>
+            <p class="gas-tip-desc">Para tendidos exteriores bajo tierra, utilice cables con doble aislación (IRAM 2178) a una profundidad mínima de **0.7 metros**, protegidos por ladrillos superiores y cinta de advertencia reglamentaria.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FF6D00;">🔌</div>
+          <div>
+            <h4 class="gas-tip-title">Factor de Agrupamiento</h4>
+            <p class="gas-tip-desc">Cuando pasamos muchos circuitos por una sola cañería, los cables no se refrigeran bien. La AEA exige aplicar factores de corrección por agrupamiento que disminuyen la corriente máxima admisible del cable.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reporte Impreso -->
+<div id="print-area-cab" class="print-only-cab">
+  <div class="print-header" style="border-bottom-color: #FF6D00;">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #FF6D00;">Memoria de Cálculo de Conductores y Caída de Tensión</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Fecha:</strong> <span id="cab-print-date"></span></p>
+    <p><strong>Norma de Referencia:</strong> AEA 90364 - Criterios de Caída de Tensión e Intensidad Admisible</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Parámetro de Diseño</th>
+        <th>Valor Configurado / Calculado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tipo de Sistema / Tensión Nominal</strong></td>
+        <td><span id="cab-print-sistema">-</span></td>
+      </tr>
+      <tr>
+        <td><strong>Potencia de la Carga</strong></td>
+        <td><span id="cab-print-potencia">-</span> Watts</td>
+      </tr>
+      <tr>
+        <td><strong>Corriente Nominal (Ib)</strong></td>
+        <td><strong><span id="cab-print-corriente">-</span> A</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Longitud del Tendido</strong></td>
+        <td><span id="cab-print-largo">-</span> metros</td>
+      </tr>
+      <tr>
+        <td><strong>Material / Canalización</strong></td>
+        <td><span id="cab-print-material-inst">-</span></td>
+      </tr>
+      <tr>
+        <td><strong>Límite ΔV Configurado</strong></td>
+        <td><span id="cab-print-limit-dv">-</span> %</td>
+      </tr>
+      <tr>
+        <td><strong>Sección Sugerida del Cable</strong></td>
+        <td><strong><span id="cab-print-seccion">-</span> mm²</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Corriente Admisible (Iz)</strong></td>
+        <td><span id="cab-print-iz">-</span> A</td>
+      </tr>
+      <tr>
+        <td><strong>Caída de Tensión Real</strong></td>
+        <td><strong><span id="cab-print-caida-real">-</span> % (<span id="cab-print-caida-volts">-</span> V)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Pérdida Joule a Plena Carga</strong></td>
+        <td><span id="cab-print-perdida">-</span> Watts</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Nota: El cálculo de la corriente admisible se basa en tablas simplificadas de la norma AEA 90364 a temperatura ambiente de 30°C. Si hay agrupamiento de cañerías o temperaturas elevadas, la sección nominal del cable deberá sobredimensionarse correspondientemente por un instalador matriculado.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">Para proyectos e instalaciones eléctricas con certificación en Bahía Blanca, el contacto está disponible en <strong>www.n3i.com.ar</strong> o al WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Scrollbar Custom Copper */
+  .materials-list::-webkit-scrollbar-thumb {
+    background: #FF6D00;
+  }
+
+  /* Mobile: reduce oversized display font */
+  @media (max-width: 480px) {
+    #cab-res-seccion {
+      font-size: 1.8rem !important;
+    }
+  }
+
+  /* Estilos de Impresión Cable */
+  .print-only-cab { display: none; }
+  @media print {
+    body.printing-cab .header, 
+    body.printing-cab .footer, 
+    body.printing-cab .section-header, 
+    body.printing-cab .calculator-grid, 
+    body.printing-cab .section { 
+      display: none !important; 
+    }
+    body.printing-cab .print-only-cab {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+    }
+    .print-only-cab .print-header { display: flex; align-items: center; border-bottom: 2px solid #FF6D00; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-cab .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-cab .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-cab .print-table th, .print-only-cab .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-cab .print-table th { background-color: #f5f5f5; color: #333; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iFase = document.getElementById('cab-fase') as HTMLSelectElement;
+    const iTension = document.getElementById('cab-tension') as HTMLInputElement;
+    const iPotencia = document.getElementById('cab-potencia') as HTMLInputElement;
+    const iCorriente = document.getElementById('cab-corriente') as HTMLInputElement;
+    const iLargo = document.getElementById('cab-largo') as HTMLInputElement;
+    const iCosphi = document.getElementById('cab-cosphi') as HTMLInputElement;
+    const iMaterial = document.getElementById('cab-material') as HTMLSelectElement;
+    const iCanalizacion = document.getElementById('cab-canalizacion') as HTMLSelectElement;
+    const iCaidaMax = document.getElementById('cab-caida-max') as HTMLSelectElement;
+
+    const rCorriente = document.getElementById('cab-res-corriente');
+    const rAdmisible = document.getElementById('cab-res-admisible');
+    const rResistencia = document.getElementById('cab-res-resistencia');
+    const rSeccion = document.getElementById('cab-res-seccion');
+    const rCaidaReal = document.getElementById('cab-res-caida-real');
+    const rPerdida = document.getElementById('cab-res-perdida');
+    const rWarningAlert = document.getElementById('cab-warning-alert');
+
+    let globalCableData: any = {};
+
+    function updateTensionDefault() {
+      if (iFase.value === 'monofasica') {
+        iTension.value = '220';
+      } else {
+        iTension.value = '380';
+      }
+      calculateCable();
+    }
+
+    function calculateCable() {
+      if (!iPotencia || !rSeccion) return;
+
+      const fase = iFase.value;
+      const tension = parseFloat(iTension.value) || 220;
+      const potencia = parseFloat(iPotencia.value) || 0;
+      const largo = parseFloat(iLargo.value) || 0;
+      const cosphi = parseFloat(iCosphi.value) || 0.9;
+      const material = iMaterial.value;
+      const canalizacion = iCanalizacion.value;
+      const caidaMax = parseFloat(iCaidaMax.value) || 3;
+
+      // 1. Calcular Corriente Nominal (Ib)
+      let corriente = 0;
+      if (fase === 'monofasica') {
+        corriente = potencia / (tension * cosphi);
+      } else {
+        corriente = potencia / (Math.sqrt(3) * tension * cosphi);
+      }
+      if (iCorriente) iCorriente.value = corriente.toFixed(1);
+      if (rCorriente) rCorriente.textContent = `${corriente.toFixed(1)} A`;
+
+      // Resistividad (rho)
+      // Cobre = 0.018 ohm*mm2/m, Aluminio = 0.028 ohm*mm2/m (a temp de regimen)
+      const rho = material === 'cobre' ? 0.018 : 0.028;
+
+      // Secciones estándar a evaluar (mm²)
+      const secciones = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70];
+
+      // Corrientes admisibles simplificadas según AEA 90364
+      // Cañería (embutido), Subterráneo, Aire libre
+      const tablaCobreCaneria = [15, 21, 28, 36, 50, 66, 88, 109, 131, 167];
+      const tablaCobreSubter = [22, 29, 38, 47, 63, 81, 104, 125, 150, 190];
+      const tablaCobreAire = [18, 25, 33, 42, 57, 75, 99, 121, 145, 182];
+
+      let suggestedSec = 1.5;
+      let realCaidaPerc = 0;
+      let realCaidaVolts = 0;
+      let resistance = 0;
+      let admisibleCurrent = 15;
+      let found = false;
+
+      for (let i = 0; i < secciones.length; i++) {
+        const s = secciones[i];
+
+        // Obtener Iz (admisible)
+        let iz = 0;
+        if (material === 'cobre') {
+          if (canalizacion === 'caneria') iz = tablaCobreCaneria[i];
+          else if (canalizacion === 'subterraneo') iz = tablaCobreSubter[i];
+          else iz = tablaCobreAire[i];
+        } else {
+          // El aluminio admite aprox 78% del cobre
+          if (canalizacion === 'caneria') iz = tablaCobreCaneria[i] * 0.78;
+          else if (canalizacion === 'subterraneo') iz = tablaCobreSubter[i] * 0.78;
+          else iz = tablaCobreAire[i] * 0.78;
+        }
+
+        // Calcular Caída de Tensión (ΔV)
+        let dv = 0;
+        if (fase === 'monofasica') {
+          // Monofásica: ΔV = (2 * rho * L * I) / S
+          dv = (2 * rho * largo * corriente) / s;
+        } else {
+          // Trifásica: ΔV = (sqrt(3) * rho * L * I) / S
+          dv = (Math.sqrt(3) * rho * largo * corriente) / s;
+        }
+        const dvPerc = (dv / tension) * 100;
+
+        // Criterios de Selección:
+        // 1. Iz >= corriente nominal (Ib)
+        // 2. dvPerc <= caidaMax
+        if (iz >= corriente && dvPerc <= caidaMax) {
+          suggestedSec = s;
+          realCaidaPerc = dvPerc;
+          realCaidaVolts = dv;
+          resistance = (rho * largo) / s;
+          admisibleCurrent = iz;
+          found = true;
+          break;
+        }
+      }
+
+      // Si ninguna sección es suficiente, tomamos la máxima (70mm2)
+      if (!found) {
+        suggestedSec = 70;
+        admisibleCurrent = material === 'cobre' ? 167 : 130;
+        resistance = (rho * largo) / 70;
+        if (fase === 'monofasica') {
+          realCaidaVolts = (2 * rho * largo * corriente) / 70;
+        } else {
+          realCaidaVolts = (Math.sqrt(3) * rho * largo * corriente) / 70;
+        }
+        realCaidaPerc = (realCaidaVolts / tension) * 100;
+      }
+
+      // Calcular Pérdida Joule (Watts)
+      // Ploss = n * I^2 * R
+      const nFases = fase === 'monofasica' ? 2 : 3;
+      const Ploss = nFases * Math.pow(corriente, 2) * resistance;
+
+      // Renderizar UI
+      rSeccion.textContent = `${suggestedSec.toFixed(1)} mm²`;
+      if (rAdmisible) rAdmisible.textContent = `${admisibleCurrent.toFixed(1)} A`;
+      if (rResistencia) rResistencia.textContent = `${resistance.toFixed(3)} \u03a9`;
+      if (rCaidaReal) rCaidaReal.textContent = `Caída real: ${realCaidaPerc.toFixed(2)}% (${realCaidaVolts.toFixed(1)} V)`;
+      if (rPerdida) rPerdida.textContent = `${Math.round(Ploss).toLocaleString('es-AR')} Watts`;
+
+      // Warnings
+      if (rWarningAlert) {
+        if (realCaidaPerc > caidaMax) {
+          rWarningAlert.style.display = 'block';
+          rWarningAlert.style.borderLeft = '4px solid #c65353';
+          rWarningAlert.style.background = 'rgba(198, 83, 83, 0.08)';
+          rWarningAlert.style.color = 'var(--text-primary)';
+          rWarningAlert.innerHTML = `⚠️ <strong>Peligro:</strong> Incluso con la sección máxima de 70 mm², la caída de tensión (${realCaidaPerc.toFixed(1)}%) supera el límite admisible del ${caidaMax}%. Reduzca la longitud del cable o la carga.`;
+        } else if (corriente > admisibleCurrent) {
+          rWarningAlert.style.display = 'block';
+          rWarningAlert.style.borderLeft = '4px solid #c65353';
+          rWarningAlert.style.background = 'rgba(198, 83, 83, 0.08)';
+          rWarningAlert.style.color = 'var(--text-primary)';
+          rWarningAlert.innerHTML = `⚠️ <strong>Alerta de Corriente:</strong> La corriente del circuito supera la capacidad admisible del cable más grueso. Riesgo de sobrecarga térmica extrema.`;
+        } else if (realCaidaPerc > 2.5) {
+          rWarningAlert.style.display = 'block';
+          rWarningAlert.style.borderLeft = '4px solid #ff9800';
+          rWarningAlert.style.background = 'rgba(255, 152, 0, 0.08)';
+          rWarningAlert.style.color = 'var(--text-primary)';
+          rWarningAlert.innerHTML = `💡 <strong>Aviso:</strong> La caída de tensión real (${realCaidaPerc.toFixed(1)}%) está cerca del límite reglamentario. Idealmente, sobredimensione un paso más el cable para reducir pérdidas de energía.`;
+        } else {
+          rWarningAlert.style.display = 'none';
+        }
+      }
+
+      globalCableData = {
+        fase,
+        tension,
+        potencia,
+        corriente,
+        largo,
+        material,
+        canalizacion,
+        caidaMax,
+        suggestedSec,
+        admisibleCurrent,
+        realCaidaPerc,
+        realCaidaVolts,
+        Ploss
+      };
+    }
+
+    // Attach events
+    iFase.addEventListener('change', updateTensionDefault);
+    const inputs = [iTension, iPotencia, iLargo, iCosphi, iMaterial, iCanalizacion, iCaidaMax];
+    inputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateCable);
+    });
+
+    // Init
+    calculateCable();
+
+    // Print event
+    const btnPrint = document.getElementById('cab-btn-print');
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        const pDate = document.getElementById('cab-print-date');
+        const pSistema = document.getElementById('cab-print-sistema');
+        const pPotencia = document.getElementById('cab-print-potencia');
+        const pCorriente = document.getElementById('cab-print-corriente');
+        const pLargo = document.getElementById('cab-print-largo');
+        const pMaterialInst = document.getElementById('cab-print-material-inst');
+        const pLimitDv = document.getElementById('cab-print-limit-dv');
+        const pSeccion = document.getElementById('cab-print-seccion');
+        const pIz = document.getElementById('cab-print-iz');
+        const pCaidaReal = document.getElementById('cab-print-caida-real');
+        const pCaidaVolts = document.getElementById('cab-print-caida-volts');
+        const pPerdida = document.getElementById('cab-print-perdida');
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('es-AR') + ' ' + today.toLocaleTimeString('es-AR');
+        }
+
+        if (globalCableData.suggestedSec) {
+          if (pSistema) pSistema.textContent = globalCableData.fase === 'monofasica' ? `Monofásico (${globalCableData.tension}V)` : `Trifásico (${globalCableData.tension}V)`;
+          if (pPotencia) pPotencia.textContent = globalCableData.potencia.toString();
+          if (pCorriente) pCorriente.textContent = globalCableData.corriente.toFixed(1);
+          if (pLargo) pLargo.textContent = globalCableData.largo.toString();
+          
+          let matLabel = globalCableData.material === 'cobre' ? "Cobre" : "Aluminio";
+          let canalLabel = "Cañería";
+          if (globalCableData.canalizacion === 'subterraneo') canalLabel = "Subterráneo";
+          if (globalCableData.canalizacion === 'aire') canalLabel = "Al aire libre";
+          if (pMaterialInst) pMaterialInst.textContent = `${matLabel} - ${canalLabel}`;
+          
+          if (pLimitDv) pLimitDv.textContent = globalCableData.caidaMax.toString();
+          if (pSeccion) pSeccion.textContent = globalCableData.suggestedSec.toFixed(1);
+          if (pIz) pIz.textContent = globalCableData.admisibleCurrent.toFixed(1);
+          if (pCaidaReal) pCaidaReal.textContent = globalCableData.realCaidaPerc.toFixed(2);
+          if (pCaidaVolts) pCaidaVolts.textContent = globalCableData.realCaidaVolts.toFixed(1);
+          if (pPerdida) pPerdida.textContent = Math.round(globalCableData.Ploss).toLocaleString('es-AR');
+        }
+
+        document.body.classList.add('printing-cab');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-cab'), { once: true });
+      });
+    }
+  });
+</script>

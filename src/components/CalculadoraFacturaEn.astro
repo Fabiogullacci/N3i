@@ -1,0 +1,751 @@
+---
+// CalculadoraFacturaEn.astro
+---
+
+<section class="section" id="calculadora-factura" style="background-color: var(--bg-alt); padding: 60px 0;">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle">Energy Audit</span>
+      <h2 class="section-title">Did you pay too much for electricity? Find out why</h2>
+      <p class="section-desc">
+        Compare your last two electricity bills (e.g., EDES or your local provider). 
+        The algorithm determines if the price jump was due to a <strong>hidden tariff increase</strong>, 
+        higher seasonal consumption, or if there is a suspected leak/broken thermostat in your home.
+      </p>
+    </div>
+
+    <div class="factura-grid">
+      <!-- Columna 1: Datos Facturas -->
+      <div class="card reveal">
+        <h3>Enter your bill details</h3>
+        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px;">
+          Look for the "Total to Pay" and the "Billed Consumption" (usually in kWh) on your bill.
+        </p>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="f-distribuidora" style="font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 5px;">Utility Provider:</label>
+          <select id="f-distribuidora" class="form-control form-input" style="border-color: var(--accent);">
+            <option value="manual">Manual (Enter custom tariff data)</option>
+            <option value="edes">EDES (Bahía Blanca / South of Buenos Aires)</option>
+            <option value="edenor">Edenor (AMBA - Residential R2)</option>
+            <option value="edesur">Edesur (AMBA - Residential R2)</option>
+            <option value="epe">EPE (Santa Fe - Residential R2)</option>
+            <option value="epec">EPEC (Córdoba - Residential R2)</option>
+          </select>
+        </div>
+
+        <div class="factura-row">
+          <div class="factura-col">
+            <h4 style="color: var(--accent); margin-bottom: 10px;">Previous Bill</h4>
+            <div class="form-group">
+              <label for="f1-kwh">Consumption (kWh):</label>
+              <input type="number" id="f1-kwh" class="form-control form-input" placeholder="E.g. 150" min="1">
+            </div>
+            <div class="form-group">
+              <label for="f1-monto">Total Amount ($):</label>
+              <input type="number" id="f1-monto" class="form-control form-input" placeholder="E.g. 15000" min="1">
+            </div>
+          </div>
+          
+          <div class="factura-col">
+            <h4 style="color: #f44336; margin-bottom: 10px;">Current Bill</h4>
+            <div class="form-group">
+              <label for="f2-mes">Billing Month:</label>
+              <select id="f2-mes" class="form-control form-input">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="f2-kwh">Consumption (kWh):</label>
+              <input type="number" id="f2-kwh" class="form-control form-input" placeholder="E.g. 210" min="1">
+            </div>
+            <div class="form-group">
+              <label for="f2-monto">Total Amount ($):</label>
+              <input type="number" id="f2-monto" class="form-control form-input" placeholder="E.g. 35000" min="1">
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion: Power Leakage Test -->
+        <div class="fuga-accordion" style="margin-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
+          <button type="button" id="btn-toggle-fuga" class="fuga-toggle-btn" style="width: 100%; display: flex; justify-content: space-between; align-items: center; background: none; border: none; padding: 0; color: #00E5FF; font-weight: 700; font-size: 1.1rem; cursor: pointer;">
+            <span>🔍 Power Leakage Test (Optional)</span>
+            <span id="fuga-toggle-icon">▼</span>
+          </button>
+          
+          <div id="fuga-panel" style="display: none; margin-top: 15px;">
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 15px;">
+              A ground leak can double your bill without you noticing. Follow these steps:
+            </p>
+            <ol style="font-size: 0.8rem; color: var(--text-secondary); padding-left: 15px; margin-bottom: 15px; line-height: 1.5; text-align: left;">
+              <li>Disconnect all appliances in your home (refrigerator, lamps, chargers). Do not switch off the main circuit breakers.</li>
+              <li>Go to your outdoor electricity meter.</li>
+              <li>Select your meter type below and enter the reading.</li>
+            </ol>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label for="fuga-tipo-medidor" style="display: block; margin-bottom: 5px;">Meter Type:</label>
+              <select id="fuga-tipo-medidor" class="form-control form-input">
+                <option value="digital">Digital (Blinking red LED light)</option>
+                <option value="analogo">Analog (Rotating metallic disk)</option>
+              </select>
+            </div>
+
+            <!-- Digital Meter Fields -->
+            <div id="fuga-campos-digital" class="form-group" style="margin-top: 10px; margin-bottom: 15px;">
+              <label for="fuga-pulsos" style="display: block; margin-bottom: 5px;">Red LED flashes in 1 minute:</label>
+              <input type="number" id="fuga-pulsos" class="form-control form-input" placeholder="E.g. 5" min="0" value="0">
+              <span style="font-size: 0.72rem; color: var(--text-light); display: block; margin-top: 5px;">If it doesn't flash, enter 0. Typical meter: 1000 imp/kWh.</span>
+            </div>
+
+            <!-- Analog Meter Fields -->
+            <div id="fuga-campos-analogo" class="form-group" style="margin-top: 10px; margin-bottom: 15px; display: none;">
+              <label for="fuga-segundos" style="display: block; margin-bottom: 5px;">Seconds per disk revolution:</label>
+              <input type="number" id="fuga-segundos" class="form-control form-input" placeholder="E.g. 45" min="0" value="0">
+              <span style="font-size: 0.72rem; color: var(--text-light); display: block; margin-top: 5px;">If the disk is completely still, enter 0.</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-analizar-factura" class="btn btn-primary" style="width: 100%; margin-top: 25px; justify-content: center;">
+          Generate N3i Diagnosis
+        </button>
+      </div>
+
+      <!-- Columna 2: Resultados -->
+      <div class="card reveal" style="transition-delay: 0.1s;">
+        <h3>Deviation Report</h3>
+        <div id="factura-resultado-placeholder" style="text-align: center; padding: 40px 20px; color: var(--text-light);">
+          <span style="font-size: 3rem; display: block; margin-bottom: 10px;">🧾</span>
+          Fill in the details and press the button to see if you were affected by a rate hike or if you have a consumption problem.
+        </div>
+
+        <div id="factura-resultado" style="display: none;">
+          <div class="kpi-grid">
+            <div class="kpi-box">
+              <span class="kpi-label">Real Rate (Before)</span>
+              <span class="kpi-value" id="kpi-tarifa1">$0/kWh</span>
+            </div>
+            <div class="kpi-box">
+              <span class="kpi-label">Real Rate (Current)</span>
+              <span class="kpi-value" id="kpi-tarifa2">$0/kWh</span>
+            </div>
+            <div class="kpi-box" style="grid-column: span 2;">
+              <span class="kpi-label">Actual Rate Increase + Taxes Included</span>
+              <span class="kpi-value" id="kpi-aumento-tarifa" style="color: var(--accent);">0%</span>
+            </div>
+          </div>
+
+          <div class="kpi-grid" style="margin-top: 15px;">
+            <div class="kpi-box">
+              <span class="kpi-label">Consumption Variation</span>
+              <span class="kpi-value" id="kpi-var-kwh">0%</span>
+            </div>
+            <div class="kpi-box" style="background-color: rgba(63, 198, 180, 0.1); border-color: var(--accent);">
+              <span class="kpi-label">Your Current Daily Spend</span>
+              <span class="kpi-value" id="kpi-gasto-diario" style="color: var(--accent);">$0</span>
+            </div>
+          </div>
+
+          <!-- Reference Tariff Breakdown -->
+          <div class="result-box" style="border: 1px solid rgba(0, 229, 255, 0.2); background: rgba(0, 229, 255, 0.03); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px;">
+            <span class="result-label" style="color: #00E5FF; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; margin-bottom: 10px;">
+              📊 Reference Tariff Breakdown
+            </span>
+            <div style="font-size: 0.85rem; line-height: 1.6;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-light);">Fixed Charge:</span>
+                <span id="fact-res-cargofijo" style="color: var(--text-primary); font-weight: 600;">$0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-light);">Net Energy Cost:</span>
+                <span id="fact-res-neto" style="color: var(--text-primary); font-weight: 600;">$0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 5px; padding-top: 5px;">
+                <span style="color: var(--text-light);">Estimated Taxes & Fees:</span>
+                <span id="fact-res-impuestos" style="color: #ff9800; font-weight: 600;">$0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(0, 229, 255, 0.2); margin-top: 5px; padding-top: 5px; font-weight: 700;">
+                <span style="color: #00E5FF;">Total Analyzed Bill:</span>
+                <span id="fact-res-total" style="color: #00E5FF;">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Módulo Climatológico -->
+          <div id="clima-alert" class="factura-alert" style="margin-top: 20px; background: rgba(33, 150, 243, 0.1); border-left-color: #2196F3; display: none;">
+            <h4 style="margin-bottom: 5px; color: #2196F3;">🌤️ Weather Context (Bahía Blanca)</h4>
+            <p id="clima-texto" style="font-size: 0.85rem; line-height: 1.5;"></p>
+          </div>
+
+          <div id="diagnostico-alerta" class="factura-alert" style="margin-top: 20px;">
+            <h4 id="diag-titulo" style="margin-bottom: 5px;">Diagnosis</h4>
+            <p id="diag-texto" style="font-size: 0.9rem; line-height: 1.5;"></p>
+          </div>
+
+          <!-- Alerta de Fuga de Corriente -->
+          <div id="fuga-resultado-alert" class="factura-alert" style="margin-top: 20px; display: none;">
+            <h4 id="fuga-titulo" style="margin-bottom: 5px;">Power Leakage Diagnosis</h4>
+            <div style="font-size: 0.85rem; line-height: 1.5;">
+              <p>Active Loss Detected: <strong id="fuga-res-watts" style="color: #f44336;">0 W</strong></p>
+              <p>Monthly Waste: <strong id="fuga-res-kwh">0 kWh/month</strong></p>
+              <p>Estimated Monthly Cost: <strong id="fuga-res-pesos" style="color: #f44336;">$0 /month</strong></p>
+              <p id="fuga-res-consejo" style="margin-top: 8px; color: var(--text-secondary);"></p>
+            </div>
+          </div>
+
+          <a href="/en#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 20px; background: var(--accent); color: #000000; box-shadow: 0 4px 15px rgba(63, 198, 180, 0.3);">
+            Consult an N3i Expert
+          </a>
+          <button id="btn-print-factura" class="btn btn-outline" style="width: 100%; justify-content: center; margin-top: 10px; border-color: var(--accent); color: var(--text-primary); background: transparent;">
+            Print Report
+            <span class="btn-icon" style="background: transparent;">🖨️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .factura-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  @media (min-width: 992px) {
+    .factura-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .factura-row {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+  }
+
+  @media (max-width: 600px) {
+    .factura-row {
+      flex-direction: column;
+    }
+  }
+
+  .factura-col {
+    flex: 1;
+    background: rgba(0,0,0,0.1);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .dark-mode .factura-col {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .form-input {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 10px 15px;
+    border-radius: 6px;
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .kpi-box {
+    background: var(--bg-color);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+  }
+
+  .kpi-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+
+  .kpi-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: var(--font-title);
+    color: var(--text-dark);
+  }
+
+  .factura-alert {
+    padding: 15px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 4px solid var(--border-color);
+  }
+
+  .alert-tarifazo {
+    background: rgba(255, 152, 0, 0.1);
+    border-left-color: #ff9800;
+  }
+
+  .alert-fuga {
+    background: rgba(244, 67, 54, 0.1);
+    border-left-color: #f44336;
+  }
+
+  .alert-normal {
+    background: rgba(139, 195, 74, 0.1);
+    border-left-color: var(--accent);
+  }
+
+  /* Print and Mobile Resets */
+  @media (max-width: 991px) {
+    .results-sticky {
+      position: static !important;
+    }
+  }
+
+  .print-only-factura {
+    display: none;
+  }
+
+  @media print {
+    body.printing-factura .header, 
+    body.printing-factura .footer, 
+    body.printing-factura .section-header, 
+    body.printing-factura .factura-grid, 
+    body.printing-factura #calculadora-factura,
+    body.printing-factura .section { 
+      display: none !important; 
+    }
+    body.printing-factura .print-only-factura {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000000;
+      background: #ffffff;
+      padding: 20px;
+    }
+    .print-only-factura .print-header { display: flex; align-items: center; border-bottom: 2px solid #00E5FF; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-factura .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-factura .print-header p { margin: 5px 0 0 0; color: #666; }
+    .print-only-factura .print-details { margin-bottom: 30px; font-size: 0.9rem; }
+    .print-only-factura .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-factura .print-table th, .print-only-factura .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-factura .print-table th { background-color: #f5f5f5; color: #333; }
+    .print-only-factura .print-footer { border-top: 1px solid #ddd; padding-top: 20px; }
+  }
+</style>
+
+<!-- Print Area for the Bill Audit Report -->
+<div id="print-area-factura" class="print-only-factura">
+  <div class="print-header">
+    <img src="/assets/img/logo.webp" alt="N3i Logo" width="80" />
+    <div>
+      <h2 style="color: #00E5FF;">Electrical Audit & Bill Report</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Date:</strong> <span id="fact-print-date"></span></p>
+    <p><strong>Reference Utility:</strong> <span id="fact-print-distribuidora"></span></p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Bill</th>
+        <th>Consumption (kWh)</th>
+        <th>Real Average Rate ($/kWh)</th>
+        <th>Total Amount Billed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Previous Bill</td>
+        <td id="fact-print-kwh1">0</td>
+        <td id="fact-print-tarifa1">$0.00</td>
+        <td id="fact-print-monto1">$0.00</td>
+      </tr>
+      <tr>
+        <td>Current Bill</td>
+        <td id="fact-print-kwh2">0</td>
+        <td id="fact-print-tarifa2">$0.00</td>
+        <td id="fact-print-monto2">$0.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="background: rgba(0, 229, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid #00E5FF; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #00E5FF;">Audit Tariff Breakdown</h3>
+    <div style="display: flex; gap: 40px;">
+      <p style="margin:0;"><strong>Fixed Charge:</strong> <span id="fact-print-cargofijo"></span></p>
+      <p style="margin:0;"><strong>Net Energy Cost:</strong> <span id="fact-print-neto"></span></p>
+      <p style="margin:0;"><strong>Estimated Taxes & Fees (~30%):</strong> <span id="fact-print-impuestos"></span></p>
+    </div>
+  </div>
+
+  <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border-left: 5px solid #00E5FF; margin-bottom: 20px; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; border-right: 1px solid #ddd;">
+    <h3 style="margin-top: 0; color: #00E5FF;" id="fact-print-diag-title">Deviation Diagnosis</h3>
+    <p style="font-size: 1.1rem; line-height: 1.5; margin: 0;" id="fact-print-diag-desc"></p>
+  </div>
+
+  <div id="fact-print-fuga-section" style="background: rgba(244, 67, 54, 0.05); padding: 20px; border-radius: 8px; border: 1px solid #f44336; margin-bottom: 20px; display: none;">
+    <h3 style="margin-top: 0; color: #f44336;" id="fact-print-fuga-title">Power Leakage Diagnosis</h3>
+    <div style="display: flex; gap: 40px; margin-bottom: 10px;">
+      <p style="margin:0;"><strong>Active Loss:</strong> <span id="fact-print-fuga-watts"></span></p>
+      <p style="margin:0;"><strong>Monthly Leakage Consumption:</strong> <span id="fact-print-fuga-kwh"></span></p>
+      <p style="margin:0;"><strong>Estimated Monthly Cost:</strong> <span id="fact-print-fuga-pesos"></span></p>
+    </div>
+    <p style="font-size: 0.95rem; line-height: 1.5; margin: 5px 0 0 0;" id="fact-print-fuga-desc"></p>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Technical Note: This bill and leakage analysis is performed based on AEA metrology and electrical safety criteria. If abnormal peaks or leaks above 100W are detected, wire insulation testing (megging) and distribution board audits by a certified electrician are recommended.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">To schedule a technical visit from certified engineers in Bahía Blanca, contact is available on WhatsApp +54 9 291 416-8232 or via <strong>www.n3i.com.ar</strong>.</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnAnalizar = document.getElementById('btn-analizar-factura');
+    const btnPrint = document.getElementById('btn-print-factura');
+    if (!btnAnalizar) return;
+
+    // Utility rate database
+    const tarifasDistribuidoras: Record<string, { rate: number; fixed: number; name: string }> = {
+      manual: { rate: 110.0, fixed: 5000, name: "Average Tariff" },
+      edes: { rate: 120.5, fixed: 6500, name: "EDES (Bahía Blanca)" },
+      edenor: { rate: 92.3, fixed: 4800, name: "Edenor (AMBA)" },
+      edesur: { rate: 92.3, fixed: 4800, name: "Edesur (AMBA)" },
+      epe: { rate: 128.9, fixed: 7200, name: "EPE (Santa Fe)" },
+      epec: { rate: 134.2, fixed: 7800, name: "EPEC (Córdoba)" }
+    };
+
+    // Toggle Leakage Accordion
+    const btnToggleFuga = document.getElementById('btn-toggle-fuga');
+    const fugaPanel = document.getElementById('fuga-panel');
+    const fugaToggleIcon = document.getElementById('fuga-toggle-icon');
+    
+    if (btnToggleFuga && fugaPanel && fugaToggleIcon) {
+      btnToggleFuga.addEventListener('click', () => {
+        const isHidden = fugaPanel.style.display === 'none';
+        fugaPanel.style.display = isHidden ? 'block' : 'none';
+        fugaToggleIcon.textContent = isHidden ? '▲' : '▼';
+      });
+    }
+
+    // Toggle Meter Fields
+    const selectMedidor = document.getElementById('fuga-tipo-medidor') as HTMLSelectElement;
+    const camposDigital = document.getElementById('fuga-campos-digital');
+    const camposAnalogo = document.getElementById('fuga-campos-analogo');
+
+    if (selectMedidor && camposDigital && camposAnalogo) {
+      selectMedidor.addEventListener('change', () => {
+        if (selectMedidor.value === 'digital') {
+          camposDigital.style.display = 'block';
+          camposAnalogo.style.display = 'none';
+        } else {
+          camposDigital.style.display = 'none';
+          camposAnalogo.style.display = 'block';
+        }
+      });
+    }
+
+    // Typical weather profiles for Bahía Blanca
+    const climaBahia: Record<number, { temp: string; estado: string; equipo: string; type: string }> = {
+      1: { temp: "30°C+", estado: "Very Hot", equipo: "Air Conditioning", type: "calor" },
+      2: { temp: "28°C", estado: "Hot", equipo: "Air Conditioning", type: "calor" },
+      3: { temp: "25°C", estado: "Mild", equipo: "Occasional Cooling", type: "templado" },
+      4: { temp: "20°C", estado: "Cool", equipo: "None", type: "neutro" },
+      5: { temp: "15°C", estado: "Moderate Cold", equipo: "Occasional Heaters", type: "frio" },
+      6: { temp: "3°C to 10°C", estado: "Very Cold", equipo: "Heaters / A/C on Heat mode", type: "frio" },
+      7: { temp: "2°C to 9°C", estado: "Very Cold", equipo: "Heaters / A/C on Heat mode", type: "frio" },
+      8: { temp: "5°C to 12°C", estado: "Cold", equipo: "Heaters", type: "frio" },
+      9: { temp: "15°C", estado: "Cool", equipo: "None", type: "neutro" },
+      10: { temp: "20°C", estado: "Mild", equipo: "None", type: "neutro" },
+      11: { temp: "25°C", estado: "Warm", equipo: "Occasional Cooling", type: "templado" },
+      12: { temp: "28°C+", estado: "Hot", equipo: "Air Conditioning", type: "calor" }
+    };
+
+    function formatNumber(num: number, decimals: number = 0): string {
+      return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    let globalTarifa1 = 0;
+    let globalTarifa2 = 0;
+    let globalVarTarifa = 0;
+    let globalVarKwh = 0;
+    let globalDiagnosticoDesc = '';
+    let globalFugaWatts = 0;
+    let globalFugaKwhMes = 0;
+    let globalFugaPesosMes = 0;
+    let globalFugaMessage = '';
+
+    btnAnalizar.addEventListener('click', () => {
+      const kwh1 = parseFloat((document.getElementById('f1-kwh') as HTMLInputElement).value);
+      const monto1 = parseFloat((document.getElementById('f1-monto') as HTMLInputElement).value);
+      const mes = parseInt((document.getElementById('f2-mes') as HTMLSelectElement).value);
+      const kwh2 = parseFloat((document.getElementById('f2-kwh') as HTMLInputElement).value);
+      const monto2 = parseFloat((document.getElementById('f2-monto') as HTMLInputElement).value);
+
+      if (!kwh1 || !monto1 || !kwh2 || !monto2) {
+        alert("Please, fill in all numerical fields for both bills.");
+        return;
+      }
+
+      // Utility Provider
+      const distribuidoraVal = (document.getElementById('f-distribuidora') as HTMLSelectElement)?.value || 'manual';
+      const distribuidora = tarifasDistribuidoras[distribuidoraVal];
+
+      // Calculations
+      const tarifa1 = monto1 / kwh1;
+      const tarifa2 = monto2 / kwh2;
+      globalTarifa1 = tarifa1;
+      globalTarifa2 = tarifa2;
+      
+      const varTarifa = ((tarifa2 - tarifa1) / tarifa1) * 100;
+      const varKwh = ((kwh2 - kwh1) / kwh1) * 100;
+      globalVarTarifa = varTarifa;
+      globalVarKwh = varKwh;
+      
+      // New KPIs: Daily Spend and Money Leaked
+      const gastoDiario = monto2 / 30; // Approx 30 days month
+      const difKwh = kwh2 - kwh1;
+      const dineroEnFuga = difKwh > 0 ? difKwh * tarifa2 : 0;
+
+      // Tariff Breakdown
+      const netoEnergia = kwh2 * distribuidora.rate;
+      const cargoFijo = distribuidora.fixed;
+      let impuestos = monto2 - (cargoFijo + netoEnergia);
+      if (impuestos < 0) impuestos = 0;
+
+      // Update Breakdown in UI
+      const resCargoFijo = document.getElementById('fact-res-cargofijo');
+      const resNeto = document.getElementById('fact-res-neto');
+      const resImpuestos = document.getElementById('fact-res-impuestos');
+      const resTotal = document.getElementById('fact-res-total');
+
+      if (resCargoFijo) resCargoFijo.textContent = `$${formatNumber(Math.round(cargoFijo))}`;
+      if (resNeto) resNeto.textContent = `$${formatNumber(Math.round(netoEnergia))}`;
+      if (resImpuestos) resImpuestos.textContent = `$${formatNumber(Math.round(impuestos))}`;
+      if (resTotal) resTotal.textContent = `$${formatNumber(Math.round(monto2))}`;
+
+      // Power Leakage
+      let fugaWatts = 0;
+      const tipoMedidor = (document.getElementById('fuga-tipo-medidor') as HTMLSelectElement)?.value || 'digital';
+      const pulsosVal = parseFloat((document.getElementById('fuga-pulsos') as HTMLInputElement)?.value || '0');
+      const segundosVal = parseFloat((document.getElementById('fuga-segundos') as HTMLInputElement)?.value || '0');
+
+      if (fugaPanel && fugaPanel.style.display !== 'none') {
+        if (tipoMedidor === 'digital' && pulsosVal > 0) {
+          fugaWatts = pulsosVal * 60; // 1 flash/min = 60W
+        } else if (tipoMedidor === 'analogo' && segundosVal > 0) {
+          fugaWatts = Math.round(2160 / segundosVal); // Kd = 0.6 Wh/rev -> (3600 * 0.6) / sec = 2160 / sec
+        }
+      }
+      globalFugaWatts = fugaWatts;
+
+      const fugaKwhMes = (fugaWatts * 24 * 30) / 1000;
+      const fugaPesosMes = fugaKwhMes * tarifa2;
+      globalFugaKwhMes = fugaKwhMes;
+      globalFugaPesosMes = fugaPesosMes;
+
+      // UI Updates
+      document.getElementById('factura-resultado-placeholder')!.style.display = 'none';
+      document.getElementById('factura-resultado')!.style.display = 'block';
+
+      document.getElementById('kpi-tarifa1')!.textContent = `$${tarifa1.toFixed(2)}`;
+      document.getElementById('kpi-tarifa2')!.textContent = `$${tarifa2.toFixed(2)}`;
+      
+      const elTarifa = document.getElementById('kpi-aumento-tarifa')!;
+      elTarifa.textContent = `${varTarifa > 0 ? '+' : ''}${varTarifa.toFixed(1)}%`;
+      elTarifa.style.color = varTarifa > 10 ? '#f44336' : 'var(--accent)';
+
+      const elVarKwh = document.getElementById('kpi-var-kwh')!;
+      elVarKwh.textContent = `${varKwh > 0 ? '+' : ''}${varKwh.toFixed(1)}%`;
+      elVarKwh.style.color = varKwh > 15 ? '#f44336' : 'var(--accent)';
+
+      const elGastoDiario = document.getElementById('kpi-gasto-diario')!;
+      elGastoDiario.textContent = `$${gastoDiario.toFixed(0)}`;
+
+      // Weather Analysis
+      const clima = climaBahia[mes];
+      const climaAlert = document.getElementById('clima-alert')!;
+      const climaTexto = document.getElementById('clima-texto')!;
+      
+      climaAlert.style.display = 'block';
+      climaTexto.innerHTML = `According to local historical records, the weather in this period is <strong>${clima.estado}</strong> (Average: ${clima.temp}). Historically this leads households to higher usage of: <strong>${clima.equipo}</strong>.`;
+
+      // N3i Diagnosis Logic
+      const alertBox = document.getElementById('diagnostico-alerta')!;
+      const diagTitulo = document.getElementById('diag-titulo')!;
+      const diagTexto = document.getElementById('diag-texto')!;
+
+      alertBox.className = 'factura-alert'; // reset
+      
+      // Base message about taxes/rates
+      let msjImpuestos = "";
+      if (varTarifa > 5) {
+        msjImpuestos = `<br><br><strong>💡 Additional note:</strong> Remember that you also had an approximate tariff/tax increase of <strong>${varTarifa.toFixed(1)}%</strong> in the real cost of kWh in this period.`;
+      } else if (varTarifa < -5) {
+        msjImpuestos = `<br><br><strong>💡 Additional note:</strong> Interestingly, the real cost of kWh with taxes decreased by <strong>${Math.abs(varTarifa).toFixed(1)}%</strong> in this period.`;
+      }
+
+      // Case 1: Rate Hike (high rate increase, consumption same or lower)
+      if (varTarifa > 15 && varKwh <= 10) {
+        alertBox.classList.add('alert-tarifazo');
+        diagTitulo.textContent = "🚨 Rate Hike Detected!";
+        diagTitulo.style.color = '#ff9800';
+        globalDiagnosticoDesc = `Your electricity consumption remained stable (only varied by ${varKwh.toFixed(1)}%), but your utility provider increased the real cost of kWh by ${varTarifa.toFixed(1)}%. There is no technical problem in your house; the bill increase is purely tariff or tax-related.`;
+        diagTexto.innerHTML = globalDiagnosticoDesc + msjImpuestos;
+      } 
+      // Case 2: Consumption Justified by Extreme Weather
+      else if (varKwh > 15 && (clima.type === 'frio' || clima.type === 'calor')) {
+        alertBox.classList.add('alert-normal');
+        diagTitulo.textContent = "✅ Excess Justified by Weather";
+        diagTitulo.style.color = 'var(--accent)';
+        globalDiagnosticoDesc = `The increase of ${varKwh.toFixed(1)}% in kWh is perfectly normal and aligns with the weather conditions of the selected month (${clima.estado}). You probably made intensive use of climate control (${clima.equipo}). That weather excess represented an extra $${dineroEnFuga.toFixed(0)} on your bill.`;
+        diagTexto.innerHTML = `The increase of <strong>${varKwh.toFixed(1)}% in kWh</strong> is perfectly normal and aligns with the weather conditions of the selected month (${clima.estado}). You probably made intensive use of climate control (${clima.equipo}).<br>
+        <em>N3i Tip:</em> That weather excess represented an extra <strong>$${dineroEnFuga.toFixed(0)}</strong> on your bill. Check your insulation or upgrade to Inverter technology to lower that cost.` + msjImpuestos;
+      }
+      // Case 3: Possible Leak or Failure (consumption spikes strongly in neutral season or without justification)
+      else if (varKwh > 25 && (clima.type === 'neutro' || clima.type === 'templado')) {
+        alertBox.classList.add('alert-fuga');
+        diagTitulo.textContent = "⚠️ Risk of Leak or Equipment Failure";
+        diagTitulo.style.color = '#f44336';
+        globalDiagnosticoDesc = `The weather this month was ${clima.estado}, so you shouldn't have thermal spikes. However, your consumption skyrocketed by ${varKwh.toFixed(1)}%. This is often a symptom of a broken thermostat or a ground leak. This possible failure is costing you $${dineroEnFuga.toFixed(0)} extra on this bill.`;
+        diagTexto.innerHTML = `The weather this month was <strong>${clima.estado}</strong>, so you shouldn't have thermal spikes. However, your consumption <strong>skyrocketed by ${varKwh.toFixed(1)}%</strong>.<br>
+        This is often a symptom of a broken thermostat or a ground leak. <br><br>
+        <span style="display: block; padding: 10px; background: rgba(244,67,54,0.15); border-radius: 5px; border: 1px solid #f44336;">💸 <strong>Attention:</strong> This possible failure is costing you <strong>$${dineroEnFuga.toFixed(0)} extra</strong> on this bill.</span><br>
+        <strong>N3i Suggestion:</strong> Turn everything off and check if the meter is still running. An electrical audit can be requested; the service pays for itself with what is saved on electricity.` + msjImpuestos;
+      }
+      // Case 4: Normal
+      else {
+        alertBox.classList.add('alert-normal');
+        diagTitulo.textContent = "✅ Stable Consumption";
+        diagTitulo.style.color = 'var(--accent)';
+        globalDiagnosticoDesc = `No alarming deviations. Your energy consumption varied by barely ${varKwh.toFixed(1)}%. Keep up your good energy efficiency habits.`;
+        diagTexto.innerHTML = globalDiagnosticoDesc + msjImpuestos;
+      }
+
+      // Leakage UI update
+      const fugaAlert = document.getElementById('fuga-resultado-alert');
+      const fugaWattsEl = document.getElementById('fuga-res-watts');
+      const fugaKwhEl = document.getElementById('fuga-res-kwh');
+      const fugaPesosEl = document.getElementById('fuga-res-pesos');
+      const fugaConsejoEl = document.getElementById('fuga-res-consejo');
+      const fugaTitulo = document.getElementById('fuga-titulo');
+
+      if (fugaAlert && fugaWattsEl && fugaKwhEl && fugaPesosEl && fugaConsejoEl && fugaTitulo) {
+        if (fugaWatts > 0) {
+          fugaAlert.style.display = 'block';
+          fugaWattsEl.textContent = `${fugaWatts} W`;
+          fugaKwhEl.textContent = `${formatNumber(fugaKwhMes, 1)} kWh/month`;
+          fugaPesosEl.textContent = `$${formatNumber(Math.round(fugaPesosMes))}/month`;
+          
+          fugaAlert.className = 'factura-alert'; // reset
+          if (fugaWatts <= 100) {
+            fugaAlert.classList.add('alert-tarifazo');
+            fugaTitulo.textContent = "⚠️ Power Leakage Detected (Mild)";
+            fugaTitulo.style.color = '#ff9800';
+            globalFugaMessage = "A small power loss was detected. It could be due to damaged standby power supplies or appliances with low insulation. Checking damp/wet wiring is recommended.";
+          } else if (fugaWatts <= 500) {
+            fugaAlert.classList.add('alert-fuga');
+            fugaTitulo.textContent = "🚨 Power Leakage Detected (Moderate)";
+            fugaTitulo.style.color = '#f44336';
+            globalFugaMessage = "Attention! You are constantly losing a significant amount of energy (equivalent to a refrigerator running 24 hours a day). This is usually caused by ground faults in appliances or damaged wiring.";
+          } else {
+            fugaAlert.classList.add('alert-fuga');
+            fugaTitulo.textContent = "🔥 CRITICAL Power Leakage";
+            fugaTitulo.style.color = '#f44336';
+            globalFugaMessage = "EXTREME DANGER! You have a high-power leakage. It is very likely that your GFCI/RCD safety switch is not working properly. There is an imminent risk of short circuit or fire. Call an electrician immediately.";
+          }
+          fugaConsejoEl.innerHTML = globalFugaMessage;
+        } else {
+          fugaAlert.style.display = 'none';
+        }
+      }
+    });
+
+    // Print Event
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        const kwh1 = parseFloat((document.getElementById('f1-kwh') as HTMLInputElement).value);
+        const monto1 = parseFloat((document.getElementById('f1-monto') as HTMLInputElement).value);
+        const kwh2 = parseFloat((document.getElementById('f2-kwh') as HTMLInputElement).value);
+        const monto2 = parseFloat((document.getElementById('f2-monto') as HTMLInputElement).value);
+
+        if (!kwh1 || !monto1 || !kwh2 || !monto2) {
+          alert("Please, perform the calculation first by completing all fields.");
+          return;
+        }
+
+        const distribuidoraVal = (document.getElementById('f-distribuidora') as HTMLSelectElement)?.value || 'manual';
+        const distribuidora = tarifasDistribuidoras[distribuidoraVal];
+
+        // Populate print fields
+        document.getElementById('fact-print-date')!.textContent = new Date().toLocaleDateString('en-US') + ' ' + new Date().toLocaleTimeString('en-US');
+        document.getElementById('fact-print-distribuidora')!.textContent = distribuidora.name;
+        
+        document.getElementById('fact-print-kwh1')!.textContent = kwh1.toString();
+        document.getElementById('fact-print-tarifa1')!.textContent = `$${globalTarifa1.toFixed(2)}`;
+        document.getElementById('fact-print-monto1')!.textContent = `$${formatNumber(Math.round(monto1))}`;
+        
+        document.getElementById('fact-print-kwh2')!.textContent = kwh2.toString();
+        document.getElementById('fact-print-tarifa2')!.textContent = `$${globalTarifa2.toFixed(2)}`;
+        document.getElementById('fact-print-monto2')!.textContent = `$${formatNumber(Math.round(monto2))}`;
+
+        // Breakdown
+        const netoEnergia = kwh2 * distribuidora.rate;
+        const cargoFijo = distribuidora.fixed;
+        let impuestos = monto2 - (cargoFijo + netoEnergia);
+        if (impuestos < 0) impuestos = 0;
+
+        document.getElementById('fact-print-cargofijo')!.textContent = `$${formatNumber(Math.round(cargoFijo))}`;
+        document.getElementById('fact-print-neto')!.textContent = `$${formatNumber(Math.round(netoEnergia))}`;
+        document.getElementById('fact-print-impuestos')!.textContent = `$${formatNumber(Math.round(impuestos))}`;
+
+        // Diagnosis
+        document.getElementById('fact-print-diag-desc')!.textContent = globalDiagnosticoDesc;
+        
+        // Leakage Section
+        const printFugaSection = document.getElementById('fact-print-fuga-section')!;
+        if (globalFugaWatts > 0) {
+          printFugaSection.style.display = 'block';
+          document.getElementById('fact-print-fuga-watts')!.textContent = `${globalFugaWatts} W`;
+          document.getElementById('fact-print-fuga-kwh')!.textContent = `${formatNumber(globalFugaKwhMes, 1)} kWh/month`;
+          document.getElementById('fact-print-fuga-pesos')!.textContent = `$${formatNumber(Math.round(globalFugaPesosMes))}/month`;
+          document.getElementById('fact-print-fuga-desc')!.textContent = globalFugaMessage;
+        } else {
+          printFugaSection.style.display = 'none';
+        }
+
+        // Trigger print
+        document.body.classList.add('printing-factura');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-factura'), { once: true });
+      });
+    }
+  });
+</script>

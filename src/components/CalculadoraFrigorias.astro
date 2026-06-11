@@ -1,0 +1,555 @@
+---
+// src/components/CalculadoraFrigorias.astro
+// Calculadora de Climatización y Balance Térmico Avanzado N3i (Cian/Teal Theme)
+---
+<section class="section section-alt" id="calc-frigorias">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #00bcd4;">Ingeniería Térmica & HVAC</span>
+      <h2 class="section-title">Calculadora de Carga Térmica y Frigorías</h2>
+      <p class="section-desc">
+        Realice un balance térmico profesional para su ambiente. Calcule las frigorías necesarias para verano, la calefacción para invierno y compare el consumo de un equipo común versus uno Inverter.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Formulario de Entrada (Datos Constructivos e Internos) -->
+      <div class="calc-appliances card reveal">
+        <h3 style="color: #00bcd4; border-bottom: 1px solid rgba(0, 188, 212, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          Dimensiones y Características del Ambiente
+        </h3>
+        
+        <!-- Dimensiones Físicas -->
+        <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--text-primary);">1. Dimensiones del Espacio</h4>
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Largo (metros)</label>
+            <input type="number" id="frig-largo" class="calc-input" value="4.0" min="1" step="0.5" />
+          </div>
+          <div class="form-group">
+            <label>Ancho (metros)</label>
+            <input type="number" id="frig-ancho" class="calc-input" value="4.0" min="1" step="0.5" />
+          </div>
+          <div class="form-group">
+            <label>Alto (metros)</label>
+            <input type="number" id="frig-alto" class="calc-input" value="2.8" min="2" step="0.1" />
+          </div>
+        </div>
+
+        <!-- Características Constructivas -->
+        <h4 style="font-size: 0.95rem; margin-top: 10px; margin-bottom: 12px; color: var(--text-primary);">2. Características Constructivas y Entorno</h4>
+        <div class="form-group">
+          <label>Tipo de Ambiente</label>
+          <select id="frig-ambiente" class="calc-select">
+            <option value="50">Dormitorio / Living / Sala de Estar (50 fg/m³)</option>
+            <option value="65">Cocina / Comedor (Mayor carga por cocción y heladera - 65 fg/m³)</option>
+            <option value="55">Oficina / Aula / Local Comercial (55 fg/m³)</option>
+          </select>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Orientación de Ventanas</label>
+            <select id="frig-orientacion" class="calc-select">
+              <option value="1.0">Normal / Mixta</option>
+              <option value="1.15">Norte o Oeste (Mucho sol por la tarde)</option>
+              <option value="0.95">Sur o Este (Más fresco, sol de mañana)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Aislamiento de Vidrios</label>
+            <select id="frig-ventanas" class="calc-select">
+              <option value="1.10">Vidrio Simple (Ventana Común)</option>
+              <option value="0.90">Doble Vidrio Hermético (DVH)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Exposición del Techo (Carga Solar Directa)</label>
+          <select id="frig-techo" class="calc-select">
+            <option value="1.0">Entrepiso / Planta Baja (Techo cubierto por otra planta)</option>
+            <option value="1.08">Planta Alta con cielorraso aislado térmicamente</option>
+            <option value="1.22">Planta Alta expuesta al sol / Techo de losa o chapa sin aislamiento</option>
+          </select>
+        </div>
+
+        <!-- Cargas Térmicas Internas -->
+        <h4 style="font-size: 0.95rem; margin-top: 10px; margin-bottom: 12px; color: var(--text-primary);">3. Fuentes de Calor Internas (Cargas Sensibles)</h4>
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Ocupantes (Personas)</label>
+            <input type="number" id="frig-personas" class="calc-input" value="2" min="1" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Computadoras / Laptops</label>
+            <input type="number" id="frig-pcs" class="calc-input" value="0" min="0" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Televisores / Consolas</label>
+            <input type="number" id="frig-tvs" class="calc-input" value="0" min="0" step="1" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de Resultados y Tarifas de Energía -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          
+          <!-- Entrada de Costo de Energía -->
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 8px; margin-bottom: 15px;">
+            <label for="frig-cost-kwh" style="display: block; font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 5px;">Costo de Energía de Referencia ($/kWh):</label>
+            <input type="number" id="frig-cost-kwh" class="calc-input" value="115" min="1" style="padding: 8px 12px; font-size: 0.9rem;" />
+          </div>
+
+          <h3 style="font-size: 1.15rem; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+            Resultados del Balance Térmico
+          </h3>
+
+          <div class="kpi-grid-two">
+            <div class="result-box" style="padding: 10px;">
+              <span class="result-label" style="font-size: 0.72rem;">Volumen del Aire</span>
+              <div class="result-value" style="font-size: 1.35rem;"><span id="frig-volumen">44.8</span> m³</div>
+            </div>
+            <div class="result-box" style="padding: 10px; border-left: 2px solid #ff9800;">
+              <span class="result-label" style="font-size: 0.72rem; color: #ff9800;">Calefacción Invierno</span>
+              <div class="result-value" style="font-size: 1.35rem; color: #ff9800;"><span id="frig-res-calefaccion">0</span> <span style="font-size: 0.75rem;">cal/h</span></div>
+            </div>
+          </div>
+
+          <!-- Resultado Principal de Frigorías -->
+          <div class="result-box primary-result" style="border-color: #00bcd4; background: rgba(0, 188, 212, 0.08); margin-top: 12px;">
+            <span class="result-label" style="color: #00bcd4;">Carga de Refrigeración Necesaria</span>
+            <div class="result-value" style="color: #00bcd4; font-size: 2.1rem;"><span id="frig-resultado">2954</span> <span style="font-size: 1.1rem; font-weight: 800;">fg</span></div>
+            <span class="result-note" style="display: block; margin-top: 3px; font-size: 0.75rem;">Equivale a <span id="frig-res-watts-termico">0</span> W térmicos</span>
+          </div>
+
+          <!-- Equipo Recomendado Comercial -->
+          <div class="result-alert" id="frig-alert" style="background: rgba(0, 188, 212, 0.08); border-left: 4px solid #00bcd4; margin-top: 12px; padding: 12px 15px; font-size: 0.85rem; line-height: 1.4;">
+            <strong>Equipo Comercial Sugerido:</strong>
+            <span id="frig-equipo" style="color: #00bcd4; font-weight: 800; display: block; margin-top: 3px; font-size: 1rem;">3000 Frigorías</span>
+            <p style="font-size: 0.78rem; margin-top: 5px; color: var(--text-secondary);">El dimensionamiento comercial correcto previene el desgaste del compresor por trabajo continuo.</p>
+          </div>
+
+          <!-- Simulador de Ahorro Energético Inverter -->
+          <div style="background: rgba(63, 198, 180, 0.05); border: 1px solid rgba(63, 198, 180, 0.25); border-radius: 8px; padding: 15px; margin-top: 15px;" id="frig-inverter-card">
+            <h4 style="color: #3fc6b4; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; font-family: var(--font-title);">
+              <span>⚡</span> Simulador de Ahorro Inverter N3i
+            </h4>
+            <div class="frig-inverter-grid">
+              <div style="background: rgba(0,0,0,0.15); padding: 8px; border-radius: 6px; text-align: center;">
+                <span style="font-size: 0.65rem; color: var(--text-muted); display: block; text-transform: uppercase;">Tradicional (On/Off)</span>
+                <span style="font-size: 1rem; font-weight: bold; color: var(--text-primary);">$ <span id="frig-cost-onoff">0</span></span>
+                <span style="font-size: 0.62rem; color: var(--text-muted); display: block;"><span id="frig-kwh-onoff">0</span> kWh/mes</span>
+              </div>
+              <div style="background: rgba(63, 198, 180, 0.15); padding: 8px; border-radius: 6px; text-align: center; border: 1px solid rgba(63, 198, 180, 0.2);">
+                <span style="font-size: 0.65rem; color: #3fc6b4; display: block; text-transform: uppercase; font-weight: 700;">Tecnología Inverter</span>
+                <span style="font-size: 1rem; font-weight: bold; color: #3fc6b4;">$ <span id="frig-cost-inverter">0</span></span>
+                <span style="font-size: 0.62rem; color: #3fc6b4; display: block; font-weight: 600;"><span id="frig-kwh-inverter">0</span> kWh/mes</span>
+              </div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45;">
+              🟢 Ahorro anual estimado (4 meses de uso): <strong style="color: #3fc6b4;">$ <span id="frig-ahorro-anual">0</span></strong>
+              <br>
+              ⏱️ Recupero de inversión adicional Inverter: <strong style="color: #3fc6b4;"><span id="frig-amortizacion">0</span> meses</strong> de uso.
+            </div>
+          </div>
+
+          <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
+            <a href="/#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; background: #00bcd4; color: #000; box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);">
+              Solicitar Instalación Profesional
+              <span class="btn-icon">❄️</span>
+            </a>
+            <button type="button" id="frig-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; border-color: #00bcd4; color: var(--text-primary); background: transparent;">
+              Imprimir Balance Térmico
+              <span class="btn-icon" style="background: transparent;">🖨️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consejos Profesionales de Climatización -->
+    <div class="card reveal" style="margin-top: 40px; border-top: 3px solid #00bcd4;">
+      <h3 style="color: #00bcd4; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+        <span>💡</span> Consejos del Técnico HVAC para un Rendimiento Óptimo
+      </h3>
+      <div class="gas-tips-grid">
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #00bcd4;">❄️</div>
+          <div>
+            <h4 class="gas-tip-title">Vacío de Cañerías Obligatorio</h4>
+            <p class="gas-tip-desc">Al instalar, exija siempre que el instalador realice vacío con bomba de vacío, no barrido con gas. El barrido deja humedad que oxida el compresor y reduce su vida útil en un 50%.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #00bcd4;">🌬️</div>
+          <div>
+            <h4 class="gas-tip-title">Altura y Retorno de Aire</h4>
+            <p class="gas-tip-desc">El split debe colocarse a un mínimo de 15 cm del techo. Si está muy pegado, el aire no retorna correctamente y el sensor lee una temperatura errónea, apagando el motor antes de enfriar.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #00bcd4;">🌡️</div>
+          <div>
+            <h4 class="gas-tip-title">Aislamiento de Muros y Techos</h4>
+            <p class="gas-tip-desc">Colocar cortinas gruesas en ventanas expuestas al oeste y aislar el cielorraso con lana de vidrio puede reducir la temperatura interior en hasta 6°C, bajando la potencia necesaria del AC.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #00bcd4;">🔌</div>
+          <div>
+            <h4 class="gas-tip-title">Línea Eléctrica Exclusiva</h4>
+            <p class="gas-tip-desc">Un aire de 3000fg consume hasta 7 Amperes constantes. Requiere cableado independiente de 2.5 mm² desde el tablero general con su propia llave térmica de 16A para evitar recalentar tomas comunes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Área oculta para el reporte impreso de Frigorías -->
+<div id="print-area-frig" class="print-only-frig">
+  <div class="print-header" style="border-bottom-color: #00bcd4;">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #00bcd4;">Reporte de Balance Térmico e Ingeniería HVAC</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Fecha:</strong> <span id="frig-print-date"></span></p>
+    <p><strong>Tipo de Documento:</strong> Balance Térmico para Climatización (Verano/Invierno)</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Parámetro de Entrada / Constructivo</th>
+        <th>Detalle Ingresado</th>
+      </tr>
+    </thead>
+    <tbody id="frig-print-tbody">
+      <!-- Rellenado por JS -->
+    </tbody>
+    <tfoot>
+      <tr>
+        <td style="text-align: right;"><strong>Volumen del Ambiente:</strong></td>
+        <td><strong id="frig-print-volumen">0 m³</strong></td>
+      </tr>
+      <tr>
+        <td style="text-align: right; color: #ff9800;"><strong>Carga de Calefacción Requerida (Invierno):</strong></td>
+        <td><strong id="frig-print-calefaccion" style="color: #ff9800;">0 kcal/h</strong></td>
+      </tr>
+      <tr>
+        <td style="text-align: right; color: #00bcd4;"><strong>Carga de Refrigeración Requerida (Verano):</strong></td>
+        <td><strong id="frig-print-resultado" style="color: #00bcd4; font-size: 1.15rem;">0 fg</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <div style="background: rgba(0, 188, 212, 0.08); padding: 15px; border-radius: 8px; border-left: 5px solid #00bcd4; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #00bcd4; font-size: 1.1rem;">Especificación del Equipo Recomendado</h3>
+    <p style="font-size: 1.15rem; margin-bottom: 5px;"><strong>Capacidad Comercial Sugerida:</strong> <span id="frig-print-equipo" style="font-weight: 800;"></span></p>
+    <p style="font-size: 0.9rem; color: #555;">Equivale aproximadamente a una potencia térmica de <span id="frig-print-watts-termico"></span> W en refrigeración.</p>
+  </div>
+
+  <div style="background: rgba(63, 198, 180, 0.08); padding: 15px; border-radius: 8px; border-left: 5px solid #3fc6b4; margin-bottom: 20px;" id="frig-print-inverter-info">
+    <h3 style="margin-top: 0; color: #2a8f82; font-size: 1.1rem;">Estimación Financiera y Ahorro Inverter (Uso Proyectado)</h3>
+    <table style="width: 100%; border: none; font-size: 0.9rem; margin-top: 10px;">
+      <tr>
+        <td style="padding: 5px 0;">Consumo Mensual Tradicional (On/Off):</td>
+        <td><strong id="frig-print-kwh-onoff">0 kWh</strong> ($ <span id="frig-print-cost-onoff">0</span>/mes)</td>
+      </tr>
+      <tr>
+        <td style="padding: 5px 0;">Consumo Mensual con Tecnología Inverter:</td>
+        <td><strong id="frig-print-kwh-inverter" style="color: #2a8f82;">0 kWh</strong> ($ <span id="frig-print-cost-inverter" style="color: #2a8f82;">0</span>/mes)</td>
+      </tr>
+      <tr style="border-top: 1px solid #ddd;">
+        <td style="padding: 10px 0; font-weight: bold; color: #2a8f82;">Ahorro Proyectado Anual (4 meses de uso):</td>
+        <td style="padding: 10px 0; font-weight: bold; color: #2a8f82;">$ <span id="frig-print-ahorro-anual">0</span> ARS</td>
+      </tr>
+      <tr>
+        <td style="padding: 5px 0; font-style: italic;">Retorno de Inversión (Amortización de Brecha Inverter):</td>
+        <td style="font-style: italic;"><span id="frig-print-amortizacion">0</span> meses de uso activo</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Nota Técnica: Este balance térmico se realiza en base a los datos constructivos declarados por el cliente. No reemplaza el balance térmico definitivo de obra para el diseño de conductos de aire central. La tecnología Inverter ahorra hasta un 35% de energía al evitar arranques y paradas continuas del compresor.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">Para coordinar una instalación presencial homologada con garantía, el contacto está disponible en <strong>www.n3i.com.ar</strong> o al WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  .print-only-frig {
+    display: none;
+  }
+
+  @media print {
+    body.printing-frig .header, 
+    body.printing-frig .footer, 
+    body.printing-frig .section-header, 
+    body.printing-frig .calculator-grid, 
+    body.printing-frig .section { 
+      display: none !important; 
+    }
+    body.printing-frig .print-only-frig {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+      padding: 1.5cm;
+    }
+    .print-only-frig .print-header { display: flex; align-items: center; border-bottom: 2px solid #00bcd4; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-frig .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-frig .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-frig .print-table th, .print-only-frig .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-frig .print-table th { background-color: #f5f5f5; color: #333; }
+  }
+
+  /* Inverter comparison grid: 2 columns on desktop, 1 on mobile */
+  .frig-inverter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 520px) {
+    .frig-inverter-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inputs
+    const iLargo = document.getElementById('frig-largo') as HTMLInputElement;
+    const iAncho = document.getElementById('frig-ancho') as HTMLInputElement;
+    const iAlto = document.getElementById('frig-alto') as HTMLInputElement;
+    const iAmbiente = document.getElementById('frig-ambiente') as HTMLSelectElement;
+    const iOrientacion = document.getElementById('frig-orientacion') as HTMLSelectElement;
+    const iVentanas = document.getElementById('frig-ventanas') as HTMLSelectElement;
+    const iTecho = document.getElementById('frig-techo') as HTMLSelectElement;
+    
+    const iPersonas = document.getElementById('frig-personas') as HTMLInputElement;
+    const iPcs = document.getElementById('frig-pcs') as HTMLInputElement;
+    const iTvs = document.getElementById('frig-tvs') as HTMLInputElement;
+
+    const costKwhInput = document.getElementById('frig-cost-kwh') as HTMLInputElement;
+
+    // Outputs UI
+    const oVolumen = document.getElementById('frig-volumen');
+    const oResultado = document.getElementById('frig-resultado');
+    const oResCalefaccion = document.getElementById('frig-res-calefaccion');
+    const oResWattsTermico = document.getElementById('frig-res-watts-termico');
+    const oEquipo = document.getElementById('frig-equipo');
+
+    const oCostOnoff = document.getElementById('frig-cost-onoff');
+    const oCostInverter = document.getElementById('frig-cost-inverter');
+    const oKwhOnoff = document.getElementById('frig-kwh-onoff');
+    const oKwhInverter = document.getElementById('frig-kwh-inverter');
+    const oAhorroAnual = document.getElementById('frig-ahorro-anual');
+    const oAmortizacion = document.getElementById('frig-amortizacion');
+
+    const btnPrint = document.getElementById('frig-btn-print');
+
+    function formatNumber(num: number, decimals: number = 0): string {
+      return num.toLocaleString('es-AR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function calculateFrigorias() {
+      if (!iLargo) return;
+
+      const largo = parseFloat(iLargo.value) || 0;
+      const ancho = parseFloat(iAncho.value) || 0;
+      const alto = parseFloat(iAlto.value) || 0;
+
+      const vol = largo * ancho * alto;
+
+      // Factores constructivos
+      const factorAmbiente = parseFloat(iAmbiente.value) || 50;
+      const factorOrientacion = parseFloat(iOrientacion.value) || 1.0;
+      const factorVentanas = parseFloat(iVentanas.value) || 1.10;
+      const factorTecho = parseFloat(iTecho.value) || 1.0;
+
+      // Carga básica de envolvente
+      let baseFg = vol * factorAmbiente * factorOrientacion * factorVentanas * factorTecho;
+
+      // Cargas térmicas internas
+      const personas = parseInt(iPersonas.value) || 0;
+      const personasLoad = personas > 2 ? (personas - 2) * 150 : 0; // Primeras 2 incluidas en base, luego +150 fg c/u
+
+      const pcs = parseInt(iPcs.value) || 0;
+      const pcsLoad = pcs * 150; // Cada computadora app 150 fg/h
+
+      const tvs = parseInt(iTvs.value) || 0;
+      const tvsLoad = tvs * 80; // Cada TV/Consola app 80 fg/h
+
+      // Carga final de Refrigeración (Verano)
+      const fgFinal = Math.ceil(baseFg + personasLoad + pcsLoad + tvsLoad);
+
+      // Carga final de Calefacción (Invierno: 15% adicional por diferencial de temperatura estándar)
+      const caloriasFinal = Math.ceil(fgFinal * 1.15);
+
+      // Conversión a Watts térmicos (1 frigoría/h = 1.163 Watts térmicos)
+      const wattsTermicosCool = Math.ceil(fgFinal * 1.163);
+
+      // Update Screen
+      if (oVolumen) oVolumen.textContent = vol.toFixed(1);
+      if (oResultado) oResultado.textContent = formatNumber(fgFinal);
+      if (oResCalefaccion) oResCalefaccion.textContent = formatNumber(caloriasFinal);
+      if (oResWattsTermico) oResWattsTermico.textContent = formatNumber(wattsTermicosCool);
+
+      // Equipo Recomendado Comercial
+      let equipoSugerido = "3000 Frigorías (3500W)";
+      let capWattsThermal = 3500;
+
+      if (fgFinal === 0) {
+        equipoSugerido = "Sin consumo";
+        capWattsThermal = 0;
+      } else if (fgFinal <= 2250) {
+        equipoSugerido = "2250 Frigorías (2500W - 9000 BTU)";
+        capWattsThermal = 2500;
+      } else if (fgFinal <= 3100) {
+        equipoSugerido = "3000 Frigorías (3500W - 12000 BTU)";
+        capWattsThermal = 3500;
+      } else if (fgFinal <= 4600) {
+        equipoSugerido = "4500 Frigorías (5200W - 18000 BTU)";
+        capWattsThermal = 5200;
+      } else if (fgFinal <= 6200) {
+        equipoSugerido = "6000 Frigorías (7000W - 24000 BTU)";
+        capWattsThermal = 7000;
+      } else {
+        equipoSugerido = "Múltiples Splits o Equipo Central (> 7000W)";
+        capWattsThermal = wattsTermicosCool; // Usar el calculado
+      }
+
+      if (oEquipo) oEquipo.textContent = equipoSugerido;
+
+      // 5. Simulación de Ahorro Inverter
+      const costKwh = parseFloat(costKwhInput?.value) || 115;
+      
+      // Asunciones estándar: 5 horas diarias por 30 días = 150 horas de uso al mes
+      const horasUsoAlMes = 150;
+      
+      // Eficiencia Energética Estándar (COP/EER)
+      const copOnoff = 2.8; // COP estándar en Argentina
+      const copInverter = 3.6; // COP promedio de tecnología Inverter modulando
+      
+      // Watts eléctricos consumidos (Potencia térmica / COP)
+      // Para On/Off, cuando corre, consume a 100%, pero el compresor cicla. Estimamos corre al 75% del tiempo.
+      const wattsElectricosOnoff = capWattsThermal > 0 ? capWattsThermal / copOnoff : 0;
+      const kwhMensualOnoff = (wattsElectricosOnoff / 1000) * horasUsoAlMes * 0.75;
+      const costoMensualOnoff = kwhMensualOnoff * costKwh;
+
+      // Para Inverter, modula y reduce velocidad, ahorrando un 35% neto
+      const kwhMensualInverter = kwhMensualOnoff * 0.65;
+      const costoMensualInverter = kwhMensualInverter * costKwh;
+
+      const ahorroMensual = costoMensualOnoff - costoMensualInverter;
+      const ahorroAnual = ahorroMensual * 4; // 4 meses de uso fuerte (ej. Diciembre a Marzo)
+
+      // Brecha de precio típica de mercado entre On/Off e Inverter en ARS (referencia $150.000)
+      const brechaPrecioInverter = 150000;
+      const mesesAmortizacion = ahorroMensual > 0 ? Math.ceil(brechaPrecioInverter / ahorroMensual) : 0;
+
+      // Update Inverter UI
+      if (oCostOnoff) oCostOnoff.textContent = formatNumber(Math.round(costoMensualOnoff));
+      if (oCostInverter) oCostInverter.textContent = formatNumber(Math.round(costoMensualInverter));
+      if (oKwhOnoff) oKwhOnoff.textContent = kwhMensualOnoff.toFixed(1);
+      if (oKwhInverter) oKwhInverter.textContent = kwhMensualInverter.toFixed(1);
+      if (oAhorroAnual) oAhorroAnual.textContent = formatNumber(Math.round(ahorroAnual));
+      
+      if (oAmortizacion) {
+        if (ahorroMensual > 0) {
+          oAmortizacion.textContent = mesesAmortizacion.toString();
+        } else {
+          oAmortizacion.textContent = "-";
+        }
+      }
+    }
+
+    // Attach events
+    const allInputs = document.querySelectorAll('#calc-frigorias input, #calc-frigorias select');
+    allInputs.forEach(el => {
+      el.addEventListener('input', calculateFrigorias);
+    });
+
+    // Run initial calc
+    calculateFrigorias();
+
+    // Print logic
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        calculateFrigorias(); // Asegurar cálculo actualizado
+
+        const tbody = document.getElementById('frig-print-tbody');
+        const pDate = document.getElementById('frig-print-date');
+        const pResultado = document.getElementById('frig-print-resultado');
+        const pCalefaccion = document.getElementById('frig-print-calefaccion');
+        const pVolumen = document.getElementById('frig-print-volumen');
+        const pEquipo = document.getElementById('frig-print-equipo');
+        const pWattsTermico = document.getElementById('frig-print-watts-termico');
+
+        const pKwhOnoff = document.getElementById('frig-print-kwh-onoff');
+        const pCostOnoff = document.getElementById('frig-print-cost-onoff');
+        const pKwhInverter = document.getElementById('frig-print-kwh-inverter');
+        const pCostInverter = document.getElementById('frig-print-cost-inverter');
+        const pAhorroAnual = document.getElementById('frig-print-ahorro-anual');
+        const pAmortizacion = document.getElementById('frig-print-amortizacion');
+        
+        if (!tbody || !pResultado || !pCalefaccion) return;
+
+        // Limpiar tabla de impresión
+        tbody.innerHTML = '';
+        
+        const rows = [
+          { label: 'Largo x Ancho x Alto', value: `${iLargo.value}m x ${iAncho.value}m x ${iAlto.value}m` },
+          { label: 'Destino del Ambiente', value: iAmbiente.options[iAmbiente.selectedIndex].text },
+          { label: 'Exposición Solar (Muros/Ventanas)', value: iOrientacion.options[iOrientacion.selectedIndex].text },
+          { label: 'Aislamiento de Ventanas', value: iVentanas.options[iVentanas.selectedIndex].text },
+          { label: 'Exposición del Techo', value: iTecho.options[iTecho.selectedIndex].text },
+          { label: 'Cantidad de Ocupantes', value: `${iPersonas.value} personas` },
+          { label: 'Computadoras / Equipos de Oficina', value: `${iPcs.value} unidades` },
+          { label: 'Televisores / Consolas de Videojuegos', value: `${iTvs.value} unidades` }
+        ];
+
+        rows.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><strong>${row.label}</strong></td><td>${row.value}</td>`;
+          tbody.appendChild(tr);
+        });
+
+        // Totales de refrigeración/calefacción
+        if (pVolumen && oVolumen) pVolumen.textContent = oVolumen.textContent + ' m³';
+        pResultado.textContent = oResultado?.textContent || "0";
+        pCalefaccion.textContent = oResCalefaccion?.textContent || "0";
+
+        if (pEquipo && oEquipo) pEquipo.textContent = oEquipo.textContent || "";
+        if (pWattsTermico && oResWattsTermico) pWattsTermico.textContent = oResWattsTermico.textContent || "";
+
+        // Reporte Inverter
+        if (pKwhOnoff && oKwhOnoff) pKwhOnoff.textContent = oKwhOnoff.textContent + ' kWh';
+        if (pCostOnoff && oCostOnoff) pCostOnoff.textContent = oCostOnoff.textContent;
+        if (pKwhInverter && oKwhInverter) pKwhInverter.textContent = oKwhInverter.textContent + ' kWh';
+        if (pCostInverter && oCostInverter) pCostInverter.textContent = oCostInverter.textContent;
+        if (pAhorroAnual && oAhorroAnual) pAhorroAnual.textContent = oAhorroAnual.textContent;
+        if (pAmortizacion && oAmortizacion) pAmortizacion.textContent = oAmortizacion.textContent;
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('es-AR') + ' ' + today.toLocaleTimeString('es-AR');
+        }
+
+        document.body.classList.add('printing-frig');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-frig'), { once: true });
+      });
+    }
+  });
+</script>

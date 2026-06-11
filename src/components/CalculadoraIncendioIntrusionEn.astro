@@ -1,0 +1,411 @@
+---
+// CalculadoraIncendioIntrusionEn.astro
+---
+<section class="section" id="calc-incendio-intrusion">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle">Security Engineering</span>
+      <h2 class="section-title">Sensors Sizing: Fire, Smoke & Intrusion</h2>
+      <p class="section-desc">
+        Size smoke/heat detectors, motion sensors (PIR), and the main control panel with its battery backup capacity.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Input Form -->
+      <div class="calc-appliances card reveal">
+        <h3>Space Parameters</h3>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+          Enter the dimensions and risk level of the area to protect.
+        </p>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Environment Type</label>
+            <select id="inc-tipo" class="calc-select" style="border-color: #C65353;">
+              <option value="oficina">Offices / Commercial Stores (Multiple partitions)</option>
+              <option value="galpon">Industrial Warehouse / Shed (Open layout)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Specific Risk (False Alarms)</label>
+            <select id="inc-riesgo" class="calc-select">
+              <option value="estandar" selected>Standard (Office / Common Warehouse)</option>
+              <option value="cocina">Kitchen / Cooking Zone (Steam and Gases)</option>
+              <option value="garage">Garage / Mechanical Workshop (Soot and Exhaust)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Width (meters)</label>
+            <input type="number" id="inc-ancho" class="calc-input" value="10" min="1" step="0.5" />
+          </div>
+          <div class="form-group">
+            <label>Length (meters)</label>
+            <input type="number" id="inc-largo" class="calc-input" value="10" min="1" step="0.5" />
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Average Ceiling Height (m)</label>
+            <input type="number" id="inc-alto" class="calc-input" value="3" min="2" step="0.5" />
+          </div>
+          <div class="form-group">
+            <label>Alarm Autonomy Required</label>
+            <select id="inc-respaldo" class="calc-select">
+              <option value="12">12 Hours (Commercial Standard)</option>
+              <option value="24" selected>24 Hours (Professional / IRAM)</option>
+              <option value="36">36 Hours (High Security)</option>
+            </select>
+          </div>
+        </div>
+
+        <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 5px;">*Note: Ceiling heights >6m (20ft) require projected infrared beam detectors (smoke barriers) according to regulations.</p>
+
+      </div>
+
+      <!-- Results Panel -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="margin-bottom: 20px;">Sensors Diagnosis</h3>
+          
+          <div class="result-summary" style="background: rgba(198, 83, 83, 0.1); border-left: 4px solid #C65353; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="margin: 0 0 5px 0; font-size: 0.9rem; color: var(--text-light);">Total Area to Cover: <strong id="inc-res-area" style="color: var(--text-primary);">100 m²</strong></p>
+          </div>
+
+          <!-- Fire -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #C65353; font-size: 1.1rem; margin-bottom: 10px; border-bottom: 1px solid rgba(198,83,83,0.2); padding-bottom: 5px;">🔥 Fire Detection (NFPA 72)</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <span style="font-size: 0.95rem; color: var(--text-light);" id="inc-humo-tipo">Point Optical Smoke Detectors</span>
+              <span style="font-size: 1.5rem; font-weight: bold; color: var(--text-primary);" id="inc-humo-cant">2</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin: 0;" id="inc-humo-dist">Install at a maximum distance of 9 meters (30ft) apart.</p>
+          </div>
+
+          <!-- Intrusion -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #3FC6B4; font-size: 1.1rem; margin-bottom: 10px; border-bottom: 1px solid rgba(63,198,180,0.2); padding-bottom: 5px;">🚨 Intrusion Detection</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <span style="font-size: 0.95rem; color: var(--text-light);">Motion Sensors (PIR)</span>
+              <span style="font-size: 1.5rem; font-weight: bold; color: var(--text-primary);" id="inc-pir-cant">1</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin: 0;" id="inc-pir-dist">Mount at 2.1m (7ft). Average range of 12 to 15 meters (40-50ft).</p>
+          </div>
+
+          <!-- Control Panel -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #C6A63F; font-size: 1.1rem; margin-bottom: 10px; border-bottom: 1px solid rgba(198,166,63,0.2); padding-bottom: 5px;">⚙️ Suggested Control Panel</h4>
+            <p style="font-size: 0.95rem; font-weight: bold; color: var(--text-primary); margin: 0 0 5px 0;" id="inc-panel-titulo">Basic Central / Home-SMB</p>
+            <p style="font-size: 0.85rem; color: var(--text-light); margin: 0;" id="inc-panel-desc">Garnet A2K4-NG, DSC PC1832 (Up to 16 zones).</p>
+          </div>
+
+          <!-- Alarm Battery Autonomy -->
+          <div class="result-box" style="border: 1px solid rgba(198, 166, 63, 0.2); background: rgba(198, 166, 63, 0.03); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px;">
+            <span class="result-label" style="color: #C6A63F; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; margin-bottom: 10px;">
+              🔋 Alarm Panel Autonomy
+            </span>
+            <div style="font-size: 0.85rem; line-height: 1.6;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-light);">Estimated Standby Draw:</span>
+                <span id="inc-res-consumo" style="color: var(--text-primary); font-weight: 600;">0 mA</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-light);">Suggested Battery (12V):</span>
+                <span id="inc-res-bateria" style="color: #C6A63F; font-weight: 600;">12V 7Ah</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="disclaimer mt-3">
+            <p><strong>⚠️ Technical Note:</strong> Sizing assumes rectangular rooms. In partitioned offices, install one optical smoke detector per closed room to comply with safety standard layout.</p>
+          </div>
+
+          <a href="/en/#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 20px; background: #C65353; color: white; border: none; box-shadow: 0 4px 15px rgba(198, 83, 83, 0.3);">
+            Request a Quote
+            <span class="btn-icon">📋</span>
+          </a>
+          
+          <button id="inc-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; margin-top: 10px; border-color: #C65353; color: var(--text-primary);">
+            Print Report
+            <span class="btn-icon" style="background: transparent;">🖨️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Print Report Area -->
+<div id="print-area-inc" class="print-only-inc">
+  <div class="print-header" style="border-bottom-color: #C65353;">
+    <img src="/assets/img/logo.webp" alt="N3i Logo" width="80" />
+    <div>
+      <h2 style="color: #C65353;">Fire & Intrusion Sizing Report</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Date:</strong> <span id="inc-print-date"></span></p>
+    <p><strong>Document Type:</strong> Technical Sensor & Backup Sizing</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Input Parameter</th>
+        <th>Value Entered</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Environment Type</td>
+        <td id="inc-print-tipo">-</td>
+      </tr>
+      <tr>
+        <td>Coverage Area</td>
+        <td id="inc-print-dim">-</td>
+      </tr>
+      <tr>
+        <td>Ceiling Height</td>
+        <td id="inc-print-alto">-</td>
+      </tr>
+      <tr>
+        <td>Specific Risk Factor</td>
+        <td id="inc-print-riesgo">-</td>
+      </tr>
+      <tr>
+        <td>Target Power Autonomy</td>
+        <td id="inc-print-respaldo">-</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h3 style="color: #333; margin-top: 30px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Recommended Equipment</h3>
+  
+  <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-left: 5px solid #C65353; border-radius: 8px;">
+    <h4 style="margin: 0 0 10px 0; color: #C65353;">🔥 Fire Detection</h4>
+    <p style="margin: 0 0 5px 0;"><strong>Quantity & Type:</strong> <span id="inc-print-humo-cant" style="font-size: 1.2rem; font-weight: bold;"></span>x <span id="inc-print-humo-tipo"></span></p>
+    <p style="margin: 0; color: #555; font-size: 0.9rem;"><strong>Installation Regulations:</strong> <span id="inc-print-humo-dist"></span></p>
+  </div>
+
+  <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-left: 5px solid #3FC6B4; border-radius: 8px;">
+    <h4 style="margin: 0 0 10px 0; color: #3FC6B4;">🚨 Intrusion Detection (Movement)</h4>
+    <p style="margin: 0 0 5px 0;"><strong>Quantity & Type:</strong> <span id="inc-print-pir-cant" style="font-size: 1.2rem; font-weight: bold;"></span>x Infrared PIR Sensors</p>
+    <p style="margin: 0; color: #555; font-size: 0.9rem;"><strong>Location & Range:</strong> <span id="inc-print-pir-dist"></span></p>
+  </div>
+
+  <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-left: 5px solid #C6A63F; border-radius: 8px;">
+    <h4 style="margin: 0 0 10px 0; color: #C6A63F;">⚙️ Suggested Control Panel & Autonomy</h4>
+    <p style="margin: 0 0 5px 0; font-weight: bold; font-size: 1.1rem;" id="inc-print-panel-tit"></p>
+    <p style="margin: 0; color: #555; font-size: 0.9rem;" id="inc-print-panel-desc"></p>
+    <p style="margin: 8px 0 0 0; color: #C6A63F; font-size: 0.9rem;"><strong>Suggested Backup Battery (12V):</strong> <span id="inc-print-bateria-ah">-</span></p>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.85rem; margin-top: 15px;">* Note: Calculation assumes open layouts or standard partitioning. The exact number of sensors will depend on physical walls and partition layouts. Battery capacity was calculated with a 25% aging factor.</p>
+    <p style="font-size: 0.85rem; margin-top: 5px;">To request a site survey and obtain an exact technical design, technical contact is available at <strong>www.n3i.com.ar</strong> or via WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Print Styles Seguridad Incendio */
+  .print-only-inc { display: none; }
+  @media print {
+    @page { margin: 2cm; }
+    body.printing-inc .header, body.printing-inc .footer, body.printing-inc .section-header, body.printing-inc .calculator-grid, body.printing-inc .section { display: none !important; }
+    body.printing-inc .print-only-inc { display: block !important; font-family: Arial, sans-serif; color: #000; background: #fff; }
+    .print-only-inc .print-header { display: flex; align-items: center; border-bottom: 2px solid #C65353; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-inc .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-inc .print-header p { margin: 5px 0 0 0; color: #666; }
+    .print-only-inc .print-details { margin-bottom: 30px; font-size: 0.9rem; }
+    .print-only-inc .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-inc .print-table th, .print-only-inc .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-inc .print-table th { background-color: #f5f5f5; color: #333; }
+    .print-only-inc .print-footer { border-top: 1px solid #ddd; padding-top: 20px; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iTipo = document.getElementById('inc-tipo') as HTMLSelectElement;
+    const iRiesgo = document.getElementById('inc-riesgo') as HTMLSelectElement;
+    const iAncho = document.getElementById('inc-ancho') as HTMLInputElement;
+    const iLargo = document.getElementById('inc-largo') as HTMLInputElement;
+    const iAlto = document.getElementById('inc-alto') as HTMLInputElement;
+    const iRespaldo = document.getElementById('inc-respaldo') as HTMLSelectElement;
+
+    // UI Result Elements
+    const rArea = document.getElementById('inc-res-area');
+    const rHumoTipo = document.getElementById('inc-humo-tipo');
+    const rHumoCant = document.getElementById('inc-humo-cant');
+    const rHumoDist = document.getElementById('inc-humo-dist');
+    
+    const rPirCant = document.getElementById('inc-pir-cant');
+    const rPirDist = document.getElementById('inc-pir-dist');
+    
+    const rPanelTit = document.getElementById('inc-panel-titulo');
+    const rPanelDesc = document.getElementById('inc-panel-desc');
+
+    // New UI Elements
+    const rConsumo = document.getElementById('inc-res-consumo');
+    const rBateria = document.getElementById('inc-res-bateria');
+
+    // Print Elements
+    const pDate = document.getElementById('inc-print-date');
+    const pTipo = document.getElementById('inc-print-tipo');
+    const pDim = document.getElementById('inc-print-dim');
+    const pAlto = document.getElementById('inc-print-alto');
+    const pRiesgo = document.getElementById('inc-print-riesgo');
+    const pRespaldoInput = document.getElementById('inc-print-respaldo');
+    
+    const pHumoCant = document.getElementById('inc-print-humo-cant');
+    const pHumoTipo = document.getElementById('inc-print-humo-tipo');
+    const pHumoDist = document.getElementById('inc-print-humo-dist');
+    
+    const pPirCant = document.getElementById('inc-print-pir-cant');
+    const pPirDist = document.getElementById('inc-print-pir-dist');
+    
+    const pPanelTit = document.getElementById('inc-print-panel-tit');
+    const pPanelDesc = document.getElementById('inc-print-panel-desc');
+    const pBateriaAh = document.getElementById('inc-print-bateria-ah');
+    
+    const btnPrint = document.getElementById('inc-btn-print');
+
+    function getSuggestedAlarmBattery(ah: number): string {
+      if (ah <= 7.2) return "12V 7Ah or 12V 9Ah (Standard)";
+      if (ah <= 12) return "12V 12Ah";
+      if (ah <= 18) return "12V 18Ah or 2x 12V 9Ah in parallel";
+      return `12V 18Ah + Aux Charger Power Supply (Requires >${ah.toFixed(1)} Ah)`;
+    }
+
+    function calculateSensors() {
+      if (!iAncho) return;
+
+      const ancho = parseFloat(iAncho.value) || 0;
+      const largo = parseFloat(iLargo.value) || 0;
+      const alto = parseFloat(iAlto.value) || 0;
+      const tipo = iTipo.value;
+      const riesgo = iRiesgo.value;
+      const horasRespaldo = parseInt(iRespaldo.value) || 24;
+
+      const area = ancho * largo;
+      
+      let smokeCount = 0;
+      let smokeTech = "";
+      let smokeDist = "";
+
+      // Logic for Smoke/Heat Detectors (NFPA 72)
+      if (riesgo === 'cocina' || riesgo === 'garage') {
+        smokeTech = "Rate-of-Rise Thermal Heat Detectors";
+        smokeCount = Math.ceil(area / 30);
+        smokeDist = "Install at a maximum distance of 6 meters (20ft) apart to prevent false alarms from steam, soot, or vapors.";
+      } else {
+        if (alto <= 6) {
+          smokeTech = "Point Optical Smoke Detectors";
+          smokeCount = Math.ceil(area / 60);
+          smokeDist = "Install at a maximum distance of 9 meters (30ft) apart (radial coverage of ~4.5m) and keep 30cm off side walls.";
+        } else {
+          smokeTech = "Projected Beam Infrared Smoke Detectors";
+          const barriersForWidth = Math.ceil(ancho / 14);
+          const barriersForLength = Math.ceil(largo / 100);
+          smokeCount = barriersForWidth * barriersForLength;
+          smokeDist = `Consists of 1 transmitter and 1 receiver facing each other. Covers up to 14m (45ft) in width. Mount 30-60cm below ceiling to avoid hot air pocketing.`;
+        }
+      }
+
+      // Logic for PIR Sensors
+      let pirCount = 0;
+      let pirDist = "";
+      if (tipo === 'oficina') {
+        pirCount = Math.ceil(area / 80);
+        pirDist = "Mounting height: 2.1m to 2.4m, ideal in corners. Average range: 12 to 15 meters, 90° spread. Avoid pointing directly at windows or heat sources.";
+      } else {
+        pirCount = Math.ceil(area / 150); 
+        pirDist = "Industrial sensors suggested. Mount at 2.5m - 3m height. Average range: 15 to 18 meters volumetric, or boundary corridor lenses.";
+      }
+
+      // Logic for Alarm Panel
+      const totalZones = smokeCount + pirCount;
+      let panelTit = "";
+      let panelDesc = "";
+      
+      if (totalZones <= 8) {
+        panelTit = "Basic Central / Home-SMB";
+        panelDesc = "4 to 8 zone panels (e.g. Garnet A2K4-NG, DSC PC1832). Ideal for residential or small retail/offices.";
+      } else if (totalZones <= 32) {
+        panelTit = "Professional Expandible Panel";
+        panelDesc = "Medium panels (e.g. DSC Neo HS2032). Supports expansion modules and data bus integration.";
+      } else if (totalZones <= 64) {
+        panelTit = "Advanced Hybrid System";
+        panelDesc = "Robust panels (e.g. DSC Neo HS2064). Supports multiple partitions (e.g. Offices + Warehouse).";
+      } else {
+        panelTit = "Industrial / Addressable Panel";
+        panelDesc = "Large-scale panels (e.g. DSC Neo HS2128). Dedicated Fire Panels (e.g. Bosch, Notifier) are recommended for commercial fire safety standards.";
+      }
+
+      // Alarm battery capacity sizing
+      const totalStandbyCurrent = 0.15 + (pirCount * 0.015) + (smokeCount * 0.005);
+      const batteryCapacityNeeded = totalStandbyCurrent * horasRespaldo * 1.25;
+      const suggestedBatteryStr = getSuggestedAlarmBattery(batteryCapacityNeeded);
+
+      // Update UI
+      if(rArea) rArea.textContent = `${area.toFixed(0)} m²`;
+      if(rHumoCant) rHumoCant.textContent = smokeCount.toString();
+      if(rHumoTipo) rHumoTipo.textContent = smokeTech;
+      if(rHumoDist) rHumoDist.textContent = smokeDist;
+      
+      if(rPirCant) rPirCant.textContent = pirCount.toString();
+      if(rPirDist) rPirDist.textContent = pirDist;
+      
+      if(rPanelTit) rPanelTit.textContent = panelTit;
+      if(rPanelDesc) rPanelDesc.textContent = panelDesc;
+
+      if(rConsumo) rConsumo.textContent = `${Math.round(totalStandbyCurrent * 1000)} mA`;
+      if(rBateria) rBateria.textContent = suggestedBatteryStr;
+
+      // Update Print Area
+      if(pTipo) pTipo.textContent = iTipo.options[iTipo.selectedIndex].text;
+      if(pDim) pDim.textContent = `${ancho}m (Width) x ${largo}m (Length) | Total: ${area.toFixed(0)} m²`;
+      if(pAlto) pAlto.textContent = `${alto} meters`;
+      if(pRiesgo) pRiesgo.textContent = iRiesgo.options[iRiesgo.selectedIndex].text;
+      if(pRespaldoInput) pRespaldoInput.textContent = `${horasRespaldo} Hours of Autonomy`;
+      
+      if(pHumoCant) pHumoCant.textContent = smokeCount.toString();
+      if(pHumoTipo) pHumoTipo.textContent = smokeTech;
+      if(pHumoDist) pHumoDist.textContent = smokeDist;
+      
+      if(pPirCant) pPirCant.textContent = pirCount.toString();
+      if(pPirDist) pPirDist.textContent = pirDist;
+      
+      if(pPanelTit) pPanelTit.textContent = panelTit;
+      if(pPanelDesc) pPanelDesc.textContent = panelDesc;
+      if(pBateriaAh) pBateriaAh.textContent = suggestedBatteryStr;
+    }
+
+    // Attach events
+    const allInputs = document.querySelectorAll('#calc-incendio-intrusion input, #calc-incendio-intrusion select');
+    allInputs.forEach(el => {
+      el.addEventListener('input', calculateSensors);
+    });
+
+    // Initialize
+    calculateSensors();
+
+    // Print Logic
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        if (pDate) {
+          const now = new Date();
+          pDate.textContent = now.toLocaleString('en-US');
+        }
+        document.body.classList.add('printing-inc');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-inc'), { once: true });
+      });
+    }
+  });
+</script>

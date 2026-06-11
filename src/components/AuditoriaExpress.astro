@@ -1,0 +1,384 @@
+---
+// Componente de Auditoría Express (Lead Magnet)
+---
+
+<div class="audit-container">
+  <!-- Step 1: Intro & Basic Info -->
+  <div id="step-1" class="audit-step active">
+    <h3>Paso 1: Datos de la Instalación</h3>
+    <p>Cuéntenos brevemente sobre el tipo de instalación que administra.</p>
+    
+    <div class="form-group">
+      <label>Tipo de Establecimiento</label>
+      <select id="q-tipo" class="audit-input">
+        <option value="Planta Industrial">Planta Industrial / Fábrica</option>
+        <option value="Consorcio">Edificio Residencial / Consorcio</option>
+        <option value="Corporativo">Edificio Corporativo / Oficinas</option>
+        <option value="Comercial">Centro Comercial / Supermercado</option>
+        <option value="Logistica">Centro Logístico / Depósito</option>
+        <option value="Vivienda">Vivienda Unifamiliar / Casa (Propietarios o Inmobiliarias)</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Antigüedad Aproximada</label>
+      <select id="q-antiguedad" class="audit-input">
+        <option value="0-5">0 a 5 años (Relativamente Nuevo)</option>
+        <option value="5-15">5 a 15 años (Mantenimiento Medio)</option>
+        <option value="15+">Más de 15 años (Atención Prioritaria)</option>
+      </select>
+    </div>
+    
+    <button class="btn btn-primary" onclick="nextStep(2)">Siguiente: Área Eléctrica</button>
+  </div>
+
+  <!-- Step 2: Electrical -->
+  <div id="step-2" class="audit-step">
+    <h3>Paso 2: Diagnóstico Eléctrico</h3>
+    
+    <div class="form-group">
+      <label>¿Poseen planos eléctricos actualizados y disyuntores probados recientemente?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_planos" value="Si"> Sí, todo al día e identificado</label>
+        <label><input type="radio" name="q_planos" value="No"> No, o la instalación es muy antigua</label>
+        <label><input type="radio" name="q_planos" value="NoSabe"> No lo sabe / Inmueble a revisar</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>¿Con qué frecuencia realizan mantenimiento preventivo (ej. ajuste de bornes, control de fugas) a los tableros principales?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_tableros" value="Anual"> Anual o Semestral</label>
+        <label><input type="radio" name="q_tableros" value="SoloFallas"> Solo cuando salta la térmica o hay fallas</label>
+        <label><input type="radio" name="q_tableros" value="Nunca"> Nunca / Alquilado sin revisar</label>
+      </div>
+    </div>
+    
+    <button class="btn btn-outline" onclick="nextStep(1)">Atrás</button>
+    <button class="btn btn-primary" onclick="nextStep(3)">Siguiente: Climatización y Seguridad</button>
+  </div>
+
+  <!-- Step 3: HVAC, Gas & Exteriores -->
+  <div id="step-3" class="audit-step">
+    <h3>Paso 3: Climatización, Gas y Exteriores</h3>
+    
+    <div class="form-group">
+      <label>¿Tienen un cronograma activo de limpieza de filtros e inspección de equipos de aire acondicionado?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_hvac" value="Si"> Sí, programado y periódico</label>
+        <label><input type="radio" name="q_hvac" value="No"> No, solo reparamos si no enfría</label>
+        <label><input type="radio" name="q_hvac" value="NoAplica"> No aplica</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Revisión y Limpieza de Calefactores / Artefactos a Gas</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_gas" value="Matriculado"> Sí, controlado por gasista matriculado anualmente</label>
+        <label><input type="radio" name="q_gas" value="Casero"> Lo revisamos de forma casera o personal no matriculado</label>
+        <label><input type="radio" name="q_gas" value="Nunca"> Nunca / Solo cuando falla o se apaga</label>
+        <label><input type="radio" name="q_gas" value="NoAplica"> Inmueble 100% eléctrico (no posee gas)</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Limpieza de Techos, Pluviales y Canaletas (Prevención de humedad e inundaciones)</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_pluviales" value="Si"> Limpieza programada antes de otoño/invierno</label>
+        <label><input type="radio" name="q_pluviales" value="Fallas"> Solo destapamos cuando hay filtraciones o rebalsa</label>
+        <label><input type="radio" name="q_pluviales" value="Nunca"> Nunca / No tenemos acceso al techo</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Cámaras de Seguridad (CCTV) / Control de Acceso / Alarmas</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_cctv" value="Optimo"> Todo funciona correctamente con mantenimiento periódico</label>
+        <label><input type="radio" name="q_cctv" value="Fallas"> Tenemos cámaras caídas, falsas alarmas o falta mantenimiento</label>
+        <label><input type="radio" name="q_cctv" value="NoAplica"> No poseemos estos sistemas</label>
+      </div>
+    </div>
+    
+    <button class="btn btn-outline" onclick="nextStep(2)">Atrás</button>
+    <button class="btn btn-primary" onclick="calculateAudit()">Generar Diagnóstico</button>
+  </div>
+
+  <!-- Step 4: Lead Capture -->
+  <div id="step-4" class="audit-step">
+    <div class="result-box" id="audit-result-box">
+      <h3>Analizando datos...</h3>
+    </div>
+
+    <div class="lead-capture" style="margin-top: 30px; display: none;" id="lead-form-container">
+      <p style="font-weight: 600; color: var(--text-dark); margin-bottom: 20px;">
+        Para ver el reporte completo y recibir recomendaciones personalizadas para su <span id="lbl-tipo-est">empresa</span>, por favor complete sus datos de contacto:
+      </p>
+
+      <form action="https://formsubmit.co/n3ibhi@gmail.com" method="POST" id="audit-form">
+        <!-- Hidden Inputs for FormSubmit -->
+        <input type="hidden" name="_subject" value="¡Nuevo Lead de Auditoría Express!">
+        <input type="hidden" name="_next" value="https://n3i.com.ar/auditoria?gracias=true">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        
+        <!-- Hidden Inputs for Audit Data -->
+        <input type="hidden" name="Tipo_Establecimiento" id="h_tipo">
+        <input type="hidden" name="Antiguedad" id="h_antiguedad">
+        <input type="hidden" name="Planos_Actualizados" id="h_planos">
+        <input type="hidden" name="Mantenimiento_Tableros" id="h_tableros">
+        <input type="hidden" name="Estado_HVAC" id="h_hvac">
+        <input type="hidden" name="Mantenimiento_Gas" id="h_gas">
+        <input type="hidden" name="Estado_Canaletas_Pluviales" id="h_pluviales">
+        <input type="hidden" name="Estado_Seguridad_CCTV" id="h_cctv">
+        <input type="hidden" name="NIVEL_DE_RIESGO" id="h_riesgo">
+
+        <div class="form-group">
+          <label>Nombre y Apellido *</label>
+          <input type="text" name="Nombre" class="audit-input" required placeholder="Ej. Juan Pérez">
+        </div>
+        <div class="form-group">
+          <label>Empresa / Inmobiliaria / Consorcio *</label>
+          <input type="text" name="Empresa" class="audit-input" required placeholder="Nombre de la instalación o inmobiliaria">
+        </div>
+        <div class="form-group">
+          <label>Cargo / Rol (Ej: Propietario, Gerente)</label>
+          <input type="text" name="Cargo" class="audit-input" placeholder="Ej. Propietario, Administrador, Gerente">
+        </div>
+        <div class="form-group">
+          <label>Correo Electrónico *</label>
+          <input type="email" name="Email" class="audit-input" required placeholder="Su dirección de mail">
+        </div>
+        <div class="form-group">
+          <label>Teléfono / WhatsApp</label>
+          <input type="tel" name="Telefono" class="audit-input" placeholder="Opcional">
+        </div>
+
+        <div class="form-submit-buttons" style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+          <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center; background-color: #3FC6B4; color: #000;">
+            Solicitar Presupuesto / Asesoría
+            <span class="btn-icon">📋</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .audit-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+    max-width: 800px;
+    margin: 0 auto;
+    color: #111416;
+  }
+  .audit-step {
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+  }
+  .audit-step.active {
+    display: block;
+  }
+  .audit-step h3 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #111416; /* Forzado a oscuro para contraste */
+  }
+  .audit-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #111416;
+    background: white;
+  }
+  .audit-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(35, 102, 191, 0.1);
+  }
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+  }
+  .radio-group label {
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin: 0;
+    color: #333333; /* Forzado a gris oscuro para contraste */
+  }
+  .result-box {
+    background: var(--light-bg);
+    padding: 25px;
+    border-radius: 8px;
+    border-left: 5px solid var(--primary-color);
+    margin-bottom: 20px;
+    color: #111416; /* Fix text visibility on light background */
+  }
+  .result-box h3, .result-box p, .result-box strong {
+    color: #111416;
+  }
+  .result-box.riesgo-alto { border-color: #e74c3c; background: #fdf2f1; }
+  .result-box.riesgo-medio { border-color: #f39c12; background: #fef8f0; }
+  .result-box.riesgo-bajo { border-color: #2ecc71; background: #f0fdf4; }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script is:inline>
+  function nextStep(step) {
+    document.querySelectorAll('.audit-step').forEach(el => el.classList.remove('active'));
+    document.getElementById('step-' + step).classList.add('active');
+  }
+
+  function getRadioValue(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : 'No Especificado';
+  }
+
+  function calculateAudit() {
+    // Collect Data
+    const tipo = document.getElementById('q-tipo').value;
+    const antiguedad = document.getElementById('q-antiguedad').value;
+    const planos = getRadioValue('q_planos');
+    const tableros = getRadioValue('q_tableros');
+    const hvac = getRadioValue('q_hvac');
+    const cctv = getRadioValue('q_cctv');
+    const gas = getRadioValue('q_gas');
+    const pluviales = getRadioValue('q_pluviales');
+
+    // Fill hidden form inputs for FormSubmit
+    document.getElementById('h_tipo').value = tipo;
+    document.getElementById('h_antiguedad').value = antiguedad;
+    document.getElementById('h_planos').value = planos;
+    document.getElementById('h_tableros').value = tableros;
+    document.getElementById('h_hvac').value = hvac;
+    document.getElementById('h_gas').value = gas;
+    document.getElementById('h_pluviales').value = pluviales;
+    document.getElementById('h_cctv').value = cctv;
+
+    document.getElementById('lbl-tipo-est').innerText = tipo;
+
+    // Calculate Risk Score
+    let riskPoints = 0;
+    
+    if (antiguedad === '15+') riskPoints += 2;
+    else if (antiguedad === '5-15') riskPoints += 1;
+
+    if (planos === 'No' || planos === 'NoSabe') riskPoints += 2;
+    if (tableros === 'Nunca') riskPoints += 3;
+    if (tableros === 'SoloFallas') riskPoints += 2;
+    if (hvac === 'No') riskPoints += 1;
+    if (cctv === 'Fallas') riskPoints += 1;
+    
+    // Puntos nuevos de Gas y Pluviales
+    if (gas === 'Nunca') riskPoints += 3;  // Riesgo grave (Monóxido/Incendio)
+    if (gas === 'Casero') riskPoints += 2; // Riesgo moderado alto (Falta de matrícula)
+    if (pluviales === 'Nunca') riskPoints += 2; // Riesgo alto de filtraciones estructurales
+    if (pluviales === 'Fallas') riskPoints += 1;
+
+    let riskLevel = '';
+    let riskClass = '';
+    let message = '';
+
+    if (riskPoints >= 5) {
+      riskLevel = 'ALTO RIESGO / CRÍTICO';
+      riskClass = 'riesgo-alto';
+      message = 'Sus respuestas indican un nivel crítico de vulnerabilidad operativa. Se requiere acción inmediata para evitar fallas catastróficas, multas o siniestros.';
+    } else if (riskPoints >= 2) {
+      riskLevel = 'RIESGO MEDIO / PREVENTIVO REQUERIDO';
+      riskClass = 'riesgo-medio';
+      message = 'Su instalación presenta áreas de mejora importantes. Un programa preventivo reducirá el riesgo de fallas costosas a mediano plazo y optimizará su consumo.';
+    } else {
+      riskLevel = 'RIESGO BAJO / OPERATIVO';
+      riskClass = 'riesgo-bajo';
+      message = 'Su instalación se encuentra bajo control. Mantener este estándar requiere revisiones periódicas certificadas.';
+    }
+
+    let findings = [];
+    if (planos === 'No' || planos === 'NoSabe') findings.push('Ausencia o desactualización de planos eléctricos.');
+    if (tableros === 'Nunca' || tableros === 'SoloFallas') findings.push('Falta de mantenimiento preventivo en tableros eléctricos (riesgo de incendio o corte general).');
+    if (gas === 'Nunca' || gas === 'Casero') findings.push('Artefactos a gas sin revisión periódica por gasista matriculado (riesgo de monóxido o clausura).');
+    if (pluviales === 'Nunca' || pluviales === 'Fallas') findings.push('Sistema de desagües y canaletas con alto riesgo de obstrucción y filtraciones.');
+    if (hvac === 'No') findings.push('Equipos de climatización operando al límite (genera mayor consumo energético y desgaste prematuro).');
+    if (cctv === 'Fallas') findings.push('Sistemas de seguridad y monitoreo vulnerables o fuera de servicio.');
+
+    let findingsHtml = '';
+    if (findings.length > 0) {
+      findingsHtml = `
+        <div style="margin-top: 15px; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.05);">
+          <p style="margin-bottom: 10px; font-weight: 600; color: #111416;">Hallazgos Técnicos Principales:</p>
+          <ul style="margin-left: 20px; margin-bottom: 0; color: #333333; font-size: 0.95rem;">
+            ${findings.map(f => `<li style="margin-bottom: 5px;">${f}</li>`).join('')}
+          </ul>
+        </div>
+        <p style="margin-top: 15px; margin-bottom: 0; font-size: 0.95rem; font-weight: 600; color: #111416;">
+          Para conocer el plan de acción, prioridades y costos estimados de adecuación, por favor complete sus datos de contacto debajo.
+        </p>
+      `;
+    } else {
+      findingsHtml = `
+        <p style="margin-top: 15px; margin-bottom: 0; font-size: 0.95rem; font-weight: 600; color: #111416;">
+          ¡Excelente! Deje sus datos para recibir una propuesta de abono de mantenimiento preventivo base para asegurar la continuidad de este nivel de calidad.
+        </p>
+      `;
+    }
+
+    document.getElementById('h_riesgo').value = riskLevel;
+
+    // Show Result Step
+    nextStep(4);
+    
+    const resultBox = document.getElementById('audit-result-box');
+    resultBox.className = 'result-box ' + riskClass;
+    resultBox.innerHTML = `
+      <h3 style="margin-top:0; color: #111416; font-size: 1.4rem;">Nivel de Riesgo Estimado: <strong>${riskLevel}</strong></h3>
+      <p style="margin-bottom:0; font-size:1.05rem; color: #333333;">${message}</p>
+      ${findingsHtml}
+    `;
+
+    document.getElementById('lead-form-container').style.display = 'block';
+  }
+  
+  // Script para mostrar mensaje de éxito si viene de formsubmit
+  document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('gracias')) {
+      document.querySelectorAll('.audit-step').forEach(el => el.classList.remove('active'));
+      const container = document.querySelector('.audit-container');
+      container.innerHTML = `
+        <div style="text-align:center; padding: 40px 20px;">
+          <div style="width: 80px; height: 80px; background: #2ecc71; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 20px auto;">✓</div>
+          <h2 style="color: var(--primary-color);">¡Auditoría Recibida!</h2>
+          <p style="font-size: 1.1rem; max-width: 500px; margin: 0 auto; color: #333;">Hemos recibido los datos de su diagnóstico. Un especialista de N3i revisará su perfil y se pondrá en contacto a la brevedad con su reporte personalizado y una propuesta de valor.</p>
+          <br>
+          <a href="/" class="btn btn-primary">Volver al Inicio</a>
+        </div>
+      `;
+    }
+  });
+</script>

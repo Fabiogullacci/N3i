@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AuditoriaExpress from '../components/AuditoriaExpress.astro';
+---
+
+<Layout title="Auditoría Express | N3i Engineering & Maintenance">
+  <Header />
+  
+  <section class="page-hero" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; padding: 120px 20px 80px 20px; text-align: center;">
+    <div class="container">
+      <span class="section-subtitle" style="color: #3FC6B4;">Diagnóstico Gratuito</span>
+      <h1 class="hero-title" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 20px;">Auditoría de Infraestructura</h1>
+      <p class="hero-subtitle" style="margin: 0 auto; max-width: 700px; color: var(--text-light);">
+        Descubra el nivel de riesgo de sus instalaciones y reciba un reporte de optimización completando este rápido cuestionario interactivo de 1 minuto. No tiene ningún costo.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding: 80px 20px; background-color: var(--light-bg);">
+    <div class="container">
+      <AuditoriaExpress />
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,197 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Únase al Equipo | N3i Engineering & Maintenance" description="Formulario de reclutamiento técnico de N3i. Únase al equipo de contratistas y especialistas.">
+  <Header />
+
+  <!-- Hero Section -->
+  <section class="section" style="padding-top: 150px; text-align: center;">
+    <div class="container reveal">
+      <span class="section-subtitle">Únete al Equipo N3i</span>
+      <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 20px;">Únase al Equipo</h1>
+      <p class="hero-subtitle" style="margin: 0 auto; max-width: 700px; color: var(--text-light);">
+        Se seleccionan técnicos, oficiales y contratistas altamente capacitados para incorporar a los equipos de trabajo. Complete el siguiente cuestionario técnico para evaluar el perfil. No se requiere currículum en PDF.
+      </p>
+    </div>
+  </section>
+
+  <!-- Formulario Section -->
+  <section class="section section-alt" id="cuestionario">
+    <div class="container reveal">
+      <div class="form-container" style="max-width: 800px; margin: 0 auto; background: var(--card-bg); border-radius: 12px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);">
+        
+        <form action="https://formsubmit.co/n3ibhi@gmail.com" method="POST" id="job-form">
+          <!-- FormSubmit Config -->
+          <input type="hidden" name="_subject" value="NUEVO POSTULANTE TÉCNICO - N3i">
+          <input type="hidden" name="_next" value="https://n3i.com.ar/gracias/">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          
+          <!-- SECCIÓN 1: Datos Personales -->
+          <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.3); padding-bottom: 10px; margin-bottom: 20px;">1. Datos Personales</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="form-group">
+              <label for="nombre">Nombre y Apellido *</label>
+              <input type="text" id="nombre" name="Nombre" class="calc-input" required>
+            </div>
+            <div class="form-group">
+              <label for="telefono">Celular / WhatsApp *</label>
+              <input type="tel" id="telefono" name="Telefono" class="calc-input" required>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+            <div class="form-group">
+              <label for="email">Correo Electrónico (Opcional)</label>
+              <input type="email" id="email" name="Email" class="calc-input">
+            </div>
+            <div class="form-group">
+              <label for="ciudad">Ciudad / Zona de Residencia *</label>
+              <input type="text" id="ciudad" name="Ciudad" class="calc-input" required>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 2: Especialidad -->
+          <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.3); padding-bottom: 10px; margin-bottom: 20px;">2. Perfil Técnico</h3>
+          
+          <div class="form-group" style="margin-bottom: 25px;">
+            <label style="margin-bottom: 10px; display: block;">Oficios y Especialidades (Marque las que domine) *</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Electricidad"> Electricidad General / Industrial</label>
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Automatizacion"> Automatización / Control Industrial</label>
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Plomeria/Hidraulica"> Plomería / Termofusión</label>
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Gasista"> Gasista Matriculado</label>
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Albanileria"> Albañilería General</label>
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Durlock/Pintura"> Construcción en Seco (Durlock) / Pintura</label>
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Refrigeracion"> Climatización (Refrigeración / Calefacción)</label>
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Herreria/Zingueria"> Herrería / Zinguería</label>
+              <label class="checkbox-label"><input type="checkbox" name="Oficios" value="Redes/CCTV"> Redes de Datos / Alarmas / CCTV (Cámaras)</label>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 30px;">
+            <label style="margin-bottom: 10px; display: block;">Nivel de Experiencia *</label>
+            <select name="Nivel_Experiencia" class="calc-select" required>
+              <option value="" disabled selected>Seleccione su nivel...</option>
+              <option value="Ayudante">Ayudante / Inicial</option>
+              <option value="Medio Oficial">Medio Oficial</option>
+              <option value="Oficial">Oficial</option>
+              <option value="Técnico/Matriculado">Técnico Especializado / Matriculado</option>
+            </select>
+          </div>
+
+          <!-- SECCIÓN 3: Logística -->
+          <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.3); padding-bottom: 10px; margin-bottom: 20px;">3. Logística y Contratación</h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="form-group">
+              <label>Situación Fiscal (AFIP) *</label>
+              <select name="Situacion_Fiscal" class="calc-select" required>
+                <option value="Monotributista al día">Monotributista (Al día)</option>
+                <option value="Monotributo en tramite">Monotributo en trámite</option>
+                <option value="No poseo">No poseo facturación</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Disponibilidad Horaria *</label>
+              <select name="Disponibilidad" class="calc-select" required>
+                <option value="Full-Time">Full-time (Lunes a Viernes)</option>
+                <option value="Part-Time">Part-time (Medio tiempo)</option>
+                <option value="Fines de semana">Solo fines de semana</option>
+                <option value="Solo urgencias">Solo guardias/urgencias (24/7)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label style="margin-bottom: 10px; display: block;">Herramientas *</label>
+            <div style="display: flex; gap: 20px;">
+              <label><input type="radio" name="Herramientas" value="Completas" required> Propias y Completas</label>
+              <label><input type="radio" name="Herramientas" value="Básicas"> Básicas</label>
+              <label><input type="radio" name="Herramientas" value="Ninguna"> No poseo</label>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 30px;">
+            <label style="margin-bottom: 10px; display: block;">Movilidad *</label>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+              <label><input type="radio" name="Movilidad" value="Camioneta/Utilitario" required> Camioneta / Utilitario</label>
+              <label><input type="radio" name="Movilidad" value="Auto"> Auto</label>
+              <label><input type="radio" name="Movilidad" value="Moto"> Moto</label>
+              <label><input type="radio" name="Movilidad" value="No posee"> Sin movilidad propia</label>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="form-group">
+              <label>Cobertura de Seguros *</label>
+              <select name="Seguros" class="calc-select" required>
+                <option value="Tengo ART">Tengo ART</option>
+                <option value="Seguro de Accidentes Personales">Seguro de Accidentes Personales</option>
+                <option value="No poseo seguro">No poseo seguro actualmente</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Referencias / Trabajos Previos *</label>
+              <select name="Referencias" class="calc-select" required>
+                <option value="Poseo referencias comprobables">Poseo referencias comprobables de clientes</option>
+                <option value="Solo trabajos particulares">Trabajos particulares sin referencias formales</option>
+                <option value="Principiante">Principiante sin experiencia previa</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 40px;">
+            <label for="comentarios">Comentarios Adicionales (Opcional)</label>
+            <textarea id="comentarios" name="Comentarios" class="calc-input" rows="4" placeholder="Describa los trabajos más importantes, marcas con las que trabaja o cualquier detalle relevante..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 15px;">
+            Enviar Postulación
+            <span class="btn-icon">📋</span>
+          </button>
+          
+          <p style="text-align: center; font-size: 0.8rem; color: var(--text-light); margin-top: 20px;">
+            Al enviar este formulario, usted acepta que N3i lo contacte para posibles oportunidades laborales o contratos de prestación de servicios.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+
+
+<style>
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    cursor: pointer;
+    background: rgba(255,255,255,0.02);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s ease;
+  }
+  .checkbox-label:hover {
+    background: rgba(63, 198, 180, 0.1);
+    border-color: rgba(63, 198, 180, 0.3);
+  }
+  input[type="checkbox"], input[type="radio"] {
+    accent-color: #3FC6B4;
+    width: 18px;
+    height: 18px;
+  }
+  @media (max-width: 768px) {
+    .form-group-grid, div[style*="grid-template-columns: 1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

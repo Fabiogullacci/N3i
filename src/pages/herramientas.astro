@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CalculadoraFrigorias from '../components/CalculadoraFrigorias.astro';
+import CalculadoraHidrica from '../components/CalculadoraHidrica.astro';
+import CalculadoraIluminacion from '../components/CalculadoraIluminacion.astro';
+import CalculadoraSeguridad from '../components/CalculadoraSeguridad.astro';
+import CalculadoraIncendioIntrusion from '../components/CalculadoraIncendioIntrusion.astro';
+import CalculadoraPintura from '../components/CalculadoraPintura.astro';
+import CalculadoraDurlock from '../components/CalculadoraDurlock.astro';
+import CalculadoraFactura from '../components/CalculadoraFactura.astro';
+import CalculadoraConsumoGas from '../components/CalculadoraConsumoGas.astro';
+import CalculadoraConsumoElectrico from '../components/CalculadoraConsumoElectrico.astro';
+import CalculadoraSolar from '../components/CalculadoraSolar.astro';
+import CalculadoraCable from '../components/CalculadoraCable.astro';
+import CalculadoraPlanillaTotalizadora from '../components/CalculadoraPlanillaTotalizadora.astro';
+import CalculadoraUValue from '../components/CalculadoraUValue.astro';
+import CalculadoraMantenimiento from '../components/CalculadoraMantenimiento.astro';
+---
+<Layout 
+  title="Calculadoras y Herramientas de Ingeniería | N3i" 
+  description="Suite de calculadoras online gratuitas: Auditoría de factura eléctrica, cálculo de materiales (Durlock, pintura), cálculo de frigorías para aire acondicionado, iluminación, bombas de agua y más."
+>
+  <Header />
+  
+  <div style="padding-top: clamp(80px, 12vw, 120px);">
+    <!-- Contenedor para dar el espaciado correcto al primer elemento del listado -->
+    <CalculadoraConsumoElectrico />
+  </div>
+
+  <CalculadoraConsumoGas />
+  <CalculadoraFactura />
+  <CalculadoraIluminacion />
+  <CalculadoraHidrica />
+  <CalculadoraSeguridad />
+  <CalculadoraIncendioIntrusion />
+  <CalculadoraFrigorias />
+  <CalculadoraPintura />
+  <CalculadoraDurlock />
+  
+  <CalculadoraSolar />
+  <CalculadoraCable />
+  <CalculadoraPlanillaTotalizadora />
+  <CalculadoraUValue />
+  <CalculadoraMantenimiento />
+
+  <Footer />
+</Layout>

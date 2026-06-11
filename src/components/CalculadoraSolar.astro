@@ -1,0 +1,414 @@
+---
+// src/components/CalculadoraSolar.astro
+// Calculadora Solar Fotovoltaica (Autoconsumo y ROI) - Theme Amber (#FFB300)
+---
+<section class="section section-alt" id="calc-solar">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #FFB300;">Energías Renovables</span>
+      <h2 class="section-title">Calculadora Solar Fotovoltaica y Retorno de Inversión (ROI)</h2>
+      <p class="section-desc">
+        Estime cuántos paneles solares necesita su hogar o comercio, calcule la generación anual y proyecte en cuántos años recuperará la inversión bajo la Ley Nacional de Generación Distribuida 27.424.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Formulario de Entrada -->
+      <div class="calc-appliances card reveal">
+        <h3 style="color: #FFB300; border-bottom: 1px solid rgba(255, 179, 0, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          Configuración de la Instalación
+        </h3>
+        
+        <div class="form-group">
+          <label>Consumo Mensual Promedio (kWh/mes)</label>
+          <input type="number" id="sol-consumo" class="calc-input" value="400" min="50" step="10" style="border-color: #FFB300;" />
+          <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Consulte en su última factura de luz el promedio bimestral o mensual.</small>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Región / Provincia (Radiación HSP)</label>
+            <select id="sol-provincia" class="calc-select">
+              <option value="4.6" selected>Bahía Blanca / Buenos Aires (4.6 HSP)</option>
+              <option value="3.8">Patagonia / Sur (3.8 HSP)</option>
+              <option value="5.2">Cuyo / Córdoba (5.2 HSP)</option>
+              <option value="5.5">NOA / Norte (5.5 HSP)</option>
+            </select>
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">HSP: Horas Equivalentes de Sol Pico.</small>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Conexión</label>
+            <select id="sol-tipo" class="calc-select">
+              <option value="ongrid" selected>On-Grid (Conectado a Red - Ley 27.424)</option>
+              <option value="offgrid">Off-Grid (Aislado con Baterías)</option>
+              <option value="hibrido">Híbrido (Red + Respaldo de Baterías)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Uso Diurno de Energía</label>
+            <select id="sol-diurno" class="calc-select">
+              <option value="0.40">Bajo (40% - Casa vacía de día)</option>
+              <option value="0.60" selected>Moderado (60% - Hogar promedio / Home Office)</option>
+              <option value="0.80">Alto (80% - Oficina, Comercio o Industria)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Potencia de cada Panel (Watts)</label>
+            <input type="number" id="sol-panel-w" class="calc-input" value="450" min="250" max="650" step="10" />
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Costo de kWh de Red ($ ARS/kWh)</label>
+            <input type="number" id="sol-cost-kwh" class="calc-input" value="115" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Cotización Dólar ($ ARS/USD)</label>
+            <input type="number" id="sol-dolar" class="calc-input" value="1000" min="100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de Resultados -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3 style="color: #FFB300; border-bottom: 1px solid rgba(255, 179, 0, 0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem;">
+            Análisis de Viabilidad y ROI
+          </h3>
+          
+          <div class="result-summary" style="background: rgba(255, 179, 0, 0.08); border-left: 4px solid #FFB300; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; line-height: 1.5;">
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Potencia Pico Necesaria: <strong id="sol-res-potencia" style="color: var(--text-primary);">0.0 kWp</strong></p>
+            <p style="margin: 0 0 6px 0; color: var(--text-secondary);">Cantidad de Paneles: <strong id="sol-res-paneles" style="color: var(--text-primary);">0 uds (450W)</strong></p>
+            <p style="margin: 0; color: var(--text-secondary);">Inversor Sugerido: <strong id="sol-res-inversor" style="color: var(--text-primary);">0.0 kW</strong></p>
+          </div>
+
+          <!-- ROI Principal -->
+          <div class="main-result" style="text-align: center; margin: 15px 0;">
+            <span style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 3px;">Tiempo de Recuperación de Inversión (ROI):</span>
+            <div id="sol-res-roi" style="font-size: 2.5rem; font-weight: 800; color: #FFB300; line-height: 1;">0.0 Años</div>
+            <span id="sol-res-ahorro-anual" style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-top: 4px;">Ahorro: $ 0 ARS/año</span>
+          </div>
+
+          <!-- Costo Estimado -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+            <span style="font-size: 0.78rem; color: var(--text-secondary);">Inversión Estimada Llave en Mano:</span>
+            <strong id="sol-res-costo-total" style="display: block; font-size: 1.1rem; color: var(--text-primary); margin-top: 3px;">USD 0 / $ 0 ARS</strong>
+          </div>
+
+          <!-- Generación y CO2 -->
+          <div style="background: rgba(255, 179, 0, 0.05); border: 1px solid rgba(255, 179, 0, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 15px;">
+            <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45;">
+              Generación anual estimada: <strong><span id="sol-res-generacion">0</span> kWh/año</strong>.
+              <br>
+              Reducción Huella de Carbono: <strong style="color: #FFB300;"><span id="sol-res-co2">0.0</span> kg CO₂/año</strong>.
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="/#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; background: #FFB300; color: #000; box-shadow: 0 4px 15px rgba(255, 179, 0, 0.3);">
+              Solicitar Cotización de Paneles
+              <span class="btn-icon">☀️</span>
+            </a>
+            <button type="button" id="sol-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; border-color: #FFB300; color: var(--text-primary); background: transparent;">
+              Imprimir Estudio Solar
+              <span class="btn-icon" style="background: transparent;">🖨️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consejos del Instalador de Energías Renovables -->
+    <div class="card reveal" style="margin-top: 40px; border-top: 3px solid #FFB300;">
+      <h3 style="color: #FFB300; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+        <span>💡</span> Claves de Ingeniería Solar Fotovoltaica
+      </h3>
+      <div class="gas-tips-grid">
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FFB300;">🔌</div>
+          <div>
+            <h4 class="gas-tip-title">Ley 27.424 - Usuario-Generador</h4>
+            <p class="gas-tip-desc">Permite inyectar los excedentes de generación solar a la red eléctrica pública. La distribuidora (EDES en Bahía Blanca) le reconocerá un crédito en pesos en su boleta según la tarifa de inyección establecida.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FFB300;">📐</div>
+          <div>
+            <h4 class="gas-tip-title">Orientación e Inclinación</h4>
+            <p class="gas-tip-desc">Para optimizar el rendimiento en el Hemisferio Sur, los paneles deben orientarse exactamente hacia el **Norte**. La inclinación ideal para Bahía Blanca es de unos **30° a 35°** con respecto al suelo.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FFB300;">🔋</div>
+          <div>
+            <h4 class="gas-tip-title">¿On-Grid, Off-Grid o Híbrido?</h4>
+            <p class="gas-tip-desc">On-Grid es la opción más económica y amortizable (sin baterías). Off-Grid se usa en zonas rurales sin red. Los sistemas Híbridos ofrecen lo mejor de ambos mundos: ahorro diario y respaldo continuo ante cortes.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #FFB300;">🧼</div>
+          <div>
+            <h4 class="gas-tip-title">Mantenimiento y Limpieza</h4>
+            <p class="gas-tip-desc">Los paneles solares no tienen partes móviles, por lo que su mantenimiento es mínimo. Solo requieren una limpieza con agua de la suciedad acumulada (tierra u hojas) 1 o 2 veces al año para evitar mermas de eficiencia.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Área oculta para el reporte impreso -->
+<div id="print-area-sol" class="print-only-sol">
+  <div class="print-header" style="border-bottom-color: #FFB300;">
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="80" />
+    <div>
+      <h2 style="color: #FFB300;">Estudio de Viabilidad y Retorno Solar</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Fecha:</strong> <span id="sol-print-date"></span></p>
+    <p><strong>Ubicación:</strong> Zona Bahía Blanca (Radiación de Referencia)</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Parámetro Calculado</th>
+        <th>Valor Recomendado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Consumo Mensual Configurado</strong></td>
+        <td><span id="sol-print-consumo">-</span> kWh/mes</td>
+      </tr>
+      <tr>
+        <td><strong>Horas de Sol Pico (HSP)</strong></td>
+        <td><span id="sol-print-hsp">-</span> HSP</td>
+      </tr>
+      <tr>
+        <td><strong>Potencia Pico de Sistema</strong></td>
+        <td><span id="sol-print-potencia">-</span> kWp</td>
+      </tr>
+      <tr>
+        <td><strong>Cantidad de Paneles (450W)</strong></td>
+        <td><span id="sol-print-paneles">-</span> unidades</td>
+      </tr>
+      <tr>
+        <td><strong>Capacidad del Inversor</strong></td>
+        <td><span id="sol-print-inversor">-</span> kW</td>
+      </tr>
+      <tr>
+        <td><strong>Generación Anual Proyectada</strong></td>
+        <td><span id="sol-print-generacion">-</span> kWh/año</td>
+      </tr>
+      <tr>
+        <td><strong>Inversión Estimada</strong></td>
+        <td><span id="sol-print-costo">-</span></td>
+      </tr>
+      <tr>
+        <td><strong>Ahorro Anual Proyectado</strong></td>
+        <td><span id="sol-print-ahorro-anual">-</span> / año</td>
+      </tr>
+      <tr>
+        <td><strong>Tiempo de Retorno (ROI)</strong></td>
+        <td><strong><span id="sol-print-roi">-</span></strong></td>
+      </tr>
+      <tr>
+        <td><strong>Reducción de Carbono CO₂</strong></td>
+        <td><span id="sol-print-co2">-</span> kg CO₂/año</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Nota: El estudio es de carácter referencial y asume condiciones ideales de instalación, sin sombras, orientación norte y una eficiencia general del sistema (Performance Ratio) del 75%. El valor llave en mano incluye inversor, paneles, estructura de aluminio y mano de obra reglamentaria.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">Para coordinar una visita técnica a su obra y cotización final, el contacto está disponible en <strong>www.n3i.com.ar</strong> o al WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Scrollbar Custom Amber */
+  .materials-list::-webkit-scrollbar-thumb {
+    background: #FFB300;
+  }
+
+  /* Mobile: reduce oversized display font */
+  @media (max-width: 480px) {
+    #sol-res-roi {
+      font-size: 1.8rem !important;
+    }
+  }
+
+  /* Estilos de Impresión Solar */
+  .print-only-sol { display: none; }
+  @media print {
+    body.printing-sol .header, 
+    body.printing-sol .footer, 
+    body.printing-sol .section-header, 
+    body.printing-sol .calculator-grid, 
+    body.printing-sol .section { 
+      display: none !important; 
+    }
+    body.printing-sol .print-only-sol {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+    }
+    .print-only-sol .print-header { display: flex; align-items: center; border-bottom: 2px solid #FFB300; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-sol .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-sol .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-sol .print-table th, .print-only-sol .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-sol .print-table th { background-color: #f5f5f5; color: #333; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iConsumo = document.getElementById('sol-consumo') as HTMLInputElement;
+    const iProvincia = document.getElementById('sol-provincia') as HTMLSelectElement;
+    const iTipo = document.getElementById('sol-tipo') as HTMLSelectElement;
+    const iDiurno = document.getElementById('sol-diurno') as HTMLSelectElement;
+    const iPanelW = document.getElementById('sol-panel-w') as HTMLInputElement;
+    const iCostKwh = document.getElementById('sol-cost-kwh') as HTMLInputElement;
+    const iDolar = document.getElementById('sol-dolar') as HTMLInputElement;
+
+    const rPotencia = document.getElementById('sol-res-potencia');
+    const rPaneles = document.getElementById('sol-res-paneles');
+    const rInversor = document.getElementById('sol-res-inversor');
+    const rRoi = document.getElementById('sol-res-roi');
+    const rAhorroAnual = document.getElementById('sol-res-ahorro-anual');
+    const rCostoTotal = document.getElementById('sol-res-costo-total');
+    const rGeneracion = document.getElementById('sol-res-generacion');
+    const rCo2 = document.getElementById('sol-res-co2');
+
+    let globalSolarData: any = {};
+
+    function calculateSolar() {
+      if (!iConsumo || !rPotencia) return;
+
+      const consumo = parseFloat(iConsumo.value) || 0;
+      const hsp = parseFloat(iProvincia.value) || 4.6;
+      const tipo = iTipo.value;
+      const diurnoRatio = parseFloat(iDiurno.value) || 0.60;
+      const panelW = parseFloat(iPanelW.value) || 450;
+      const costKwh = parseFloat(iCostKwh.value) || 115;
+      const dolar = parseFloat(iDolar.value) || 1000;
+
+      // 1. Potencia Pico Necesaria (kWp)
+      // PR (Performance Ratio) = 75%
+      const consDiario = (consumo / 30) * diurnoRatio;
+      const pPeak = consDiario / (hsp * 0.75); // en kWp
+
+      // 2. Cantidad de paneles
+      const qtyPaneles = Math.ceil((pPeak * 1000) / panelW);
+      const realPeak = (qtyPaneles * panelW) / 1000; // kWp reales instalados
+
+      // 3. Inversor Sugerido
+      let inverterSize = Math.ceil(realPeak * 1.1 * 10) / 10;
+      if (inverterSize < 1.5) inverterSize = 1.5;
+
+      // 4. Generación Anual Estimada (kWh)
+      const genAnual = realPeak * hsp * 365 * 0.75;
+
+      // 5. Ahorro Anual Estimado (ARS)
+      // En sistemas conectados, se asume un 90% de aprovechamiento del ahorro directo + inyección
+      const ahorroAnual = genAnual * costKwh * 0.90;
+
+      // 6. Costo Estimado Llave en Mano
+      // On-grid: $1.50 USD/W, Off-grid: $2.50 USD/W (con baterías), Híbrido: $2.80 USD/W
+      let costPerWatt = 1.50;
+      if (tipo === 'offgrid') costPerWatt = 2.50;
+      if (tipo === 'hibrido') costPerWatt = 2.80;
+
+      const costUsd = realPeak * 1000 * costPerWatt;
+      const costArs = costUsd * dolar;
+
+      // 7. ROI en años
+      const roiYears = ahorroAnual > 0 ? (costArs / ahorroAnual) : 0;
+
+      // 8. CO2 Offset
+      const co2 = genAnual * 0.40;
+
+      // Actualizar UI
+      rPotencia.textContent = `${realPeak.toFixed(2)} kWp`;
+      rPaneles.textContent = `${qtyPaneles} uds (${panelW}W)`;
+      rInversor.textContent = `${inverterSize.toFixed(1)} kW`;
+      rRoi.textContent = roiYears > 0 ? `${roiYears.toFixed(1)} Años` : "0.0 Años";
+      rAhorroAnual.textContent = `Ahorro: $ ${Math.round(ahorroAnual).toLocaleString('es-AR')} ARS/año`;
+      rCostoTotal.textContent = `USD ${Math.round(costUsd).toLocaleString('en-US')} / $ ${Math.round(costArs).toLocaleString('es-AR')} ARS`;
+      rGeneracion.textContent = Math.round(genAnual).toLocaleString('es-AR');
+      rCo2.textContent = Math.round(co2).toLocaleString('es-AR');
+
+      // Guardar datos para imprimir
+      globalSolarData = {
+        consumo,
+        hsp,
+        realPeak,
+        qtyPaneles,
+        inverterSize,
+        genAnual,
+        costUsd,
+        costArs,
+        ahorroAnual,
+        roiYears,
+        co2
+      };
+    }
+
+    // Attach events
+    const inputs = [iConsumo, iProvincia, iTipo, iDiurno, iPanelW, iCostKwh, iDolar];
+    inputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateSolar);
+    });
+
+    // Init
+    calculateSolar();
+
+    // Print event
+    const btnPrint = document.getElementById('sol-btn-print');
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        const pDate = document.getElementById('sol-print-date');
+        const pConsumo = document.getElementById('sol-print-consumo');
+        const pHsp = document.getElementById('sol-print-hsp');
+        const pPotencia = document.getElementById('sol-print-potencia');
+        const pPaneles = document.getElementById('sol-print-paneles');
+        const pInversor = document.getElementById('sol-print-inversor');
+        const pGeneracion = document.getElementById('sol-print-generacion');
+        const pCosto = document.getElementById('sol-print-costo');
+        const pAhorro = document.getElementById('sol-print-ahorro-anual');
+        const pRoi = document.getElementById('sol-print-roi');
+        const pCo2 = document.getElementById('sol-print-co2');
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('es-AR') + ' ' + today.toLocaleTimeString('es-AR');
+        }
+
+        if (globalSolarData.realPeak) {
+          if (pConsumo) pConsumo.textContent = globalSolarData.consumo.toString();
+          if (pHsp) pHsp.textContent = globalSolarData.hsp.toFixed(1);
+          if (pPotencia) pPotencia.textContent = globalSolarData.realPeak.toFixed(2);
+          if (pPaneles) pPaneles.textContent = globalSolarData.qtyPaneles.toString();
+          if (pInversor) pInversor.textContent = globalSolarData.inverterSize.toFixed(1);
+          if (pGeneracion) pGeneracion.textContent = Math.round(globalSolarData.genAnual).toLocaleString('es-AR');
+          if (pCosto) pCosto.textContent = `USD ${Math.round(globalSolarData.costUsd).toLocaleString('en-US')} (Aprox. $ ${Math.round(globalSolarData.costArs).toLocaleString('es-AR')} ARS)`;
+          if (pAhorro) pAhorro.textContent = `$ ${Math.round(globalSolarData.ahorroAnual).toLocaleString('es-AR')} ARS`;
+          if (pRoi) pRoi.textContent = `${globalSolarData.roiYears.toFixed(1)} Años`;
+          if (pCo2) pCo2.textContent = Math.round(globalSolarData.co2).toLocaleString('es-AR');
+        }
+
+        document.body.classList.add('printing-sol');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-sol'), { once: true });
+      });
+    }
+  });
+</script>

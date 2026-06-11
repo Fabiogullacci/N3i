@@ -1,0 +1,118 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import obrasData from '../../data/obras.json';
+
+// Translate categories map
+const categoryTranslations = {
+  "Electricidad e Iluminación Industrial": "Industrial Electricity & Lighting",
+  "Inspección y Certificación Eléctrica": "Electrical Inspection & Certification",
+  "Construcción en Seco y Terminaciones (Durlock)": "Drywall Construction & Finishings",
+  "Climatización Comercial e Industrial": "Commercial & Industrial HVAC",
+  "Hidráulica y Plomería": "Hydraulics & Plumbing",
+  "Neumática & Aire Comprimido": "Pneumatics & Compressed Air",
+  "Zinguería y Reparación Estructural": "Sheet Metal & Structural Repair",
+  "Construcción y Mantenimiento Integral": "Comprehensive Construction & Maintenance",
+  "Herrería y Estructuras Metálicas": "Blacksmithing & Metal Structures",
+  "Redes y Datos": "Networking & Data",
+  "Sistemas de Alarmas": "Alarm Systems",
+  "Sistemas de CCTV (Videovigilancia)": "CCTV Systems (Video Surveillance)",
+  "Pintura y Revestimientos": "Painting & Coatings",
+  "Obras llave en mano": "Turnkey Projects",
+  "Otras Obras": "Other Works"
+};
+
+// Agrupar obras por categoría
+const obrasPorCategoria = obrasData.obras.reduce((acc, obra) => {
+  const cat = obra.category || 'Otras Obras';
+  const translatedCat = categoryTranslations[cat] || cat;
+  if (!acc[translatedCat]) {
+    acc[translatedCat] = [];
+  }
+  acc[translatedCat].push(obra);
+  return acc;
+}, {});
+---
+<Layout 
+  title="Portfolio of Works | N3i Engineering & Maintenance" 
+  description="Gallery of recent works and projects." 
+  lang="en"
+  image="/assets/img/obra_zelarrayan_1.jpg"
+>
+  <Header lang="en" />
+  <!-- Obras Destacadas Section -->
+  <section class="section" id="obras">
+    <div class="container">
+      <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+        <span class="section-subtitle">Success Cases</span>
+        <h2 class="section-title">Recent Works</h2>
+        <p class="section-desc">
+          A showcase of completed projects and maintenance jobs, guaranteeing quality and durability in every detail.
+        </p>
+      </div>
+
+      <div class="works-container">
+        {Object.entries(obrasPorCategoria).map(([categoria, obrasGroup]) => (
+          <div class="category-section" style="margin-bottom: 80px;">
+            <h3 class="category-title reveal" style="font-size: 1.8rem; margin-bottom: 30px; color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">
+              {categoria}
+            </h3>
+            <div class="works-grid">
+              {obrasGroup.map((obra, index) => (
+                <div class="work-card reveal" style={`transition-delay: ${index * 0.1}s;`}>
+                  {obra.type === 'video' ? (
+                    <div class="work-video-container">
+                      <video class="work-video" preload="metadata" loop muted playsinline controls>
+                        <source src={obra.media[0]} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  ) : (
+                    <div class={obra.media.length === 3 ? "work-gallery-3" : (obra.media.length >= 4 ? "work-gallery" : (obra.media.length === 2 ? "work-gallery-2" : "work-gallery-1"))}>
+                      <div class="work-img-container work-img-main">
+                        <img src={obra.media[0]} alt={`${obra.title} - Main Photo`} class="work-img" loading="lazy" />
+                      </div>
+                      {obra.media.length > 1 && (
+                        <div class="work-img-container work-img-thumb-1">
+                          <img src={obra.media[1]} alt="Detail 1" class="work-img" loading="lazy" />
+                        </div>
+                      )}
+                      {obra.media.length > 2 && (
+                        <div class="work-img-container work-img-thumb-2">
+                          <img src={obra.media[2]} alt="Detail 2" class="work-img" loading="lazy" />
+                        </div>
+                      )}
+                      {obra.media.length > 3 && (
+                        <div class="work-img-container work-img-thumb-3">
+                          <img src={obra.media[3]} alt="Detail 3" class="work-img" loading="lazy" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  <div class="work-content">
+                    <span class="work-category" style="display:none;">{categoria}</span>
+                    <h3 class="work-title">{obra.title}</h3>
+                    <p class="work-location">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      {obra.location}
+                    </p>
+                    <p class="work-description">
+                      {obra.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer lang="en" />
+</Layout>

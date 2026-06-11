@@ -1,0 +1,97 @@
+---
+interface Props {
+	title: string;
+	description: string;
+	lang?: string;
+	image?: string;
+	schemaJson?: string;
+	canonicalUrl?: string;
+}
+
+const { 
+	title, 
+	description, 
+	lang = "es",
+	image = "/assets/img/logo.jpg",
+	schemaJson,
+	canonicalUrl
+} = Astro.props;
+
+const siteUrl = "https://n3i.com.ar";
+const ogImage = image.startsWith('http') ? image : siteUrl + image;
+const canonical = canonicalUrl ? canonicalUrl : siteUrl + Astro.url.pathname;
+
+// Import global styles
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/webp" href="/assets/img/logo.webp" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+
+		<!-- Canonical URL -->
+		<link rel="canonical" href={canonical} />
+
+		<!-- Robots -->
+		<meta name="robots" content="index, follow" />
+
+		<!-- Geo Meta Tags — SEO Local Bahía Blanca -->
+		<meta name="geo.region" content="AR-B" />
+		<meta name="geo.placename" content="Bahía Blanca, Buenos Aires" />
+		<meta name="geo.position" content="-38.7183;-62.2663" />
+		<meta name="ICBM" content="-38.7183, -62.2663" />
+
+		<!-- Alternate language versions — hreflang -->
+		<link rel="alternate" hreflang="es-AR" href={siteUrl + "/"} />
+		<link rel="alternate" hreflang="en" href={siteUrl + "/en/"} />
+		<link rel="alternate" hreflang="x-default" href={siteUrl + "/"} />
+
+		<!-- OpenGraph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:locale" content="es_AR" />
+		<meta property="og:site_name" content="N3i Engineering & Maintenance" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={canonical} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={ogImage} />
+
+		<!-- Google Fonts Preconnect & Direct Link -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+		<!-- Schema.org JSON-LD — Datos Estructurados para Google -->
+		{schemaJson && <Fragment set:html={`<script type="application/ld+json">${schemaJson}</script>`} />}
+
+		<!-- Google tag (gtag.js) -->
+		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-6ZGDLZ1MFC"></script>
+		<script is:inline>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'G-6ZGDLZ1MFC');
+		</script>
+	</head>
+	<body>
+		<slot />
+		
+		<!-- Client-side logic -->
+		<script src="../scripts/app.js"></script>
+	</body>
+</html>

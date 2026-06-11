@@ -1,0 +1,1526 @@
+---
+// src/components/CalculadoraPlanillaTotalizadora.astro
+// Generador de Planilla Totalizadora Reglamentaria Bahía Blanca (Colegio/Electromecánica) - Theme Teal (#3FC6B4)
+---
+<section class="section section-alt" id="calc-planilla-totalizadora">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 40px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #3FC6B4;">Ingeniería Eléctrica y Normativa</span>
+      <h2 class="section-title">Planilla Totalizadora Eléctrica (Colegio/Municipio)</h2>
+      <p class="section-desc">
+        Cree, edite y dimensione la planilla de cargas y circuitos según el formato homologado exigido por el Colegio de Ingenieros y el Departamento de Electromecánica de Bahía Blanca.
+      </p>
+    </div>
+
+    <!-- Panel Superior: Nombre del Tablero General -->
+    <div class="card reveal" style="border-top: 3px solid #3FC6B4; margin-bottom: 25px; padding: 20px;">
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+        <div class="form-group" style="flex: 1; min-width: 250px; margin-bottom: 0;">
+          <label for="tot-general-name" style="font-weight: 700; color: #3FC6B4;">Tablero General (TG) / Nombre de la Obra</label>
+          <input type="text" id="tot-general-name" class="calc-input" value="TG Protecciones (Edificio Chiclana 680)" style="font-weight: 700; font-size: 1.1rem; border-color: rgba(63, 198, 180, 0.3);" />
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" id="tot-btn-add-group" class="btn btn-outline" style="border-color: #3FC6B4; color: var(--text-primary); font-size: 0.85rem; padding: 10px 16px;">
+            <span>➕</span> Agregar Grupo/Sector
+          </button>
+          <button type="button" id="tot-btn-reset-full" class="btn btn-outline" style="border-color: rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.85rem; padding: 10px 16px;">
+            <span>🔄</span> Restablecer Ejemplo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDITOR DE GRUPOS Y CIRCUITOS -->
+    <div id="tot-editor-container" class="reveal" style="margin-bottom: 30px;">
+      <!-- Rellenado dinámicamente por JS en modo edición estructurada -->
+    </div>
+
+    <!-- VISTA PREVIA DE LA PLANILLA REGLAMENTARIA (HOMOLOGADA) -->
+    <div class="card reveal" style="border-top: 3px solid #3FC6B4; margin-bottom: 30px; padding: 25px;">
+      <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.15); padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <span>📋 Vista Previa de Planilla Reglamentaria</span>
+        <span style="font-size: 0.8rem; background: rgba(63, 198, 180, 0.1); padding: 4px 10px; border-radius: 20px; color: #3FC6B4; border: 1px solid rgba(63, 198, 180, 0.2);">Formato Homologado Colegio</span>
+      </h3>
+
+      <div style="overflow-x: auto; margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.25);">
+        <table class="planilla-table" style="width: 100%; border-collapse: collapse; min-width: 950px; text-align: left; font-size: 0.82rem; color: var(--text-primary);">
+          <thead>
+            <tr style="background: rgba(63, 198, 180, 0.08); border-bottom: 1px solid rgba(63, 198, 180, 0.25);">
+              <th colspan="2" style="padding: 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.2); font-weight: 700;">TABLEROS</th>
+              <th rowspan="2" style="padding: 10px; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.2); font-weight: 700; width: 100px;">Circuito</th>
+              <th colspan="3" style="padding: 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.2); font-weight: 700;">Nº Bocas</th>
+              <th rowspan="2" style="padding: 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.2); font-weight: 700; width: 110px;">POTENCIA (W)</th>
+              <th rowspan="2" style="padding: 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.2); font-weight: 700; width: 100px;">INTENSIDAD (A)</th>
+              <th rowspan="2" style="padding: 10px; color: #3FC6B4; font-weight: 700;">DETALLE / OBSERVACIONES</th>
+            </tr>
+            <tr style="background: rgba(63, 198, 180, 0.04); border-bottom: 1px solid rgba(63, 198, 180, 0.2);">
+              <th style="padding: 6px 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.15); font-size: 0.75rem; font-weight: 600; width: 150px;">Gral</th>
+              <th style="padding: 6px 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.2); font-size: 0.75rem; font-weight: 600; width: 100px;">Secc</th>
+              <th style="padding: 6px 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.15); font-size: 0.75rem; font-weight: 600; width: 60px;">Luz</th>
+              <th style="padding: 6px 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.15); font-size: 0.75rem; font-weight: 600; width: 60px;">Toma</th>
+              <th style="padding: 6px 10px; text-align: center; color: #3FC6B4; border-right: 1px solid rgba(63, 198, 180, 0.2); font-size: 0.75rem; font-weight: 600; width: 65px;">FM/AA</th>
+            </tr>
+          </thead>
+          <tbody id="planilla-preview-tbody">
+            <!-- Rellenado dinámicamente con rowspans -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Botones de Acción / Descarga -->
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
+        <button type="button" id="tot-btn-copy-cad" class="btn btn-primary" style="flex: 1.5; min-width: 200px; justify-content: center; background: #3FC6B4; color: #000; box-shadow: 0 4px 15px rgba(63, 198, 180, 0.3); font-weight: 700;">
+          Copiar para AutoCAD (Tabla) 📋
+        </button>
+        <button type="button" id="tot-btn-csv" class="btn btn-outline" style="flex: 1; min-width: 140px; border-color: rgba(255,255,255,0.1); justify-content: center;">
+          Descargar Excel (CSV) 📊
+        </button>
+        <button type="button" id="tot-btn-print" class="btn btn-outline" style="flex: 1; min-width: 140px; border-color: #3FC6B4; color: var(--text-primary); background: transparent; justify-content: center;">
+          Imprimir Memoria Técnica 🖨️
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel de Notas / Observaciones Generales de la Obra -->
+    <div class="card reveal" style="border-top: 3px solid #3FC6B4; margin-bottom: 25px; padding: 20px;">
+      <label for="tot-general-notes" style="font-weight: 700; color: #3FC6B4; display: block; margin-bottom: 10px;">📝 Notas / Observaciones Generales (Se incluirán al pie de la Memoria Técnica de obra)</label>
+      <textarea id="tot-general-notes" class="calc-input" rows="3" style="width: 100%; height: auto; resize: vertical; font-family: inherit; font-size: 0.9rem; border-color: rgba(63, 198, 180, 0.15);" placeholder="Ej: La caída de tensión máxima admitida desde la acometida hasta el tablero seccional más alejado no superará el 3%. Las protecciones y conductores cumplen con la norma AEA 90364-7-771."></textarea>
+    </div>
+
+    <!-- Diagnósticos Eléctricos Opcionales -->
+    <div class="calculator-grid">
+      <!-- Balanceo de Fases -->
+      <div class="card reveal" style="border-top: 3px solid #3FC6B4;">
+        <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          ⚖️ Balanceo de Fases (Diagnóstico)
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.4;">
+          Distribuya las cargas monofásicas en fases <strong>R, S y T</strong> en el menú del editor de circuitos para minimizar el desequilibrio y evitar penalizaciones de la distribuidora.
+        </p>
+
+        <div class="kpi-grid-three" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+          <div class="result-box" style="text-align: center; padding: 12px 8px;">
+            <span class="result-label" style="font-weight: 700; color: #ff3366;">Fase R</span>
+            <div id="tot-val-faseR" style="font-size: 1.15rem; font-weight: 800; margin-top: 5px;">0 W</div>
+            <small id="tot-amp-faseR" style="color: var(--text-muted); font-size: 0.72rem;">0.0 A</small>
+          </div>
+          <div class="result-box" style="text-align: center; padding: 12px 8px;">
+            <span class="result-label" style="font-weight: 700; color: #00d2ff;">Fase S</span>
+            <div id="tot-val-faseS" style="font-size: 1.15rem; font-weight: 800; margin-top: 5px;">0 W</div>
+            <small id="tot-amp-faseS" style="color: var(--text-muted); font-size: 0.72rem;">0.0 A</small>
+          </div>
+          <div class="result-box" style="text-align: center; padding: 12px 8px;">
+            <span class="result-label" style="font-weight: 700; color: #ffd700;">Fase T</span>
+            <div id="tot-val-faseT" style="font-size: 1.15rem; font-weight: 800; margin-top: 5px;">0 W</div>
+            <small id="tot-amp-faseT" style="color: var(--text-muted); font-size: 0.72rem;">0.0 A</small>
+          </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <span style="font-size: 0.8rem; color: var(--text-secondary); display: block;">Desequilibrio entre Fases:</span>
+            <strong id="tot-fases-status-text" style="font-size: 0.95rem; color: var(--text-primary); margin-top: 3px; display: block;">0.0% (Equilibrado)</strong>
+          </div>
+          <div id="tot-fases-indicator" style="width: 18px; height: 18px; border-radius: 50%; background-color: #8CC63F; box-shadow: 0 0 10px rgba(140, 198, 63, 0.3);"></div>
+        </div>
+      </div>
+
+      <!-- Acometida Sugerida y Alertas de EDES -->
+      <div class="card reveal" style="border-top: 3px solid #3FC6B4;">
+        <h3 style="color: #3FC6B4; border-bottom: 1px solid rgba(63, 198, 180, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          ⚡ Suministro y Red de Distribución
+        </h3>
+
+        <div class="result-box elec-primary-result" style="margin-bottom: 15px; border-color: #3FC6B4; background: rgba(63, 198, 180, 0.08);">
+          <span class="result-label" style="color: #3FC6B4;">Potencia Total Instalada (TG)</span>
+          <div id="tot-res-potencia-instalada" style="font-size: 2rem; font-weight: 800; color: #3FC6B4; line-height: 1;">0 W</div>
+          <span id="tot-res-potencia-kva" class="result-note" style="display: block; margin-top: 6px; font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">0.00 kVA</span>
+        </div>
+
+        <div class="result-box" style="margin-bottom: 15px; text-align: center; padding: 12px;">
+          <span style="font-size: 0.78rem; color: var(--text-secondary); display: block; margin-bottom: 4px;">Suministro Recomendado (Acometida):</span>
+          <strong id="tot-res-suministro" style="font-size: 1.25rem; color: #00d2ff; text-transform: uppercase;">TRIFÁSICO</strong>
+          <small id="tot-res-suministro-desc" style="color: var(--text-muted); font-size: 0.7rem; display: block; margin-top: 4px; line-height: 1.3;">Obligatorio por superar los límites de acometida monofásica.</small>
+        </div>
+
+        <div class="result-alert" id="tot-alert-edes" style="padding: 12px; border-radius: 8px; font-size: 0.8rem; line-height: 1.45; border-left: 4px solid #00d2ff; background: rgba(0, 210, 255, 0.05); display: block;">
+          <!-- Cargado por JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Cálculo Auxiliar de Icc -->
+    <div class="card reveal" style="border-top: 3px solid #3FC6B4; margin-top: 25px; padding: 20px;">
+      <h4 style="color: var(--text-primary); font-size: 1rem; display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;" id="tot-toggle-icc">
+        <span>⚡</span> Cálculo Auxiliar de Cortocircuito Presunta (I<sub>cc</sub>) <span style="font-size: 0.75rem; color: #3FC6B4; margin-left: auto;">[Ver Parámetros]</span>
+      </h4>
+      
+      <div id="tot-icc-container" style="display: none; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 15px;">
+        <div class="form-group-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 15px;">
+          <div class="form-group">
+            <label style="font-size: 0.75rem;">Distancia al Medidor / Acometida (m)</label>
+            <input type="number" id="tot-icc-distancia" class="calc-input" value="15" min="1" step="1" />
+          </div>
+          <div class="form-group">
+            <label style="font-size: 0.75rem;">Sección Alimentador General (mm²)</label>
+            <select id="tot-icc-seccion" class="calc-select">
+              <option value="4">4 mm²</option>
+              <option value="6">6 mm² (Recomendado Monofásico)</option>
+              <option value="10" selected>10 mm² (Recomendado Trifásico)</option>
+              <option value="16">16 mm²</option>
+              <option value="25">25 mm²</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="font-size: 0.75rem;">I<sub>cc</sub> Calculada en bornes:</label>
+            <div id="tot-val-icc" style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-top: 5px;">0.00 kA</div>
+          </div>
+        </div>
+        <small id="tot-val-icc-rec" style="color: var(--text-muted); font-size: 0.75rem; display: block; line-height: 1.3;">Poder de ruptura sugerido en térmicas: ≥ 4.5 kA.</small>
+      </div>
+    </div>
+
+    <!-- Sección Informativa -->
+    <div class="card reveal" style="margin-top: 35px; border-top: 3px solid #3FC6B4;">
+      <h3 style="color: #3FC6B4; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.25rem;">
+        <span>💡</span> Criterios del Colegio de Ingenieros y Electromecánica (Bahía Blanca)
+      </h3>
+      <div class="gas-tips-grid">
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">⚡</div>
+          <div>
+            <h4 class="gas-tip-title">Límite Monofásico EDES</h4>
+            <p class="gas-tip-desc">Toda instalación con una potencia o demanda superior a <strong>7.0 kW / 7.0 kVA</strong> debe ser alimentada con suministro trifásico (380V) con cable concéntrico de acometida de 4x10 mm² mínimo.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">📐</div>
+          <div>
+            <h4 class="gas-tip-title">Bocas y Asignación de Potencia</h4>
+            <p class="gas-tip-desc">Para iluminación se asumen comúnmente 100W/150W por boca o según proyecto específico. Para tomacorrientes comunes, se estipula una potencia base por circuito o proporcional a la cantidad de bocas según proyecto.</p>
+          </div>
+        </div>
+        <div class="gas-tip-card">
+          <div class="gas-tip-icon" style="color: #3FC6B4;">⚖️</div>
+          <div>
+            <h4 class="gas-tip-title">Corriente Equivalente por Fase</h4>
+            <p class="gas-tip-desc">La intensidad totalizadora por fase en acometidas trifásicas equilibradas se obtiene mediante la fórmula trifásica de potencia: I<sub>fase</sub> = Potencia (W) / (1.732 x 380) ≈ Potencia / 658.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ÁREA DE IMPRESIÓN EXCLUSIVA (MEMORIA TÉCNICA FORMATO MUNICIPAL) -->
+<div id="print-area-tot" class="print-only-tot">
+  <div class="print-header" style="border-bottom: 2px solid #3FC6B4; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h2 style="color: #000; margin: 0; font-size: 1.3rem; font-weight: 800;">PLANTILLA TOTALIZADORA ELECTRICA</h2>
+      <p id="tot-print-general-title" style="margin: 3px 0 0 0; color: #333; font-size: 0.95rem; font-weight: 700;">Edificio Chiclana 680</p>
+    </div>
+    <img src="/assets/img/logo.webp" alt="Logo N3i" width="70" style="filter: grayscale(1);" />
+  </div>
+
+  <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 0.72rem; border: 1.5px solid #000;">
+    <thead>
+      <tr style="background-color: #eaeaea; border-bottom: 1.5px solid #000;">
+        <th colspan="2" style="border: 1px solid #000; padding: 5px; text-align: center; font-weight: 800;">TABLEROS</th>
+        <th rowspan="2" style="border: 1px solid #000; padding: 5px; text-align: center; font-weight: 800; width: 70px;">Circuito</th>
+        <th colspan="3" style="border: 1px solid #000; padding: 5px; text-align: center; font-weight: 800;">Nº Bocas</th>
+        <th rowspan="2" style="border: 1px solid #000; padding: 5px; text-align: center; font-weight: 800; width: 85px;">POTENCIA (W)</th>
+        <th rowspan="2" style="border: 1px solid #000; padding: 5px; text-align: center; font-weight: 800; width: 80px;">INTENSIDAD (A)</th>
+        <th rowspan="2" style="border: 1px solid #000; padding: 5px; text-align: left; font-weight: 800;">DETALLE / OBSERVACIONES</th>
+      </tr>
+      <tr style="background-color: #eaeaea; border-bottom: 1.5px solid #000;">
+        <th style="border: 1px solid #000; padding: 3px; text-align: center; font-weight: 700; width: 100px;">Gral</th>
+        <th style="border: 1px solid #000; padding: 3px; text-align: center; font-weight: 700; width: 70px;">Secc</th>
+        <th style="border: 1px solid #000; padding: 3px; text-align: center; font-weight: 700; width: 40px;">Luz</th>
+        <th style="border: 1px solid #000; padding: 3px; text-align: center; font-weight: 700; width: 40px;">Toma</th>
+        <th style="border: 1px solid #000; padding: 3px; text-align: center; font-weight: 700; width: 40px;">FMAA</th>
+      </tr>
+    </thead>
+    <tbody id="tot-print-tbody" style="border: 1px solid #000;">
+      <!-- Rellenado por JS -->
+    </tbody>
+  </table>
+
+  <!-- Observaciones Generales en la Impresión -->
+  <div style="border: 1px solid #000; padding: 8px; border-radius: 4px; background-color: #fafafa; margin-bottom: 15px; font-size: 0.72rem; line-height: 1.35;" id="tot-print-notes-container">
+    <strong>Observaciones Generales:</strong> <span id="tot-print-notes-val">Ninguna.</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-top: 10px; font-size: 0.75rem;">
+    <div style="border: 1px solid #000; padding: 10px; background-color: #fcfcfc;">
+      <h4 style="margin: 0 0 8px 0; color: #000; font-weight: 800;">Resumen del Proyecto:</h4>
+      <p style="margin: 0 0 4px 0;"><strong>Potencia Total Instalada:</strong> <span id="tot-print-pot-total">-</span> W</p>
+      <p style="margin: 0 0 4px 0;"><strong>Demanda Equivalente por Fase:</strong> <span id="tot-print-resumen-fase">-</span></p>
+      <p style="margin: 0 0 4px 0;"><strong>Suministro Recomendado:</strong> <span id="tot-print-tipo-suministro">-</span></p>
+      <p style="margin: 0;"><strong>Fecha de Generación:</strong> <span id="tot-print-fecha"></span></p>
+    </div>
+    <div style="border: 1px solid #000; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; height: 110px;">
+      <span style="font-size: 0.7rem; color: #333; line-height: 1.3;">
+        <strong>Certificación:</strong> Esta planilla de cargas y dimensionamiento ha sido generada siguiendo la normativa de la AEA 90364-7-771 y los requerimientos del Municipio de Bahía Blanca.
+      </span>
+      <div style="display: flex; justify-content: space-between; border-top: 1px solid #000; padding-top: 6px; margin-top: 5px;">
+        <span style="font-size: 0.7rem; font-weight: 700;">Firma de Profesional Matriculado:</span>
+        <span style="border-bottom: 1px dashed #000; width: 100px; height: 12px;"></span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 25px; border-top: 1px solid #000; padding-top: 8px; font-size: 0.65rem; color: #333; text-align: center;">
+    <p>N3i Engineering & Maintenance · www.n3i.com.ar · Bahía Blanca, Argentina</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Variable global para almacenar los datos del proyecto
+    let generalName = "TG Protecciones (Edificio Chiclana 680)";
+    let generalNotes = "La caída de tensión máxima admitida desde la acometida hasta el tablero seccional más alejado no superará el 3%. Las protecciones y conductores cumplen con la norma AEA 90364-7-771.";
+    
+    // Inicializar con los datos de Chiclana 680 de la captura
+    let grupos = [
+      {
+        id: 1,
+        nombre: "TS00 y subtableros",
+        seccionales: [
+          {
+            id: 11,
+            nombre: "TS00",
+            circuitos: [
+              { id: 111, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true },
+              { id: 112, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+              { id: 113, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+              { id: 114, tag: "l-02", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+              { id: 115, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+              { id: 116, tag: "l-LE", luz: 6, toma: 0, fm: 0, potencia: 600, corriente: 2.70, detalle: "Iluminacion Emergencia", fase: "T", auto: true },
+              { id: 117, tag: "AAC-P0", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "R", auto: false }
+            ]
+          },
+          {
+            id: 12,
+            nombre: "TS1R",
+            circuitos: [
+              { id: 121, tag: "t-Rack", luz: 0, toma: 20, fm: 0, potencia: 2500, corriente: 11.36, detalle: "Tomas Rack", fase: "S", auto: false },
+              { id: 122, tag: "t-Comp", luz: 0, toma: 50, fm: 0, potencia: 3000, corriente: 13.60, detalle: "Linea de Tomas Computadoras", fase: "T", auto: false },
+              { id: 123, tag: "l-01", luz: 3, toma: 0, fm: 0, potencia: 300, corriente: 1.35, detalle: "Iluminacion Deposito", fase: "R", auto: true }
+            ]
+          },
+          {
+            id: 13,
+            nombre: "TS2I",
+            circuitos: [
+              { id: 131, tag: "H01", luz: 0, toma: 0, fm: 1, potencia: 500, corriente: 2.27, detalle: "Bomba Elevadora", fase: "S", auto: false },
+              { id: 132, tag: "H02", luz: 0, toma: 0, fm: 1, potencia: 500, corriente: 2.27, detalle: "Bomba de Riego", fase: "T", auto: false },
+              { id: 133, tag: "l-05", luz: 9, toma: 0, fm: 0, potencia: 300, corriente: 1.36, detalle: "Iluminacion Patio", fase: "R", auto: false },
+              { id: 134, tag: "t-01", luz: 0, toma: 2, fm: 0, potencia: 200, corriente: 1.00, detalle: "Tomacorriente Exterior", fase: "S", auto: false }
+            ]
+          },
+          {
+            id: 14,
+            nombre: "TS2M",
+            circuitos: [
+              { id: 141, tag: "t-FM", luz: 0, toma: 0, fm: 1, potencia: 2500, corriente: 9.00, detalle: "Ascensor electromecanico 6kW/h.", fase: "T", auto: false }
+            ]
+          },
+          {
+            id: 15,
+            nombre: "TS1C",
+            circuitos: [
+              { id: 151, tag: "l-01", luz: 4, toma: 0, fm: 0, potencia: 600, corriente: 1.80, detalle: "Iluminacion de Cocheras y S.U.M.", fase: "R", auto: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: 2,
+        nombre: "Primer Piso (TB01)",
+        seccionales: [
+          {
+            id: 21,
+            nombre: "TB01",
+            circuitos: [
+              { id: 211, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true },
+              { id: 212, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+              { id: 213, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+              { id: 214, tag: "l-02", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "R", auto: true },
+              { id: 215, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+              { id: 216, tag: "l-04", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "T", auto: true },
+              { id: 217, tag: "l-05", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+              { id: 218, tag: "l-LE", luz: 8, toma: 0, fm: 0, potencia: 800, corriente: 3.60, detalle: "Iluminacion Emergencia", fase: "S", auto: true },
+              { id: 219, tag: "AAC-P1", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "T", auto: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: 3,
+        nombre: "Segundo Piso (TB02)",
+        seccionales: [
+          {
+            id: 31,
+            nombre: "TB02",
+            circuitos: [
+              { id: 311, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true },
+              { id: 312, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+              { id: 313, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+              { id: 314, tag: "l-02", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "R" , auto: true },
+              { id: 315, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+              { id: 316, tag: "l-04", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "T", auto: true },
+              { id: 317, tag: "l-05", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+              { id: 318, tag: "l-LE", luz: 8, toma: 0, fm: 0, potencia: 800, corriente: 3.60, detalle: "Iluminacion Emergencia", fase: "S", auto: true },
+              { id: 319, tag: "l-Kitchen", luz: 7, toma: 0, fm: 0, potencia: 1050, corriente: 4.80, detalle: "Iluminacion Cocina", fase: "T", auto: true },
+              { id: 320, tag: "AAC-P2", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "R", auto: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: 4,
+        nombre: "Tercer Piso (TB03)",
+        seccionales: [
+          {
+            id: 41,
+            nombre: "TB03",
+            circuitos: [
+              { id: 411, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+              { id: 412, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "T", auto: true },
+              { id: 413, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+              { id: 414, tag: "l-02", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "S", auto: true },
+              { id: 415, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+              { id: 416, tag: "l-04", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "R", auto: true },
+              { id: 417, tag: "l-05", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+              { id: 418, tag: "l-LE", luz: 8, toma: 0, fm: 0, potencia: 800, corriente: 3.60, detalle: "Iluminacion Emergencia", fase: "T", auto: true },
+              { id: 419, tag: "AAC-P3", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "R", auto: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: 5,
+        nombre: "Quinto Piso (TB05)",
+        seccionales: [
+          {
+            id: 51,
+            nombre: "TB05",
+            circuitos: [
+              { id: 511, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true },
+              { id: 512, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+              { id: 513, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+              { id: 514, tag: "l-02", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "R", auto: true },
+              { id: 515, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+              { id: 516, tag: "l-04", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "T", auto: true },
+              { id: 517, tag: "l-05", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+              { id: 518, tag: "l-LE", luz: 8, toma: 0, fm: 0, potencia: 800, corriente: 3.60, detalle: "Iluminacion Emergencia", fase: "S", auto: true },
+              { id: 519, tag: "AAC-P4", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "T", auto: false }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // Referencias DOM
+    const inputGralName = document.getElementById('tot-general-name') as HTMLInputElement;
+    const inputGralNotes = document.getElementById('tot-general-notes') as HTMLTextAreaElement;
+    const btnAddGroup = document.getElementById('tot-btn-add-group') as HTMLButtonElement;
+    const btnResetFull = document.getElementById('tot-btn-reset-full') as HTMLButtonElement;
+    const editorContainer = document.getElementById('tot-editor-container');
+    const previewTbody = document.getElementById('planilla-preview-tbody');
+
+    // Resultados Diagnósticos
+    const rPotInst = document.getElementById('tot-res-potencia-instalada');
+    const rPotKva = document.getElementById('tot-res-potencia-kva');
+    const rSuministro = document.getElementById('tot-res-suministro');
+    const rSuministroDesc = document.getElementById('tot-res-suministro-desc');
+    const rAlertEdes = document.getElementById('tot-alert-edes');
+
+    // Fases
+    const rValFaseR = document.getElementById('tot-val-faseR');
+    const rValFaseS = document.getElementById('tot-val-faseS');
+    const rValFaseT = document.getElementById('tot-val-faseT');
+    const rAmpFaseR = document.getElementById('tot-amp-faseR');
+    const rAmpFaseS = document.getElementById('tot-amp-faseS');
+    const rAmpFaseT = document.getElementById('tot-amp-faseT');
+    const rFasesStatusText = document.getElementById('tot-fases-status-text');
+    const rFasesIndicator = document.getElementById('tot-fases-indicator');
+
+    // Icc
+    const toggleIcc = document.getElementById('tot-toggle-icc');
+    const iccContainer = document.getElementById('tot-icc-container');
+    const iIccDistancia = document.getElementById('tot-icc-distancia') as HTMLInputElement;
+    const sIccSeccion = document.getElementById('tot-icc-seccion') as HTMLSelectElement;
+    const rValIcc = document.getElementById('tot-val-icc');
+
+    // Inicializar inputs generales
+    if (inputGralNotes) {
+      inputGralNotes.value = generalNotes;
+      inputGralNotes.addEventListener('input', () => {
+        generalNotes = inputGralNotes.value;
+        const pNotesVal = document.getElementById('tot-print-notes-val');
+        if (pNotesVal) pNotesVal.textContent = generalNotes || "Ninguna.";
+      });
+      // Inicializar el valor impreso
+      const pNotesVal = document.getElementById('tot-print-notes-val');
+      if (pNotesVal) pNotesVal.textContent = generalNotes;
+    }
+
+    if (inputGralName) {
+      inputGralName.addEventListener('input', () => {
+        generalName = inputGralName.value;
+        const pTitle = document.getElementById('tot-print-general-title');
+        if (pTitle) pTitle.textContent = generalName;
+        renderPreview();
+      });
+    }
+
+    // Toggle Icc
+    if (toggleIcc && iccContainer) {
+      toggleIcc.addEventListener('click', () => {
+        if (iccContainer.style.display === 'none') {
+          iccContainer.style.display = 'block';
+          toggleIcc.querySelector('span:last-child').textContent = '[Ocultar Parámetros]';
+        } else {
+          iccContainer.style.display = 'none';
+          toggleIcc.querySelector('span:last-child').textContent = '[Ver Parámetros]';
+        }
+      });
+    }
+
+    if (iIccDistancia) iIccDistancia.addEventListener('input', calcularIcc);
+    if (sIccSeccion) sIccSeccion.addEventListener('change', calcularIcc);
+
+    // Acciones de Grupos
+    btnAddGroup.addEventListener('click', () => {
+      const nextId = grupos.length > 0 ? Math.max(...grupos.map(g => g.id)) + 1 : 1;
+      grupos.push({
+        id: nextId,
+        nombre: `Nuevo Grupo / Piso`,
+        seccionales: [
+          {
+            id: nextId * 10 + 1,
+            nombre: `TS-${nextId}`,
+            circuitos: [
+              { id: nextId * 100 + 1, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true }
+            ]
+          }
+        ]
+      });
+      renderEditor();
+      renderPreview();
+    });
+
+    btnResetFull.addEventListener('click', () => {
+      if (confirm("¿Está seguro de restablecer la planilla al ejemplo del Edificio Chiclana 680?")) {
+        generalName = "TG Protecciones (Edificio Chiclana 680)";
+        generalNotes = "La caída de tensión máxima admitida desde la acometida hasta el tablero seccional más alejado no superará el 3%. Las protecciones y conductores cumplen con la norma AEA 90364-7-771.";
+        if (inputGralName) inputGralName.value = generalName;
+        if (inputGralNotes) inputGralNotes.value = generalNotes;
+        const pNotesVal = document.getElementById('tot-print-notes-val');
+        if (pNotesVal) pNotesVal.textContent = generalNotes;
+        
+        grupos = [
+          {
+            id: 1,
+            nombre: "TS00 y subtableros",
+            seccionales: [
+              {
+                id: 11,
+                nombre: "TS00",
+                circuitos: [
+                  { id: 111, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true },
+                  { id: 112, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+                  { id: 113, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+                  { id: 114, tag: "l-02", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 115, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+                  { id: 116, tag: "l-LE", luz: 6, toma: 0, fm: 0, potencia: 600, corriente: 2.70, detalle: "Iluminacion Emergencia", fase: "T", auto: true },
+                  { id: 117, tag: "AAC-P0", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "R", auto: false }
+                ]
+              },
+              {
+                id: 12,
+                nombre: "TS1R",
+                circuitos: [
+                  { id: 121, tag: "t-Rack", luz: 0, toma: 20, fm: 0, potencia: 2500, corriente: 11.36, detalle: "Tomas Rack", fase: "S", auto: false },
+                  { id: 122, tag: "t-Comp", luz: 0, toma: 50, fm: 0, potencia: 3000, corriente: 13.60, detalle: "Linea de Tomas Computadoras", fase: "T", auto: false },
+                  { id: 123, tag: "l-01", luz: 3, toma: 0, fm: 0, potencia: 300, corriente: 1.35, detalle: "Iluminacion Deposito", fase: "R", auto: true }
+                ]
+              },
+              {
+                id: 13,
+                nombre: "TS2I",
+                circuitos: [
+                  { id: 131, tag: "H01", luz: 0, toma: 0, fm: 1, potencia: 500, corriente: 2.27, detalle: "Bomba Elevadora", fase: "S", auto: false },
+                  { id: 132, tag: "H02", luz: 0, toma: 0, fm: 1, potencia: 500, corriente: 2.27, detalle: "Bomba de Riego", fase: "T", auto: false },
+                  { id: 133, tag: "l-05", luz: 9, toma: 0, fm: 0, potencia: 300, corriente: 1.36, detalle: "Iluminacion Patio", fase: "R", auto: false },
+                  { id: 134, tag: "t-01", luz: 0, toma: 2, fm: 0, potencia: 200, corriente: 1.00, detalle: "Tomacorriente Exterior", fase: "S", auto: false }
+                ]
+              },
+              {
+                id: 14,
+                nombre: "TS2M",
+                circuitos: [
+                  { id: 141, tag: "t-FM", luz: 0, toma: 0, fm: 1, potencia: 2500, corriente: 9.00, detalle: "Ascensor electromecanico 6kW/h.", fase: "T", auto: false }
+                ]
+              },
+              {
+                id: 15,
+                nombre: "TS1C",
+                circuitos: [
+                  { id: 151, tag: "l-01", luz: 4, toma: 0, fm: 0, potencia: 600, corriente: 1.80, detalle: "Iluminacion de Cocheras y S.U.M.", fase: "R", auto: false }
+                ]
+              }
+            ]
+          },
+          {
+            id: 2,
+            nombre: "Primer Piso (TB01)",
+            seccionales: [
+              {
+                id: 21,
+                nombre: "TB01",
+                circuitos: [
+                  { id: 211, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true },
+                  { id: 212, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+                  { id: 213, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+                  { id: 214, tag: "l-02", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 215, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+                  { id: 216, tag: "l-04", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "T", auto: true },
+                  { id: 217, tag: "l-05", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 218, tag: "l-LE", luz: 8, toma: 0, fm: 0, potencia: 800, corriente: 3.60, detalle: "Iluminacion Emergencia", fase: "S", auto: true },
+                  { id: 219, tag: "AAC-P1", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "T", auto: false }
+                ]
+              }
+            ]
+          },
+          {
+            id: 3,
+            nombre: "Segundo Piso (TB02)",
+            seccionales: [
+              {
+                id: 31,
+                nombre: "TB02",
+                circuitos: [
+                  { id: 311, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true },
+                  { id: 312, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+                  { id: 313, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+                  { id: 314, tag: "l-02", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 315, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+                  { id: 316, tag: "l-04", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "T", auto: true },
+                  { id: 317, tag: "l-05", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 318, tag: "l-LE", luz: 8, toma: 0, fm: 0, potencia: 800, corriente: 3.60, detalle: "Iluminacion Emergencia", fase: "S", auto: true },
+                  { id: 319, tag: "l-Kitchen", luz: 7, toma: 0, fm: 0, potencia: 1050, corriente: 4.80, detalle: "Iluminacion Cocina", fase: "T", auto: true },
+                  { id: 320, tag: "AAC-P2", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "R", auto: false }
+                ]
+              }
+            ]
+          },
+          {
+            id: 4,
+            nombre: "Tercer Piso (TB03)",
+            seccionales: [
+              {
+                id: 41,
+                nombre: "TB03",
+                circuitos: [
+                  { id: 411, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+                  { id: 412, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "T", auto: true },
+                  { id: 413, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 414, tag: "l-02", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "S", auto: true },
+                  { id: 415, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+                  { id: 416, tag: "l-04", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 417, tag: "l-05", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+                  { id: 418, tag: "l-LE", luz: 8, toma: 0, fm: 0, potencia: 800, corriente: 3.60, detalle: "Iluminacion Emergencia", fase: "T", auto: true },
+                  { id: 419, tag: "AAC-P3", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "R", auto: false }
+                ]
+              }
+            ]
+          },
+          {
+            id: 5,
+            nombre: "Quinto Piso (TB05)",
+            seccionales: [
+              {
+                id: 51,
+                nombre: "TB05",
+                circuitos: [
+                  { id: 511, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true },
+                  { id: 512, tag: "t-02", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "S", auto: true },
+                  { id: 513, tag: "l-01", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "T", auto: true },
+                  { id: 514, tag: "l-02", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 515, tag: "l-03", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "S", auto: true },
+                  { id: 516, tag: "l-04", luz: 9, toma: 0, fm: 0, potencia: 900, corriente: 4.10, detalle: "Iluminacion", fase: "T", auto: true },
+                  { id: 517, tag: "l-05", luz: 10, toma: 0, fm: 0, potencia: 1000, corriente: 4.50, detalle: "Iluminacion", fase: "R", auto: true },
+                  { id: 518, tag: "l-LE", luz: 8, toma: 0, fm: 0, potencia: 800, corriente: 3.60, detalle: "Iluminacion Emergencia", fase: "S", auto: true },
+                  { id: 519, tag: "AAC-P4", luz: 0, toma: 0, fm: 2, potencia: 11000, corriente: 50.00, detalle: "Sistema Techo Dual Inverter 11kVA", fase: "T", auto: false }
+                ]
+              }
+            ]
+          }
+        ];
+        renderEditor();
+        renderPreview();
+      }
+    });
+
+    // RENDERIZAR EL EDITOR JERÁRQUICO
+    function renderEditor() {
+      if (!editorContainer) return;
+      editorContainer.innerHTML = '';
+
+      grupos.forEach((g, gIdx) => {
+        const groupCard = document.createElement('div');
+        groupCard.className = 'card';
+        groupCard.style.borderLeft = '4px solid #3FC6B4';
+        groupCard.style.marginBottom = '25px';
+        groupCard.style.background = 'rgba(255,255,255,0.01)';
+        groupCard.style.padding = '20px';
+
+        // Cabecera del Grupo
+        groupCard.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 15px;">
+            <div style="display: flex; gap: 10px; align-items: center; flex: 1;">
+              <span style="font-size: 1.1rem; color: #3FC6B4;">🏢</span>
+              <input type="text" class="calc-input tot-group-name" value="${g.nombre}" data-g-idx="${gIdx}" style="font-weight: 700; font-size: 1rem; border: none; padding: 4px 8px; background: rgba(255,255,255,0.02); max-width: 350px; border-radius: 4px;" />
+            </div>
+            <button type="button" class="tot-btn-del-group btn btn-outline" data-g-idx="${gIdx}" style="border-color: rgba(198,83,83,0.3); color: #C65353; font-size: 0.75rem; padding: 5px 10px;">
+              🗑️ Eliminar Grupo
+            </button>
+          </div>
+          <div class="tot-seccionales-container" style="display: flex; flex-direction: column; gap: 20px;"></div>
+          
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button type="button" class="tot-btn-add-secc btn btn-outline" data-g-idx="${gIdx}" style="font-size: 0.8rem; padding: 6px 12px; border-color: rgba(63, 198, 180, 0.4);">
+              ➕ Agregar Tablero Seccional
+            </button>
+          </div>
+        `;
+
+        const seccContainer = groupCard.querySelector('.tot-seccionales-container') as HTMLDivElement;
+
+        // Renderizar Tableros Seccionales
+        g.seccionales.forEach((s, sIdx) => {
+          const seccBlock = document.createElement('div');
+          seccBlock.style.border = '1px solid rgba(255,255,255,0.05)';
+          seccBlock.style.borderRadius = '6px';
+          seccBlock.style.padding = '15px';
+          seccBlock.style.background = 'rgba(0,0,0,0.15)';
+
+          seccBlock.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Seccional:</span>
+                <input type="text" class="calc-input tot-secc-name" value="${s.nombre}" data-g-idx="${gIdx}" data-s-idx="${sIdx}" style="font-weight: 700; font-size: 0.85rem; width: 120px; border: none; padding: 2px 6px; background: rgba(255,255,255,0.03); border-radius: 4px;" />
+              </div>
+              <button type="button" class="tot-btn-del-secc" data-g-idx="${gIdx}" data-s-idx="${sIdx}" style="background: transparent; border: none; color: #C65353; font-size: 0.8rem; cursor: pointer;" title="Eliminar Seccional">
+                🗑️ Eliminar Seccional
+              </button>
+            </div>
+
+            <!-- Tabla de circuitos del seccional -->
+            <div style="overflow-x: auto; margin-bottom: 10px;">
+              <table style="width: 100%; border-collapse: collapse; min-width: 850px; font-size: 0.8rem;">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left;">
+                    <th style="padding: 6px 4px; color: #3FC6B4;">Circuito</th>
+                    <th style="padding: 6px 4px; color: #3FC6B4; text-align: center; width: 60px;">Luz</th>
+                    <th style="padding: 6px 4px; color: #3FC6B4; text-align: center; width: 60px;">Toma</th>
+                    <th style="padding: 6px 4px; color: #3FC6B4; text-align: center; width: 65px;">FM/AA</th>
+                    <th style="padding: 6px 4px; color: #3FC6B4; text-align: center; width: 45px;" title="Cálculo Automático">Auto</th>
+                    <th style="padding: 6px 4px; color: #3FC6B4; text-align: center; width: 110px;">Potencia (W)</th>
+                    <th style="padding: 6px 4px; color: #3FC6B4; text-align: center; width: 95px;">Corr. (A)</th>
+                    <th style="padding: 6px 4px; color: #3FC6B4; text-align: center; width: 70px;">Fase</th>
+                    <th style="padding: 6px 4px;">Detalle / Observaciones</th>
+                    <th style="padding: 6px 4px; text-align: center; width: 70px;">Acción</th>
+                  </tr>
+                </thead>
+                <tbody class="tot-circ-tbody"></tbody>
+              </table>
+            </div>
+            
+            <button type="button" class="tot-btn-add-circ btn btn-outline" data-g-idx="${gIdx}" data-s-idx="${sIdx}" style="font-size: 0.72rem; padding: 4px 10px; border-color: rgba(255,255,255,0.1); color: var(--text-secondary);">
+              ➕ Agregar Circuito
+            </button>
+          `;
+
+          const circTbody = seccBlock.querySelector('.tot-circ-tbody') as HTMLTableSectionElement;
+
+          // Renderizar Circuitos del Seccional
+          s.circuitos.forEach((c, cIdx) => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+            tr.innerHTML = `
+              <td style="padding: 4px 2px;">
+                <input type="text" class="tot-circ-input tot-c-tag" value="${c.tag}" style="font-weight: 700;" />
+              </td>
+              <td style="padding: 4px 2px; text-align: center;">
+                <input type="number" class="tot-circ-input tot-c-luz" value="${c.luz}" min="0" max="99" style="text-align: center;" />
+              </td>
+              <td style="padding: 4px 2px; text-align: center;">
+                <input type="number" class="tot-circ-input tot-c-toma" value="${c.toma}" min="0" max="99" style="text-align: center;" />
+              </td>
+              <td style="padding: 4px 2px; text-align: center;">
+                <input type="number" class="tot-circ-input tot-c-fm" value="${c.fm}" min="0" max="99" style="text-align: center;" />
+              </td>
+              <td style="padding: 4px 2px; text-align: center;">
+                <input type="checkbox" class="tot-c-auto" ${c.auto ? 'checked' : ''} style="cursor: pointer; width: 16px; height: 16px;" title="Auto-calcular potencia y corriente" />
+              </td>
+              <td style="padding: 4px 2px; text-align: center;">
+                <input type="number" class="tot-circ-input tot-c-potencia" value="${c.potencia}" min="0" step="50" style="text-align: center; font-weight: 700; color: #3FC6B4;" />
+              </td>
+              <td style="padding: 4px 2px; text-align: center;">
+                <input type="number" class="tot-circ-input tot-c-corriente" value="${c.corriente.toFixed(2)}" min="0" step="0.05" style="text-align: center;" />
+              </td>
+              <td style="padding: 4px 2px; text-align: center;">
+                <select class="tot-circ-select tot-c-fase" style="text-align: center; font-weight:600;">
+                  <option value="R" ${c.fase === 'R' ? 'selected' : ''}>R</option>
+                  <option value="S" ${c.fase === 'S' ? 'selected' : ''}>S</option>
+                  <option value="T" ${c.fase === 'T' ? 'selected' : ''}>T</option>
+                </select>
+              </td>
+              <td style="padding: 4px 2px;">
+                <input type="text" class="tot-circ-input tot-c-detalle" value="${c.detalle}" placeholder="Ej. Tomacorrientes" />
+              </td>
+              <td style="padding: 4px 2px; text-align: center;">
+                <div style="display: flex; gap: 4px; justify-content: center;">
+                  <button type="button" class="tot-circ-clone" title="Clonar" style="background:transparent; border:none; color:#3FC6B4; cursor:pointer; font-size:1rem;">👥</button>
+                  <button type="button" class="tot-circ-delete" title="Eliminar" style="background:transparent; border:none; color:#C65353; cursor:pointer; font-size:1rem;">🗑️</button>
+                </div>
+              </td>
+            `;
+
+            // Enlazar Eventos del Circuito
+            const inTag = tr.querySelector('.tot-c-tag') as HTMLInputElement;
+            const inLuz = tr.querySelector('.tot-c-luz') as HTMLInputElement;
+            const inToma = tr.querySelector('.tot-c-toma') as HTMLInputElement;
+            const inFm = tr.querySelector('.tot-c-fm') as HTMLInputElement;
+            const cbAuto = tr.querySelector('.tot-c-auto') as HTMLInputElement;
+            const inPot = tr.querySelector('.tot-c-potencia') as HTMLInputElement;
+            const inCorr = tr.querySelector('.tot-c-corriente') as HTMLInputElement;
+            const inFase = tr.querySelector('.tot-c-fase') as HTMLSelectElement;
+            const inDet = tr.querySelector('.tot-c-detalle') as HTMLInputElement;
+
+            const updateData = () => {
+              c.tag = inTag.value;
+              c.luz = parseInt(inLuz.value) || 0;
+              c.toma = parseInt(inToma.value) || 0;
+              c.fm = parseInt(inFm.value) || 0;
+              c.auto = cbAuto.checked;
+              
+              if (c.auto) {
+                // Cálculo genérico: Luz * 100W, Toma * 112.5W, FM * 1500W
+                c.potencia = Math.round((c.luz * 100) + (c.toma * 112.5) + (c.fm * 1500));
+                inPot.value = c.potencia.toString();
+                c.corriente = Math.round((c.potencia / 220) * 100) / 100;
+                inCorr.value = c.corriente.toFixed(2);
+                
+                // Poner estilos visuales para modo automático
+                inPot.style.opacity = '0.75';
+                inCorr.style.opacity = '0.75';
+              } else {
+                c.potencia = parseFloat(inPot.value) || 0;
+                c.corriente = parseFloat(inCorr.value) || 0;
+                
+                inPot.style.opacity = '1.0';
+                inCorr.style.opacity = '1.0';
+              }
+              
+              c.fase = inFase.value;
+              c.detalle = inDet.value;
+
+              renderPreview();
+            };
+
+            // Eventos de inputs
+            inTag.addEventListener('change', updateData);
+            inLuz.addEventListener('change', updateData);
+            inToma.addEventListener('change', updateData);
+            inFm.addEventListener('change', updateData);
+            inFase.addEventListener('change', updateData);
+            inDet.addEventListener('change', updateData);
+
+            cbAuto.addEventListener('change', () => {
+              updateData();
+            });
+
+            // Si el usuario edita directamente los campos manuales de potencia o corriente, se desmarca el checkbox "Auto"
+            inPot.addEventListener('input', () => {
+              cbAuto.checked = false;
+              c.auto = false;
+              c.potencia = parseFloat(inPot.value) || 0;
+              // Recalcular corriente por conveniencia, pero sigue en manual
+              c.corriente = Math.round((c.potencia / 220) * 100) / 100;
+              inCorr.value = c.corriente.toFixed(2);
+              inPot.style.opacity = '1.0';
+              inCorr.style.opacity = '1.0';
+              renderPreview();
+            });
+
+            inCorr.addEventListener('input', () => {
+              cbAuto.checked = false;
+              c.auto = false;
+              c.corriente = parseFloat(inCorr.value) || 0;
+              inPot.style.opacity = '1.0';
+              inCorr.style.opacity = '1.0';
+              renderPreview();
+            });
+
+            // Clonar Circuito
+            tr.querySelector('.tot-circ-clone').addEventListener('click', () => {
+              const maxId = Math.max(...s.circuitos.map(item => item.id));
+              s.circuitos.splice(cIdx + 1, 0, {
+                id: maxId + 1,
+                tag: `${c.tag}_copia`,
+                luz: c.luz,
+                toma: c.toma,
+                fm: c.fm,
+                potencia: c.potencia,
+                corriente: c.corriente,
+                detalle: `${c.detalle} (Copia)`,
+                fase: c.fase,
+                auto: c.auto
+              });
+              renderEditor();
+              renderPreview();
+            });
+
+            // Eliminar Circuito
+            tr.querySelector('.tot-circ-delete').addEventListener('click', () => {
+              if (s.circuitos.length <= 1) {
+                alert("El tablero debe contener al menos un circuito.");
+                return;
+              }
+              s.circuitos.splice(cIdx, 1);
+              renderEditor();
+              renderPreview();
+            });
+
+            // Ajustar estilos iniciales de inputs automáticos
+            if (c.auto) {
+              inPot.style.opacity = '0.75';
+              inCorr.style.opacity = '0.75';
+            }
+
+            circTbody.appendChild(tr);
+          });
+
+          // Agregar Circuito
+          seccBlock.querySelector('.tot-btn-add-circ').addEventListener('click', () => {
+            const nextTagIndex = s.circuitos.length + 1;
+            const maxId = Math.max(...s.circuitos.map(item => item.id));
+            s.circuitos.push({
+              id: maxId + 1,
+              tag: `circ-${nextTagIndex}`,
+              luz: 0,
+              toma: 1,
+              fm: 0,
+              potencia: 2200,
+              corriente: 10,
+              detalle: "Tomacorrientes",
+              fase: "R",
+              auto: true
+            });
+            renderEditor();
+            renderPreview();
+          });
+
+          // Modificar nombre del tablero seccional y propagarlo a la vista previa de inmediato
+          const inSeccName = seccBlock.querySelector('.tot-secc-name') as HTMLInputElement;
+          inSeccName.addEventListener('input', () => {
+            s.nombre = inSeccName.value;
+            renderPreview();
+          });
+
+          // Eliminar Seccional
+          seccBlock.querySelector('.tot-btn-del-secc').addEventListener('click', () => {
+            if (g.seccionales.length <= 1) {
+              alert("El grupo debe tener al menos un Tablero Seccional.");
+              return;
+            }
+            g.seccionales.splice(sIdx, 1);
+            renderEditor();
+            renderPreview();
+          });
+
+          seccContainer.appendChild(seccBlock);
+        });
+
+        // Nombre de Grupo
+        groupCard.querySelector('.tot-group-name').addEventListener('change', (e: Event) => {
+          const target = e.target as HTMLInputElement;
+          g.nombre = target.value;
+          renderPreview();
+        });
+
+        // Eliminar Grupo
+        groupCard.querySelector('.tot-btn-del-group').addEventListener('click', () => {
+          if (grupos.length <= 1) {
+            alert("Debe existir al menos un grupo de tableros.");
+            return;
+          }
+          grupos.splice(gIdx, 1);
+          renderEditor();
+          renderPreview();
+        });
+
+        // Agregar Seccional al Grupo
+        groupCard.querySelector('.tot-btn-add-secc').addEventListener('click', () => {
+          const nextSId = g.seccionales.length + 1;
+          const maxId = Math.max(...g.seccionales.map(item => item.id));
+          g.seccionales.push({
+            id: maxId + 1,
+            nombre: `TS-0${nextSId}`,
+            circuitos: [
+              { id: maxId * 10 + 1, tag: "t-01", luz: 0, toma: 8, fm: 0, potencia: 900, corriente: 4.10, detalle: "Tomacorrientes", fase: "R", auto: true }
+            ]
+          });
+          renderEditor();
+          renderPreview();
+        });
+
+        editorContainer.appendChild(groupCard);
+      });
+    }
+
+    // CALCULAR Y RENDERIZAR LA VISTA PREVIA (Y ACTUALIZAR DIAGNÓSTICOS)
+    function renderPreview() {
+      if (!previewTbody) return;
+      previewTbody.innerHTML = '';
+
+      const printTbody = document.getElementById('tot-print-tbody');
+      if (printTbody) printTbody.innerHTML = '';
+
+      // Primero, calcular totales generales y rowspans
+      let globalLuz = 0;
+      let globalToma = 0;
+      let globalFm = 0;
+      let globalPotencia = 0;
+      let globalCorriente = 0;
+
+      let loadFaseR = 0;
+      let loadFaseS = 0;
+      let loadFaseT = 0;
+
+      // Calcular el rowspan total para la columna de Tablero General
+      // Cada circuito es una fila, y cada grupo tiene una fila TOTALIZA.
+      let totalCircuitosYSubtotales = 0;
+      grupos.forEach(g => {
+        g.seccionales.forEach(s => {
+          totalCircuitosYSubtotales += s.circuitos.length;
+        });
+        totalCircuitosYSubtotales += 1; // Fila TOTALIZA del grupo
+      });
+
+      let isFirstRow = true;
+
+      // Recorrer grupos
+      grupos.forEach((g) => {
+        let grupoLuz = 0;
+        let grupoToma = 0;
+        let grupoFm = 0;
+        let grupoPotencia = 0;
+        let grupoCorriente = 0;
+
+        // Recorrer seccionales de este grupo
+        g.seccionales.forEach((s) => {
+          const seccRowspan = s.circuitos.length;
+          let isFirstSeccRow = true;
+
+          // Recorrer circuitos del seccional
+          s.circuitos.forEach((c) => {
+            // Sumar a grupo y global
+            grupoLuz += c.luz;
+            grupoToma += c.toma;
+            grupoFm += c.fm;
+            grupoPotencia += c.potencia;
+            grupoCorriente += c.corriente;
+
+            globalLuz += c.luz;
+            globalToma += c.toma;
+            globalFm += c.fm;
+            globalPotencia += c.potencia;
+            globalCorriente += c.corriente;
+
+            // Balance de fases
+            if (c.fase === 'R') loadFaseR += c.potencia;
+            else if (c.fase === 'S') loadFaseS += c.potencia;
+            else if (c.fase === 'T') loadFaseT += c.potencia;
+
+            // Fila para UI
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--border-color)';
+
+            let html = '';
+
+            // Celda de Tablero General (solo en la primera fila global)
+            if (isFirstRow) {
+              html += `
+                <td rowspan="${totalCircuitosYSubtotales}" style="border-right: 1px solid rgba(63, 198, 180, 0.2); border-bottom: 1px solid rgba(63, 198, 180, 0.2); padding: 10px; text-align: center; font-weight: 800; color: #3FC6B4; vertical-align: middle; background: rgba(63, 198, 180, 0.02);">
+                  ${generalName}
+                </td>
+              `;
+              isFirstRow = false;
+            }
+
+            // Celda de Tablero Seccional (solo en la primera fila de este seccional)
+            if (isFirstSeccRow) {
+              html += `
+                <td rowspan="${seccRowspan}" style="border-right: 1px solid rgba(63, 198, 180, 0.15); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 10px; text-align: center; font-weight: 700; color: var(--text-primary); vertical-align: middle; background: rgba(255,255,255,0.01);">
+                  ${s.nombre}
+                </td>
+              `;
+              isFirstSeccRow = false;
+            }
+
+            html += `
+              <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; font-weight: 600;">${c.tag}</td>
+              <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; color: var(--text-muted);">${c.luz || ''}</td>
+              <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; color: var(--text-muted);">${c.toma || ''}</td>
+              <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; color: var(--text-muted);">${c.fm || ''}</td>
+              <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; font-weight: 600;">${c.potencia}</td>
+              <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center;">${c.corriente.toFixed(2)}</td>
+              <td style="padding: 8px 10px; color: var(--text-secondary);">${c.detalle}</td>
+            `;
+
+            tr.innerHTML = html;
+            previewTbody.appendChild(tr);
+
+            // Agregar a la tabla de impresión (mismo flujo, sin colores de fondo de UI)
+            if (printTbody) {
+              const ptr = document.createElement('tr');
+              ptr.style.borderBottom = '1px solid #000';
+              let phtml = '';
+
+              if (tr.querySelector('[rowspan="' + totalCircuitosYSubtotales + '"]')) {
+                phtml += `<td rowspan="${totalCircuitosYSubtotales}" style="border: 1px solid #000; padding: 6px; text-align: center; font-weight: 800; vertical-align: middle;">${generalName}</td>`;
+              }
+              if (tr.querySelector('[rowspan="' + seccRowspan + '"]')) {
+                phtml += `<td rowspan="${seccRowspan}" style="border: 1px solid #000; padding: 6px; text-align: center; font-weight: 700; vertical-align: middle;">${s.nombre}</td>`;
+              }
+
+              phtml += `
+                <td style="border: 1px solid #000; padding: 6px; font-weight: 700;">${c.tag}</td>
+                <td style="border: 1px solid #000; padding: 6px; text-align: center;">${c.luz || ''}</td>
+                <td style="border: 1px solid #000; padding: 6px; text-align: center;">${c.toma || ''}</td>
+                <td style="border: 1px solid #000; padding: 6px; text-align: center;">${c.fm || ''}</td>
+                <td style="border: 1px solid #000; padding: 6px; text-align: center; font-weight: 700;">${c.potencia}</td>
+                <td style="border: 1px solid #000; padding: 6px; text-align: center;">${c.corriente.toFixed(2)}</td>
+                <td style="border: 1px solid #000; padding: 6px;">${c.detalle}</td>
+              `;
+              ptr.innerHTML = phtml;
+              printTbody.appendChild(ptr);
+            }
+          });
+        });
+
+        // FILA DE TOTALIZA PARA EL GRUPO
+        const trTotal = document.createElement('tr');
+        trTotal.style.background = 'rgba(63, 198, 180, 0.04)';
+        trTotal.style.borderBottom = '1.5px solid rgba(63, 198, 180, 0.3)';
+        trTotal.style.fontWeight = '800';
+
+        const kvaGrupo = Math.round(grupoPotencia / 1000);
+        // I_eq = P / (1.732 * 380) = P / 658
+        const ampFaseGrupo = Math.round(grupoPotencia / 658);
+
+        trTotal.innerHTML = `
+          <td colspan="2" style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; color: #3FC6B4; text-transform: uppercase; text-align: center;">TOTALIZA</td>
+          <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; color: #3FC6B4;">${grupoLuz}</td>
+          <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; color: #3FC6B4;">${grupoToma}</td>
+          <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; color: #3FC6B4;">${grupoFm}</td>
+          <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; color: #3FC6B4;">${grupoPotencia}</td>
+          <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; text-align: center; color: #3FC6B4;">${grupoCorriente.toFixed(2)}</td>
+          <td style="padding: 8px 10px; color: #3FC6B4;">Total ${kvaGrupo}kVA ${ampFaseGrupo}A p/Fase.</td>
+        `;
+        previewTbody.appendChild(trTotal);
+
+        if (printTbody) {
+          const ptrTotal = document.createElement('tr');
+          ptrTotal.style.backgroundColor = '#eaeaea';
+          ptrTotal.style.fontWeight = '800';
+          ptrTotal.innerHTML = `
+            <td colspan="2" style="border: 1px solid #000; padding: 6px; text-align: center; text-transform: uppercase;">TOTALIZA</td>
+            <td style="border: 1px solid #000; padding: 6px; text-align: center;">${grupoLuz}</td>
+            <td style="border: 1px solid #000; padding: 6px; text-align: center;">${grupoToma}</td>
+            <td style="border: 1px solid #000; padding: 6px; text-align: center;">${grupoFm}</td>
+            <td style="border: 1px solid #000; padding: 6px; text-align: center;">${grupoPotencia}</td>
+            <td style="border: 1px solid #000; padding: 6px; text-align: center;">${grupoCorriente.toFixed(2)}</td>
+            <td style="border: 1px solid #000; padding: 6px; font-weight: 800;">Total ${kvaGrupo}kVA ${ampFaseGrupo}A p/Fase.</td>
+          `;
+          printTbody.appendChild(ptrTotal);
+        }
+      });
+
+      // FILA TOTALIZA GENERAL (FIN DE LA TABLA)
+      const trGral = document.createElement('tr');
+      trGral.style.background = 'rgba(63, 198, 180, 0.12)';
+      trGral.style.borderTop = '2px solid #3FC6B4';
+      trGral.style.borderBottom = '2.5px solid #3FC6B4';
+      trGral.style.fontWeight = '900';
+      trGral.style.fontSize = '0.85rem';
+
+      const kvaGral = Math.round(globalPotencia / 1000);
+      const ampFaseGral = Math.round(globalPotencia / 658);
+
+      trGral.innerHTML = `
+        <td colspan="3" style="border-right: 1px solid rgba(255,255,255,0.05); padding: 10px; color: #3FC6B4; text-transform: uppercase; text-align: center;">TOTALIZA</td>
+        <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 10px; text-align: center; color: #3FC6B4;">${globalLuz}</td>
+        <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 10px; text-align: center; color: #3FC6B4;">${globalToma}</td>
+        <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 10px; text-align: center; color: #3FC6B4;">${globalFm}</td>
+        <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 10px; text-align: center; color: #3FC6B4;">${globalPotencia}</td>
+        <td style="border-right: 1px solid rgba(255,255,255,0.05); padding: 10px; text-align: center; color: #3FC6B4;">${globalCorriente.toFixed(2)}</td>
+        <td style="padding: 10px; color: #3FC6B4;">Total ${kvaGral}kVA ${ampFaseGral}A p/Fase.</td>
+      `;
+      previewTbody.appendChild(trGral);
+
+      if (printTbody) {
+        const ptrGral = document.createElement('tr');
+        ptrGral.style.backgroundColor = '#d5d5d5';
+        ptrGral.style.fontWeight = '900';
+        ptrGral.innerHTML = `
+          <td colspan="3" style="border: 1.5px solid #000; padding: 8px; text-align: center; text-transform: uppercase;">TOTALIZA</td>
+          <td style="border: 1.5px solid #000; padding: 8px; text-align: center;">${globalLuz}</td>
+          <td style="border: 1.5px solid #000; padding: 8px; text-align: center;">${globalToma}</td>
+          <td style="border: 1.5px solid #000; padding: 8px; text-align: center;">${globalFm}</td>
+          <td style="border: 1.5px solid #000; padding: 8px; text-align: center;">${globalPotencia}</td>
+          <td style="border: 1.5px solid #000; padding: 8px; text-align: center;">${globalCorriente.toFixed(2)}</td>
+          <td style="border: 1.5px solid #000; padding: 8px; font-weight: 900;">Total ${kvaGral}kVA ${ampFaseGral}A p/Fase.</td>
+        `;
+        printTbody.appendChild(ptrGral);
+      }
+
+      // Actualizar Diagnósticos en UI
+      if (rPotInst) rPotInst.textContent = `${globalPotencia.toLocaleString('es-AR')} W`;
+      if (rPotKva) rPotKva.textContent = `${(globalPotencia / 1000).toFixed(1)} kVA`;
+
+      // Suministro Recomendado
+      let sumRecomendado = 'Monofásico';
+      let sumDesc = 'Acometida estándar domiciliaria (L + N, fusible aéreo de 32A).';
+      if ((globalPotencia / 1000) > 7.0) {
+        sumRecomendado = 'Trifásico';
+        sumDesc = 'Requiere suministro trifásico. Supera los 7.0 kVA máximos autorizados por la distribuidora local para acometidas monofásicas.';
+      }
+
+      if (rSuministro) {
+        rSuministro.textContent = sumRecomendado;
+        rSuministro.style.color = sumRecomendado === 'Trifásico' ? '#00d2ff' : '#3FC6B4';
+      }
+      if (rSuministroDesc) rSuministroDesc.textContent = sumDesc;
+
+      // Alerta EDES Bahía Blanca
+      if (rAlertEdes) {
+        if (sumRecomendado === 'Trifásico') {
+          rAlertEdes.style.display = 'block';
+          rAlertEdes.innerHTML = `⚠️ <strong>Distribuidora EDES (Bahía Blanca):</strong> La demanda total de su instalación (${(globalPotencia / 1000).toFixed(1)} kVA) supera el umbral de 7.0 kVA de acometida monofásica. Deberá instalar pilar trifásico reglamentario, línea principal concéntrica de $4\\times10\\text{ mm²}$ mínimo y presentar DCI firmada por matriculado.`;
+        } else {
+          rAlertEdes.style.display = 'none';
+        }
+      }
+
+      // KPIs de Fase
+      if (rValFaseR) rValFaseR.textContent = `${loadFaseR.toLocaleString('es-AR')} W`;
+      if (rValFaseS) rValFaseS.textContent = `${loadFaseS.toLocaleString('es-AR')} W`;
+      if (rValFaseT) rValFaseT.textContent = `${loadFaseT.toLocaleString('es-AR')} W`;
+
+      const ampR = loadFaseR / 220;
+      const ampS = loadFaseS / 220;
+      const ampT = loadFaseT / 220;
+
+      if (rAmpFaseR) rAmpFaseR.textContent = `${ampR.toFixed(1)} A`;
+      if (rAmpFaseS) rAmpFaseS.textContent = `${ampS.toFixed(1)} A`;
+      if (rAmpFaseT) rAmpFaseT.textContent = `${ampT.toFixed(1)} A`;
+
+      // Calcular desequilibrio de fases
+      const sumFases = loadFaseR + loadFaseS + loadFaseT;
+      if (sumFases > 0) {
+        const avgLoad = sumFases / 3;
+        const diffR = Math.abs(loadFaseR - avgLoad);
+        const diffS = Math.abs(loadFaseS - avgLoad);
+        const diffT = Math.abs(loadFaseT - avgLoad);
+        const maxDiff = Math.max(diffR, diffS, diffT);
+        const unbalancePerc = (maxDiff / avgLoad) * 100;
+
+        if (rFasesStatusText) {
+          if (unbalancePerc < 15) {
+            rFasesStatusText.textContent = `${unbalancePerc.toFixed(1)}% (Equilibrado)`;
+            rFasesStatusText.style.color = '#8CC63F';
+            if (rFasesIndicator) rFasesIndicator.style.backgroundColor = '#8CC63F';
+          } else if (unbalancePerc < 30) {
+            rFasesStatusText.textContent = `${unbalancePerc.toFixed(1)}% (Desbalance Leve)`;
+            rFasesStatusText.style.color = '#ffd700';
+            if (rFasesIndicator) rFasesIndicator.style.backgroundColor = '#ffd700';
+          } else {
+            rFasesStatusText.textContent = `${unbalancePerc.toFixed(1)}% (Desbalance Crítico)`;
+            rFasesStatusText.style.color = '#C65353';
+            if (rFasesIndicator) rFasesIndicator.style.backgroundColor = '#C65353';
+          }
+        }
+      } else {
+        if (rFasesStatusText) rFasesStatusText.textContent = '0.0% (Sin Carga)';
+        if (rFasesIndicator) rFasesIndicator.style.backgroundColor = '#555';
+      }
+
+      // Actualizar datos de impresión
+      const pPotTotal = document.getElementById('tot-print-pot-total');
+      const pResumenFase = document.getElementById('tot-print-resumen-fase');
+      const pTipoSum = document.getElementById('tot-print-tipo-suministro');
+
+      if (pPotTotal) pPotTotal.textContent = `${globalPotencia.toLocaleString('es-AR')}`;
+      if (pResumenFase) pResumenFase.textContent = `${kvaGral}kVA ${ampFaseGral}A p/Fase.`;
+      if (pTipoSum) pTipoSum.textContent = sumRecomendado;
+
+      calcularIcc();
+    }
+
+    // Calcular corriente de cortocircuito (Icc)
+    function calcularIcc() {
+      if (!iIccDistancia || !rValIcc) return;
+
+      const dist = parseFloat(iIccDistancia.value) || 15;
+      const seccion = parseFloat(sIccSeccion.value) || 10;
+      
+      const rCable = (2 * 0.018 * dist) / seccion;
+      const zTotal = 0.035 + rCable;
+      const icc = 220 / zTotal;
+      const iccK = icc / 1000;
+
+      rValIcc.textContent = `${iccK.toFixed(2)} kA`;
+
+      const rIccRec = document.getElementById('tot-val-icc-rec');
+      if (rIccRec) {
+        if (iccK > 4.5) {
+          rIccRec.innerHTML = `Poder de ruptura sugerido en térmicas: <strong>≥ 6.0 kA</strong> (Alto riesgo de cortocircuito, alimentador corto o grueso).`;
+          rIccRec.style.color = '#C65353';
+        } else {
+          rIccRec.innerHTML = `Poder de ruptura sugerido en térmicas: <strong>≥ 4.5 kA</strong> (Requisito normativo residencial estándar).`;
+          rIccRec.style.color = 'var(--text-muted)';
+        }
+      }
+    }
+
+    // EXPORTACIÓN A AUTOCAD (TSV)
+    const btnCopyCad = document.getElementById('tot-btn-copy-cad');
+    if (btnCopyCad) {
+      btnCopyCad.addEventListener('click', () => {
+        let text = "TABLEROS\t\tCircuito\tNº Bocas\t\t\tPOTENCIA\tINTENSIDAD\tDETALLE / OBSERVACIONES\r\n";
+        text += "Gral\tSecc\t\tLuz\tToma\tFM/AA\t(W)\t(A)\t\r\n";
+
+        grupos.forEach((g) => {
+          let grupoLuz = 0;
+          let grupoToma = 0;
+          let grupoFm = 0;
+          let grupoPotencia = 0;
+          let grupoCorriente = 0;
+
+          g.seccionales.forEach((s) => {
+            s.circuitos.forEach((c) => {
+              grupoLuz += c.luz;
+              grupoToma += c.toma;
+              grupoFm += c.fm;
+              grupoPotencia += c.potencia;
+              grupoCorriente += c.corriente;
+
+              const cLuz = c.luz ? c.luz.toString() : "";
+              const cToma = c.toma ? c.toma.toString() : "";
+              const cFm = c.fm ? c.fm.toString() : "";
+
+              text += `${generalName}\t${s.nombre}\t${c.tag}\t${cLuz}\t${cToma}\t${cFm}\t${c.potencia}\t${c.corriente.toFixed(2)}\t${c.detalle}\r\n`;
+            });
+          });
+
+          const kvaGrupo = Math.round(grupoPotencia / 1000);
+          const ampFaseGrupo = Math.round(grupoPotencia / 658);
+
+          text += `\tTOTALIZA\t\t${grupoLuz}\t${grupoToma}\t${grupoFm}\t${grupoPotencia}\t${grupoCorriente.toFixed(2)}\tTotal ${kvaGrupo}kVA ${ampFaseGrupo}A p/Fase.\r\n`;
+        });
+
+        // Totales globales
+        let totalLuz = 0;
+        let totalToma = 0;
+        let totalFm = 0;
+        let totalPotencia = 0;
+        let totalCorriente = 0;
+
+        grupos.forEach(g => {
+          g.seccionales.forEach(s => {
+            s.circuitos.forEach(c => {
+              totalLuz += c.luz;
+              totalToma += c.toma;
+              totalFm += c.fm;
+              totalPotencia += c.potencia;
+              totalCorriente += c.corriente;
+            });
+          });
+        });
+
+        const kvaGral = Math.round(totalPotencia / 1000);
+        const ampFaseGral = Math.round(totalPotencia / 658);
+
+        text += `TOTALIZA\t\t\t${totalLuz}\t${totalToma}\t${totalFm}\t${totalPotencia}\t${totalCorriente.toFixed(2)}\tTotal ${kvaGral}kVA ${ampFaseGral}A p/Fase.\r\n`;
+
+        navigator.clipboard.writeText(text).then(() => {
+          const originalText = btnCopyCad.innerHTML;
+          btnCopyCad.innerHTML = "¡Copiado para AutoCAD! 🚀";
+          setTimeout(() => {
+            btnCopyCad.innerHTML = originalText;
+          }, 2000);
+        }).catch(err => {
+          alert("Error al copiar al portapapeles: " + err);
+        });
+      });
+    }
+
+    // EXPORTACIÓN A EXCEL (CSV)
+    const btnCsv = document.getElementById('tot-btn-csv');
+    if (btnCsv) {
+      btnCsv.addEventListener('click', () => {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "Tablero Gral,Tablero Secc,Circuito,Bocas Luz,Bocas Toma,Bocas FM/AA,Potencia (W),Intensidad (A),Detalle / Observaciones\r\n";
+
+        grupos.forEach((g) => {
+          let grupoLuz = 0;
+          let grupoToma = 0;
+          let grupoFm = 0;
+          let grupoPotencia = 0;
+          let grupoCorriente = 0;
+
+          g.seccionales.forEach((s) => {
+            s.circuitos.forEach((c) => {
+              grupoLuz += c.luz;
+              grupoToma += c.toma;
+              grupoFm += c.fm;
+              grupoPotencia += c.potencia;
+              grupoCorriente += c.corriente;
+
+              csvContent += `"${generalName}","${s.nombre}","${c.tag}",${c.luz || ''},${c.toma || ''},${c.fm || ''},${c.potencia},${c.corriente.toFixed(2)},"${c.detalle}"\r\n`;
+            });
+          });
+
+          const kvaGrupo = Math.round(grupoPotencia / 1000);
+          const ampFaseGrupo = Math.round(grupoPotencia / 658);
+
+          csvContent += `,"TOTALIZA",,${grupoLuz},${grupoToma},${grupoFm},${grupoPotencia},${grupoCorriente.toFixed(2)},"Total ${kvaGrupo}kVA ${ampFaseGrupo}A p/Fase."\r\n`;
+        });
+
+        let totalLuz = 0, totalToma = 0, totalFm = 0, totalPotencia = 0, totalCorriente = 0;
+        grupos.forEach(g => {
+          g.seccionales.forEach(s => {
+            s.circuitos.forEach(c => {
+              totalLuz += c.luz;
+              totalToma += c.toma;
+              totalFm += c.fm;
+              totalPotencia += c.potencia;
+              totalCorriente += c.corriente;
+            });
+          });
+        });
+
+        const kvaGral = Math.round(totalPotencia / 1000);
+        const ampFaseGral = Math.round(totalPotencia / 658);
+
+        csvContent += `"TOTALIZA",,,,${totalLuz},${totalToma},${totalFm},${totalPotencia},${totalCorriente.toFixed(2)},"Total ${kvaGral}kVA ${ampFaseGral}A p/Fase."\r\n`;
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Planilla_Totalizadora_${generalName.replace(/\s+/g, '_')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    }
+
+    // IMPRESIÓN / PDF DE MEMORIA TÉCNICA
+    const btnPrint = document.getElementById('tot-btn-print');
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        const pDate = document.getElementById('tot-print-fecha');
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('es-AR') + ' ' + today.toLocaleTimeString('es-AR');
+        }
+
+        document.body.classList.add('printing-tot');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-tot'), { once: true });
+      });
+    }
+
+    // Inicializar por primera vez
+    renderEditor();
+    renderPreview();
+  });
+</script>
+
+<style is:global>
+  /* Estilos específicos para celdas del editor jerárquico */
+  .tot-circ-input {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary) !important;
+    padding: 4px 6px !important;
+    font-size: 0.8rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 4px !important;
+  }
+  .tot-circ-input:hover {
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+  .tot-circ-input:focus {
+    border-color: #3FC6B4 !important;
+    background: rgba(63, 198, 180, 0.05) !important;
+  }
+  .tot-circ-select {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary) !important;
+    padding: 4px !important;
+    font-size: 0.78rem !important;
+    width: 100% !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+  }
+  .tot-circ-select:hover {
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+  .tot-circ-select:focus {
+    border-color: #3FC6B4 !important;
+    background: #111416 !important;
+  }
+
+  /* Vista Previa Table Scroll */
+  .planilla-table::-webkit-scrollbar {
+    height: 8px;
+  }
+  .planilla-table::-webkit-scrollbar-thumb {
+    background: #3FC6B4;
+    border-radius: 4px;
+  }
+  .planilla-table::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.03);
+  }
+
+  /* Impresión Planilla */
+  .print-only-tot { display: none; }
+  @media print {
+    body.printing-tot .header, 
+    body.printing-tot .footer, 
+    body.printing-tot .section-header, 
+    body.printing-tot .calculator-grid,
+    body.printing-tot #tot-editor-container,
+    body.printing-tot .card, 
+    body.printing-tot .section { 
+      display: none !important; 
+    }
+    body.printing-tot .print-only-tot {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+      padding: 1cm;
+    }
+    .print-only-tot .print-table th, .print-only-tot .print-table td { border: 1px solid #000; padding: 5px; text-align: left; }
+  }
+</style>

@@ -1,0 +1,564 @@
+---
+// Paint Materials Calculator
+---
+<section class="section section-alt" id="calc-pintura" style="background-color: var(--bg-primary);">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #ff9800;">Maintenance & Renovation</span>
+      <h2 class="section-title">Paint & Wall Treatment Calculator</h2>
+      <p class="section-desc">
+        Calculate the liters of paint, sealer/primer, and plaster filler required based on dimensions and the real condition of your walls.
+      </p>
+    </div>
+
+    <div class="calculator-grid">
+      <!-- Input Form -->
+      <div class="calc-appliances card reveal">
+        <h3 style="border-bottom-color: #ff9800;">Room Dimensions</h3>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+          Enter the measurements to calculate the total surface area of walls and ceiling.
+        </p>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Length (meters)</label>
+            <input type="number" id="pint-largo" class="calc-input" value="4" min="1" step="0.5" />
+          </div>
+          <div class="form-group">
+            <label>Width (meters)</label>
+            <input type="number" id="pint-ancho" class="calc-input" value="4" min="1" step="0.5" />
+          </div>
+          <div class="form-group">
+            <label>Height (meters)</label>
+            <input type="number" id="pint-alto" class="calc-input" value="2.6" min="2" step="0.1" />
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Paint the ceiling?</label>
+            <select id="pint-techo" class="calc-select">
+              <option value="si">Yes, include ceiling</option>
+              <option value="no">No, walls only</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Wall Condition (Pathology)</label>
+            <select id="pint-patologia" class="calc-select">
+              <option value="normal" selected>Normal / Good Condition</option>
+              <option value="nueva">New Wall / Porous (High Absorption)</option>
+              <option value="humedad">Rising Damp (Salitre / Peeling Paint)</option>
+              <option value="moho">Mold / Mildew / Condensation</option>
+              <option value="grietas">Fissures or Minor Cracks</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 style="border-bottom-color: #ff9800; margin-top: 30px;">Openings (Deductions)</h3>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+          The area of doors and windows is subtracted to avoid over-ordering paint.
+        </p>
+
+        <div class="form-group-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="form-group">
+            <label>Doors (Quantity)</label>
+            <input type="number" id="pint-puertas" class="calc-input" value="1" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Windows (Quantity)</label>
+            <input type="number" id="pint-ventanas" class="calc-input" value="1" min="0" />
+          </div>
+        </div>
+
+        <h3 style="border-bottom-color: #ff9800; margin-top: 30px;">Application</h3>
+        
+        <div class="form-group-grid">
+          <div class="form-group">
+            <label>Paint Coats</label>
+            <select id="pint-manos" class="calc-select">
+              <option value="1">1 Coat (Repainting same color)</option>
+              <option value="2" selected>2 Coats (Recommended)</option>
+              <option value="3">3 Coats (Color change / Dark tones)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Latex Paint Coverage</label>
+            <select id="pint-rendimiento" class="calc-select">
+              <option value="10" selected>Standard (10 m² per Liter)</option>
+              <option value="12">Premium (12 m² per Liter)</option>
+              <option value="8">Rough Surface (8 m² per Liter)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Full Skim Coat (Plastering)?</label>
+            <select id="pint-planchado" class="calc-select">
+              <option value="no" selected>No (Spot repairs / patching only)</option>
+              <option value="si">Yes (Full wall skim coating)</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Results Panel -->
+      <div class="calc-results card reveal" style="transition-delay: 0.1s;">
+        <div class="results-sticky">
+          <h3>Calculation Results</h3>
+          
+          <div class="result-box">
+            <span class="result-label">Net Wall Area to Paint</span>
+            <div class="result-value"><span id="pint-superficie">0</span> m²</div>
+          </div>
+
+          <div class="result-box primary-result" style="border-color: #ff9800; background: rgba(255, 152, 0, 0.1);">
+            <span class="result-label" style="color: #ff9800;">Interior Latex (Walls)</span>
+            <div class="result-value"><span id="pint-litros">0</span> Liters</div>
+            <span class="result-note">*Calculated based on <span id="pint-manos-txt">2</span> coats</span>
+          </div>
+
+          <div class="result-alert" id="pint-alert" style="background: rgba(255, 152, 0, 0.1); border-left-color: #ff9800;">
+            <strong>Suggested Purchase (Latex):</strong> <span id="pint-compra" style="color: #ff9800; font-weight:bold; font-size: 1.1rem; display:block; margin-top:5px;">-</span>
+          </div>
+
+          <!-- Surface Preparation -->
+          <div class="result-box" style="border: 1px solid rgba(255, 152, 0, 0.2); background: rgba(255, 152, 0, 0.03); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px;">
+            <span class="result-label" style="color: #ff9800; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; margin-bottom: 10px;">
+              🛠️ Suggested Preparation Materials
+            </span>
+            <div style="font-size: 0.85rem; line-height: 1.6;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-light);">Concentrated Sealer/Primer:</span>
+                <span id="pint-res-sellador" style="color: var(--text-primary); font-weight: 600;">0 Liters</span>
+              </div>
+              <div id="pint-res-enduido-row" style="display: none; justify-content: space-between;">
+                <span style="color: var(--text-light);">Plaster / Joint Filler:</span>
+                <span id="pint-res-enduido" style="color: var(--text-primary); font-weight: 600;">0 kg</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ceiling Results -->
+          <div id="pint-techo-results" style="display: none; margin-top: 20px;">
+            <div class="result-box primary-result" style="border-color: #4CAF50; background: rgba(76, 175, 80, 0.1);">
+              <span class="result-label" style="color: #4CAF50;">Ceiling Paint</span>
+              <div class="result-value"><span id="pint-litros-techo">0</span> Liters</div>
+              <span class="result-note">For <span id="pint-superficie-techo">0</span> m² of ceiling</span>
+            </div>
+            
+            <div class="result-alert" style="background: rgba(76, 175, 80, 0.1); border-left-color: #4CAF50;">
+              <strong>Suggested Purchase (Ceiling):</strong> <span id="pint-compra-techo" style="color: #4CAF50; font-weight:bold; font-size: 1.1rem; display:block; margin-top:5px;">-</span>
+            </div>
+          </div>
+
+          <!-- Wall Pathology Alert -->
+          <div id="pint-patologia-alert" class="factura-alert" style="margin-top: 20px; display: none;">
+            <h4 id="pint-pato-titulo" style="margin-bottom: 5px; color: #ff9800;">Technical Preparation Recommendation</h4>
+            <p id="pint-pato-texto" style="font-size: 0.85rem; line-height: 1.5; color: var(--text-primary);"></p>
+          </div>
+
+          <div class="disclaimer">
+            <p><strong>⚠️ Technical Note:</strong> Real coverage varies with wall porosity, paint brand, and dilution. Concentrated sealer/primer is calculated to diluting 1:4 with clean water.</p>
+          </div>
+
+          <a href="/en/#contacto" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 20px; background: #ff9800; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);">
+            Request a Labor Quote
+            <span class="btn-icon">🖌️</span>
+          </a>
+          
+          <button id="pint-btn-print" class="btn btn-outline" style="width: 100%; justify-content: center; margin-top: 10px; border-color: #ff9800; color: var(--text-primary);">
+            Print Report
+            <span class="btn-icon" style="background: transparent; color: #ff9800;">🖨️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Print Report Area -->
+<div id="print-area-pint" class="print-only-pint">
+  <div class="print-header" style="border-bottom-color: #ff9800;">
+    <img src="/assets/img/logo.webp" alt="N3i Logo" width="80" />
+    <div>
+      <h2 style="color: #ff9800;">Paint Materials & Wall Treatment Report</h2>
+      <p>N3i Engineering & Maintenance</p>
+    </div>
+  </div>
+  <div class="print-details">
+    <p><strong>Date:</strong> <span id="pint-print-date"></span></p>
+    <p><strong>Document Type:</strong> Finish & Preparation Materials Estimate</p>
+  </div>
+  
+  <table class="print-table">
+    <thead>
+      <tr>
+        <th>Calculation Parameter</th>
+        <th>Detail</th>
+      </tr>
+    </thead>
+    <tbody id="pint-print-tbody">
+      <!-- Populated by JS -->
+    </tbody>
+  </table>
+  
+  <div style="background: rgba(255, 152, 0, 0.05); padding: 20px; border-radius: 8px; border-left: 5px solid #ff9800; border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #ff9800;">Estimated Paint Sizing</h3>
+    <p style="font-size: 1.1rem; margin: 0 0 5px 0;"><strong>Net Wall Surface Area:</strong> <span id="pint-print-sup-paredes">0</span> m²</p>
+    <p style="font-size: 1.1rem; margin: 0 0 5px 0;"><strong>Interior Latex Liters (Walls):</strong> <span id="pint-print-litros-paredes">0</span> Liters</p>
+    <p style="font-size: 1.2rem; margin: 5px 0 0 0; color: #ff9800;"><strong>Suggested Purchase Latex:</strong> <span id="pint-print-compra-paredes"></span></p>
+    
+    <div id="pint-print-techo-section" style="display: none; margin-top: 15px; border-top: 1px dashed #ff9800; padding-top: 15px;">
+      <p style="font-size: 1.1rem; margin: 0 0 5px 0;"><strong>Ceiling Surface Area:</strong> <span id="pint-print-sup-techo">0</span> m²</p>
+      <p style="font-size: 1.1rem; margin: 0 0 5px 0;"><strong>Ceiling Paint:</strong> <span id="pint-print-litros-techo">0</span> Liters</p>
+      <p style="font-size: 1.2rem; margin: 5px 0 0 0; color: #4CAF50;"><strong>Suggested Purchase Ceiling:</strong> <span id="pint-print-compra-techo"></span></p>
+    </div>
+  </div>
+
+  <div style="background: rgba(255, 152, 0, 0.05); padding: 20px; border-radius: 8px; border-left: 5px solid #ff9800; border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #ff9800;">Wall Preparation Materials</h3>
+    <p style="font-size: 1.1rem; margin: 0 0 5px 0;"><strong>Concentrated Sealer/Primer:</strong> <span id="pint-print-sealer">0 Liters</span></p>
+    <p id="pint-print-enduido-row" style="font-size: 1.1rem; margin: 0 0 5px 0; display: none;"><strong>Wall Plaster / Filler:</strong> <span id="pint-print-enduido">0 kg</span></p>
+    <p style="font-size: 0.95rem; line-height: 1.4; color: #555; margin-top: 10px;" id="pint-print-pato-desc"></p>
+  </div>
+
+  <div style="background: rgba(100, 100, 100, 0.05); padding: 20px; border-radius: 8px; border-left: 5px solid #666; margin-bottom: 30px; border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd;">
+    <h3 style="margin-top: 0; color: #333;">Recommended Supplies & Accessories</h3>
+    <ul id="pint-print-accesorios" style="line-height: 1.6; margin: 0; padding-left: 20px;">
+      <!-- Populated by JS -->
+    </ul>
+  </div>
+
+  <div class="print-footer">
+    <p style="font-size: 0.8rem; margin-top: 15px;">* Note: Paint coverage depends on wall porosity, paint brand, and dilution. A 10% safety margin is highly recommended.</p>
+    <p style="font-size: 0.8rem; margin-top: 5px;">To ensure a perfect premium finish, hire professional painters. Technical contact is available at <strong>www.n3i.com.ar</strong> or via WhatsApp +54 9 291 416-8232.</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Calculator Grid Layout */
+  .calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  @media (min-width: 992px) {
+    .calculator-grid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+
+  .results-sticky {
+    position: sticky;
+    top: 100px;
+  }
+
+  /* Specific Print Styles for Paint */
+  .print-only-pint {
+    display: none;
+  }
+  @media print {
+    @page { margin: 2cm; }
+    body.printing-pint .header, 
+    body.printing-pint .footer, 
+    body.printing-pint .section-header, 
+    body.printing-pint .calculator-grid, 
+    body.printing-pint .section { 
+      display: none !important; 
+    }
+    body.printing-pint .print-only-pint {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000;
+      background: #fff;
+    }
+    .print-only-pint .print-header { display: flex; align-items: center; border-bottom: 2px solid #ff9800; padding-bottom: 20px; margin-bottom: 20px; gap: 20px; }
+    .print-only-pint .print-header h2 { margin: 0; font-size: 1.5rem; }
+    .print-only-pint .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    .print-only-pint .print-table th, .print-only-pint .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .print-only-pint .print-table th { background-color: #f5f5f5; color: #333; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iLargo = document.getElementById('pint-largo') as HTMLInputElement;
+    const iAncho = document.getElementById('pint-ancho') as HTMLInputElement;
+    const iAlto = document.getElementById('pint-alto') as HTMLInputElement;
+    const iTecho = document.getElementById('pint-techo') as HTMLSelectElement;
+    const iPuertas = document.getElementById('pint-puertas') as HTMLInputElement;
+    const iVentanas = document.getElementById('pint-ventanas') as HTMLInputElement;
+    const iManos = document.getElementById('pint-manos') as HTMLSelectElement;
+    const iRend = document.getElementById('pint-rendimiento') as HTMLSelectElement;
+
+    // New inputs
+    const iPatologia = document.getElementById('pint-patologia') as HTMLSelectElement;
+    const iPlanchado = document.getElementById('pint-planchado') as HTMLSelectElement;
+
+    const oSuperficie = document.getElementById('pint-superficie');
+    const oLitros = document.getElementById('pint-litros');
+    const oManosTxt = document.getElementById('pint-manos-txt');
+    const oCompra = document.getElementById('pint-compra');
+
+    // New UI Results
+    const oResSellador = document.getElementById('pint-res-sellador');
+    const oResEnduidoRow = document.getElementById('pint-res-enduido-row');
+    const oResEnduido = document.getElementById('pint-res-enduido');
+    const oPatoAlert = document.getElementById('pint-patologia-alert');
+    const oPatoTexto = document.getElementById('pint-pato-texto');
+
+    const oTechoResults = document.getElementById('pint-techo-results');
+    const oSuperficieTecho = document.getElementById('pint-superficie-techo');
+    const oLitrosTecho = document.getElementById('pint-litros-techo');
+    const oCompraTecho = document.getElementById('pint-compra-techo');
+
+    const inputs = [iLargo, iAncho, iAlto, iTecho, iPuertas, iVentanas, iManos, iRend, iPatologia, iPlanchado];
+
+    function calculateEnvases(litros: number) {
+      if (litros === 0) return "0 Liters";
+      if (litros <= 1) return "1 Can of 1 Liter";
+      if (litros <= 4) return "1 Can of 4 Liters";
+      if (litros <= 10) return "1 Can of 10 Liters";
+      if (litros <= 14) return "1 Can of 10L + 1 Can of 4L";
+      if (litros <= 20) return "1 Can of 20 Liters";
+      
+      const cans20 = Math.floor(litros / 20);
+      const rest = litros % 20;
+      let buy = `${cans20} Can(s) of 20L`;
+      if (rest > 10) buy += ` + 1 of 20L`;
+      else if (rest > 4) buy += ` + 1 of 10L`;
+      else if (rest > 0) buy += ` + 1 of 4L`;
+      return buy;
+    }
+
+    function calculatePintura() {
+      if(!iLargo) return;
+      
+      const largo = parseFloat(iLargo.value) || 0;
+      const ancho = parseFloat(iAncho.value) || 0;
+      const alto = parseFloat(iAlto.value) || 0;
+      const techo = iTecho.value === 'si';
+      
+      const puertas = parseInt(iPuertas.value) || 0;
+      const ventanas = parseInt(iVentanas.value) || 0;
+      
+      const manos = parseInt(iManos.value) || 2;
+      const baseRendimiento = parseFloat(iRend.value) || 10;
+      const patologia = iPatologia.value;
+      const planchado = iPlanchado.value === 'si';
+
+      let absFactor = 1.0;
+      let patoWarning = "";
+      
+      if (patologia === 'nueva') {
+        absFactor = 1.25;
+        patoWarning = "New bare plaster walls are highly porous and absorb more paint. Applying Sealer/Primer is mandatory to seal the pores before painting latex.";
+      } else if (patologia === 'humedad') {
+        patoWarning = "⚠️ <strong>Rising Damp Warning:</strong> Painting with conventional latex over rising ground damp will cause quick peeling. It is recommended to perform damp-proofing first or apply salitre/damp blockers before painting.";
+      } else if (patologia === 'moho') {
+        patoWarning = "⚠️ <strong>Mold/Fungus Warning:</strong> Wash the surface with diluted bleach or fungicidal solution prior to painting. Adding a fungicidal additive to the latex paint is suggested to prevent regrowth.";
+      } else if (patologia === 'grietas') {
+        patoWarning = "Fissures and cracks should be opened into a 'V' shape, brushed, and filled with joint compound/elastic sealant before painting.";
+      }
+
+      const rendimiento = baseRendimiento / absFactor;
+
+      const perimetro = (largo + ancho) * 2;
+      let areaParedes = perimetro * alto;
+      
+      const descuentoP = puertas * 1.6;
+      const descuentoV = ventanas * 1.2;
+      
+      let areaNetaParedes = areaParedes - descuentoP - descuentoV;
+      if (areaNetaParedes < 0) areaNetaParedes = 0;
+      
+      const litrosParedes = (areaNetaParedes * manos) / rendimiento;
+      const litrosRedondeadosParedes = Math.ceil(litrosParedes);
+      const compraParedes = calculateEnvases(litrosRedondeadosParedes);
+
+      // Ceiling
+      let areaTecho = largo * ancho;
+      let litrosTecho = 0;
+      let litrosRedondeadosTecho = 0;
+      let compraTecho = "";
+
+      if (techo) {
+        litrosTecho = (areaTecho * manos) / baseRendimiento;
+        litrosRedondeadosTecho = Math.ceil(litrosTecho);
+        compraTecho = calculateEnvases(litrosRedondeadosTecho);
+      }
+
+      // Prep materials
+      const areaTotalFijador = areaNetaParedes + (techo ? areaTecho : 0);
+      const litrosFijador = Math.ceil(areaTotalFijador / 40);
+      
+      let kgEnduido = 0;
+      if (planchado) {
+        kgEnduido = Math.ceil(areaNetaParedes * 1.2);
+      } else if (patologia === 'grietas') {
+        kgEnduido = Math.ceil(areaNetaParedes * 0.3);
+      }
+
+      // Update UI
+      if(oSuperficie) oSuperficie.textContent = areaNetaParedes.toFixed(1);
+      if(oLitros) oLitros.textContent = litrosParedes.toFixed(1);
+      if(oManosTxt) oManosTxt.textContent = manos.toString();
+      if(oCompra) oCompra.textContent = compraParedes;
+
+      if (oResSellador) oResSellador.textContent = `${litrosFijador} Liter${litrosFijador > 1 ? 's' : ''}`;
+      
+      if (oResEnduidoRow && oResEnduido) {
+        if (kgEnduido > 0) {
+          oResEnduidoRow.style.display = 'flex';
+          oResEnduido.textContent = `${kgEnduido} kg`;
+        } else {
+          oResEnduidoRow.style.display = 'none';
+        }
+      }
+
+      if (oPatoAlert && oPatoTexto) {
+        if (patoWarning !== "") {
+          oPatoAlert.style.display = 'block';
+          oPatoTexto.innerHTML = patoWarning;
+        } else {
+          oPatoAlert.style.display = 'none';
+        }
+      }
+
+      if(oTechoResults) {
+        oTechoResults.style.display = techo ? 'block' : 'none';
+        if(techo && oSuperficieTecho && oLitrosTecho && oCompraTecho) {
+          oSuperficieTecho.textContent = areaTecho.toFixed(1);
+          oLitrosTecho.textContent = litrosTecho.toFixed(1);
+          oCompraTecho.textContent = compraTecho;
+        }
+      }
+
+      // Recommended supplies
+      let accesorios = [
+        "1x Anti-drip roller (short/medium nap) for walls",
+        "1x Paintbrush No. 20 or 30 for cutting in",
+        "1x Plastic paint tray",
+        "2x Masking tape rolls (blue or yellow)",
+        `Cardboard or plastic drop cloth (approx. ${(largo * ancho).toFixed(0)} m²)`
+      ];
+
+      if (techo) {
+        accesorios.push("1x Nap roller (long nap) for ceiling");
+        accesorios.push("1x Extension pole for roller");
+      }
+      if (kgEnduido > 0) {
+        accesorios.push("1x Steel spatula (10 or 12 cm)");
+        accesorios.push("1x Steel trowel (if performing full skim coating)");
+        accesorios.push("Fine wet-dry sandpapers No. 180 or 220");
+      }
+
+      (window as any).pinturaCalcData = {
+        areaNetaParedes, litrosParedes, compraParedes,
+        techo, areaTecho, litrosTecho, compraTecho,
+        litrosFijador, kgEnduido, patoWarning, accesorios,
+        patologiaLabel: iPatologia.options[iPatologia.selectedIndex].text,
+        planchadoLabel: iPlanchado.options[iPlanchado.selectedIndex].text
+      };
+    }
+
+    inputs.forEach(input => {
+      if(input) input.addEventListener('input', calculatePintura);
+    });
+
+    const btnPrintPint = document.getElementById('pint-btn-print');
+    if (btnPrintPint) {
+      btnPrintPint.addEventListener('click', () => {
+        calculatePintura();
+
+        const tbody = document.getElementById('pint-print-tbody');
+        const pDate = document.getElementById('pint-print-date');
+        
+        const pSupParedes = document.getElementById('pint-print-sup-paredes');
+        const pLitrosParedes = document.getElementById('pint-print-litros-paredes');
+        const pCompraParedes = document.getElementById('pint-print-compra-paredes');
+        
+        const sectionTecho = document.getElementById('pint-print-techo-section');
+        const pSupTecho = document.getElementById('pint-print-sup-techo');
+        const pLitrosTecho = document.getElementById('pint-print-litros-techo');
+        const pCompraTecho = document.getElementById('pint-print-compra-techo');
+
+        const pSealer = document.getElementById('pint-print-sealer');
+        const pEnduidoRow = document.getElementById('pint-print-enduido-row');
+        const pEnduido = document.getElementById('pint-print-enduido');
+        const pPatoDesc = document.getElementById('pint-print-pato-desc');
+
+        const ulAccesorios = document.getElementById('pint-print-accesorios');
+        
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        
+        const data = (window as any).pinturaCalcData;
+        if (!data) return;
+
+        const rows = [
+          { label: 'Room Dimensions', value: `${iLargo.value}m x ${iAncho.value}m x ${iAlto.value}m` },
+          { label: 'Wall Surface Condition', value: data.patologiaLabel },
+          { label: 'Full Skim Coat Plastering', value: data.planchadoLabel },
+          { label: 'Deductions (Openings)', value: `${iPuertas.value} Door(s) and ${iVentanas.value} Window(s)` },
+          { label: 'Coats and Coverage', value: `${iManos.value} coats | base ${iRend.value} m²/L` }
+        ];
+
+        rows.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><strong>${row.label}</strong></td><td>${row.value}</td>`;
+          tbody.appendChild(tr);
+        });
+
+        if (ulAccesorios) {
+          ulAccesorios.innerHTML = '';
+          data.accesorios.forEach((acc: string) => {
+            const li = document.createElement('li');
+            li.textContent = acc;
+            ulAccesorios.appendChild(li);
+          });
+        }
+
+        if (pSupParedes) pSupParedes.textContent = data.areaNetaParedes.toFixed(1);
+        if (pLitrosParedes) pLitrosParedes.textContent = data.litrosParedes.toFixed(1);
+        if (pCompraParedes) pCompraParedes.textContent = data.compraParedes;
+
+        if (sectionTecho) {
+          if (data.techo) {
+            sectionTecho.style.display = 'block';
+            if (pSupTecho) pSupTecho.textContent = data.areaTecho.toFixed(1);
+            if (pLitrosTecho) pLitrosTecho.textContent = data.litrosTecho.toFixed(1);
+            if (pCompraTecho) pCompraTecho.textContent = data.compraTecho;
+          } else {
+            sectionTecho.style.display = 'none';
+          }
+        }
+
+        if (pSealer) pSealer.textContent = `${data.litrosFijador} Liter${data.litrosFijador > 1 ? 's' : ''} Concentrated`;
+        
+        if (pEnduidoRow && pEnduido) {
+          if (data.kgEnduido > 0) {
+            pEnduidoRow.style.display = 'block';
+            pEnduido.textContent = `${data.kgEnduido} kg`;
+          } else {
+            pEnduidoRow.style.display = 'none';
+          }
+        }
+
+        if (pPatoDesc) pPatoDesc.innerHTML = data.patoWarning !== "" ? data.patoWarning : "Walls are in optimal condition. No additional complex prep required.";
+
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('en-US') + ' ' + today.toLocaleTimeString('en-US');
+        }
+
+        document.body.classList.add('printing-pint');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-pint'), { once: true });
+      });
+    }
+
+    calculatePintura();
+  });
+</script>
