@@ -403,7 +403,7 @@
 
         // --- PROFESSIONAL WALL FRAMING CALCULATIONS ---
         // Vertical studs spaced every 40 cm (0.4 m)
-        const montantesBase = Math.ceil(perimetro / 0.4) + 1;
+        const montantesBase = Math.floor(perimetro / 0.4) + 1;
         // Corner reinforcements: 4 corners for closed rooms, or "esquinas" for straight walls
         const esquinasEstructura = (tipo === 'habitacion') ? 4 : esquinas;
         // Each opening (door/window) requires 2 extra studs for side jamb reinforcements
@@ -482,12 +482,12 @@
 
         // 34 mm Studs for support frame (spaced every 40 cm for Drywall, and every 50 cm for PVC)
         const espaciamiento = (cieloTipo === 'durlock') ? 0.4 : 0.5;
-        // Rows = Math.ceil(largo / espaciamiento) + 1, each with length "ancho"
-        const rowsTecho = Math.ceil(largo / espaciamiento) + 1;
+        // Rows = Math.floor(largo / espaciamiento) + 1, each with length "ancho"
+        const rowsTecho = Math.floor(largo / espaciamiento) + 1;
         const metrosLinealesTechoMontante = rowsTecho * ancho;
         
         // Rigid suspenders: 1 stud-cut suspender every 1.0 m along each track row
-        const velasPorMontante = Math.ceil(ancho / 1.0) + 1;
+        const velasPorMontante = Math.floor(ancho / 1.0) + 1;
         const totalVelas = rowsTecho * velasPorMontante;
         const metrosLinealesVelas = totalVelas * 0.5; // Average suspender length = 0.50m
 
