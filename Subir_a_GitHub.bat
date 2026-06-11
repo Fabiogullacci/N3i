@@ -27,8 +27,8 @@ git remote get-url origin >nul 2>nul
 if %errorlevel% neq 0 (
     echo [CONFIGURACION] No se detecto un repositorio remoto de GitHub vinculado.
     echo.
-    echo 1. Ve a GitHub y crea un repositorio (puede ser privado o publico).
-    echo 2. Copia la URL del repositorio (ejemplo: https://github.com/tu-usuario/nombre-repo.git).
+    echo 1. Ve a GitHub y crea un repositorio [puede ser privado o publico].
+    echo 2. Copia la URL del repositorio [ejemplo: https://github.com/tu-usuario/nombre-repo.git].
     echo.
     set /p REPO_URL="Ingresa la URL de tu repositorio de GitHub: "
     
