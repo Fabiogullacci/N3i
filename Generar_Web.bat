@@ -14,3 +14,4 @@ echo LISTO! Los archivos se compilaron y copiaron a la raiz.
 echo Ahora puedes ejecutar "Subir_a_GitHub.bat" para publicar.
 echo ===================================================
 pause
+
