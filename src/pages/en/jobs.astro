@@ -38,19 +38,23 @@ import Footer from '../../components/Footer.astro';
               <input type="text" id="nombre" name="Name" class="calc-input" required>
             </div>
             <div class="form-group">
+              <label for="dni">ID / Passport *</label>
+              <input type="text" id="dni" name="ID_Passport" class="calc-input" required>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="form-group">
               <label for="telefono">Phone / WhatsApp *</label>
               <input type="tel" id="telefono" name="Phone" class="calc-input" required>
             </div>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
             <div class="form-group">
               <label for="email">Email Address (Optional)</label>
               <input type="email" id="email" name="Email" class="calc-input">
             </div>
-            <div class="form-group">
-              <label for="ciudad">City / Residence Area *</label>
-              <input type="text" id="ciudad" name="City" class="calc-input" required>
-            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 30px;">
+            <label for="ciudad">City / Residence Area *</label>
+            <input type="text" id="ciudad" name="City" class="calc-input" required>
           </div>
 
           <!-- SECCIÓN 2: Especialidad -->
