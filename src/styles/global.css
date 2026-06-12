@@ -1722,7 +1722,7 @@ textarea.form-control {
   }
 
   /* Make all form inputs/selects full width on mobile */
-  .form-group input,
+  .form-group input:not([type="checkbox"]):not([type="radio"]),
   .form-group select,
   .form-control,
   .form-input,
@@ -2157,7 +2157,7 @@ select.calc-select:focus {
   .calc-input,
   .form-control,
   select,
-  input {
+  input:not([type="checkbox"]):not([type="radio"]) {
     max-width: 100% !important;
     width: 100% !important;
     box-sizing: border-box !important;
