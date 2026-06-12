@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://n3i.com.ar/sitemap.xml
+Sitemap: https://n3i.com.ar/sitemap-index.xml
