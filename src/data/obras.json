@@ -307,28 +307,6 @@
       ]
     },
     {
-      "id": "obra_legacy_3",
-      "title": "Puesta en Valor de Galpón Industrial",
-      "category": "Construcción y Mantenimiento Integral",
-      "location": "Avenida Alem 2780, Bahía Blanca",
-      "description": "Ejecución de obra de puesta en valor y reacondicionamiento general de nave industrial. Los trabajos incluyeron el desmonte de estructuras obsoletas, preparación de superficies y pintura de obra general tanto en interiores como en exteriores. Adicionalmente, se llevó a cabo una revisión técnica exhaustiva y normalización de los circuitos eléctricos, garantizando la seguridad, eficiencia y pleno cumplimiento normativo de toda la instalación del galpón.",
-      "type": "video",
-      "media": [
-        "/assets/img/obra_Alem2780_1.mp4"
-      ]
-    },
-    {
-      "id": "obra_legacy_4",
-      "title": "Remodelación de Vivienda Unifamiliar",
-      "category": "Construcción en Seco y Terminaciones",
-      "location": "Calle 19 de Mayo, Bahía Blanca",
-      "description": "Reforma integral de espacios interiores aplicando sistemas constructivos en seco. Se llevó a cabo la estructura y descenso de cielorrasos utilizando perfiles de Steel Frame de alta resistencia estructural. El proyecto incluyó el diseño y armado de divisorios modernos, instalación de aberturas de aluminio de máxima prestación y montaje de paredes de vidrio templado transparente para maximizar la luminosidad espacial. Como se observa en el registro, se ejecutaron las terminaciones de masillado y lijado fino, y actualmente se aplica el esquema completo de pintura de protección en las superficies superiores.",
-      "type": "video",
-      "media": [
-        "/assets/img/obra_19demayo_1.mp4"
-      ]
-    },
-    {
       "id": "obra_legacy_5",
       "title": "Renovación de Unidades de Aire Acondicionado",
       "category": "Climatización Comercial e Industrial",
