@@ -1,6 +1,21 @@
 {
   "obras": [
     {
+      "id": "obra_1781307602018",
+      "title": "Sucursal Melocoton BHI",
+      "category": "Obras llave en mano",
+      "location": "Bahia Blanca Plaza Shoping ",
+      "description": "Proyecto integral llave en mano ejecutado para la sucursal Melocotón en el Shopping de Bahía Blanca, con intervención completa en todas las especialidades del local comercial: instalación de piso flotante laminado de alta tráfico sobre membrana acústica Isoant, diseño e instalación de iluminación decorativa y funcional con artefactos colgantes tipo tubo en acabado dorado, luminarias tipo esfera y downlights embutidos LED Macroled sobre cielorraso de construcción en seco con molduras perimetrales, complementado con paneles LED de alta eficiencia en sectores de trabajo y luminaria decorativa multibrazos en zona de recepción; el proyecto incluyó además la ejecución del sistema de alarma y videovigilancia integrado, con cableado estructurado oculto en pleno de cielorraso, resultando en un local comercial de estética premium y alta calidad de terminación, actualmente en pleno funcionamiento.",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1781307601033_img_1.webp",
+        "/assets/img/obra_1781307601033_img_2.webp",
+        "/assets/img/obra_1781307601033_img_3.webp",
+        "/assets/img/obra_1781307601033_img_4.webp"
+      ],
+      "date": "2026-06-12T23:40:02.018Z"
+    },
+    {
       "id": "obra_1780597045545",
       "title": " instalación de grupo electrógeno a gas Generac con estabilizador de tensión trifásico.",
       "category": "Electricidad e Iluminación Industrial",
