@@ -1,6 +1,21 @@
 {
   "obras": [
     {
+      "id": "obra_1781308169940",
+      "title": "Sucursal Selu BHI",
+      "category": "Obras llave en mano",
+      "location": "Bahia Blanca Plaza Shoping",
+      "description": "Proyecto llave en mano ejecutado para la sucursal Selú en el Shopping de Bahía Blanca, abarcando la totalidad de las especialidades del local: construcción en seco con sistema steel frame y placas Durlock para cielorraso en dos niveles con diseño de franja perimetral y tabiques interiores, instalación eléctrica completa con tendido de bandejas portacables perforadas, circuitos de iluminación con spots orientables sobre riel, downlights embutidos LED y artefacto decorativo colgante multiesfera en zona de recepción; se ejecutó además la red de datos con cableado estructurado para conectividad del local, sistema de videovigilancia con cámaras de seguridad, barrera de control acceso y el tablero eléctrico seccional visible en obra, entregando el local terminado, funcionando y habilitado con una estética comercial de primer nivel acorde a los estándares de la marca.",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1781308169182_img_1.webp",
+        "/assets/img/obra_1781308169182_img_2.webp",
+        "/assets/img/obra_1781308169182_img_3.webp",
+        "/assets/img/obra_1781308169182_img_4.webp"
+      ],
+      "date": "2026-06-12T23:49:29.940Z"
+    },
+    {
       "id": "obra_1781307602018",
       "title": "Sucursal Melocoton BHI",
       "category": "Obras llave en mano",
