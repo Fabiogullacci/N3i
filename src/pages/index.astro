@@ -675,13 +675,29 @@ const schemaData = JSON.stringify({
     <div class="container reveal">
       <span class="section-subtitle">Convocatoria Técnica</span>
       <h2 class="section-title">Únase al Equipo</h2>
-      <p class="section-desc" style="max-width: 600px; margin: 0 auto 30px auto;">
-        Se seleccionan técnicos, contratistas y especialistas en mantenimiento e ingeniería para incorporar a los equipos de trabajo. Complete el cuestionario interactivo de oficios sin necesidad de enviar un currículum.
+      <p class="section-desc" style="max-width: 650px; margin: 0 auto 30px auto;">
+        Se seleccionan técnicos, contratistas y especialistas de oficios para incorporar a los equipos de trabajo. Seleccione su especialidad para realizar la autoevaluación técnica correspondiente.
       </p>
-      <a href="/empleo" class="btn btn-outline" style="display: inline-flex; border: 1px solid #3FC6B4; color: #ffffff;">
-        Completar Formulario Técnico
-        <span class="btn-icon" style="background: transparent;">📋</span>
-      </a>
+
+      <!-- Botonera de Autoevaluaciones de Oficios -->
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 35px; max-width: 900px; margin-left: auto; margin-right: auto;">
+        <a href="/evaluacion/electricista/" class="btn btn-primary" style="padding: 12px 24px; font-size: 0.9rem; min-height: auto; font-family: var(--font-title);">
+          ⚡ Test Electricista
+        </a>
+        <button class="btn btn-outline" disabled style="padding: 12px 24px; font-size: 0.9rem; min-height: auto; opacity: 0.4; cursor: not-allowed; border: 1px dashed rgba(255,255,255,0.15); font-family: var(--font-title); color: var(--text-muted);">
+          🔥 Test Gasista (Próximamente)
+        </button>
+        <button class="btn btn-outline" disabled style="padding: 12px 24px; font-size: 0.9rem; min-height: auto; opacity: 0.4; cursor: not-allowed; border: 1px dashed rgba(255,255,255,0.15); font-family: var(--font-title); color: var(--text-muted);">
+          💧 Test Plomero (Próximamente)
+        </button>
+        <button class="btn btn-outline" disabled style="padding: 12px 24px; font-size: 0.9rem; min-height: auto; opacity: 0.4; cursor: not-allowed; border: 1px dashed rgba(255,255,255,0.15); font-family: var(--font-title); color: var(--text-muted);">
+          ❄️ Test Climatización (Próximamente)
+        </button>
+      </div>
+
+      <p style="font-size: 0.95rem; color: var(--text-secondary); margin: 0; line-height: 1.6;">
+        ¿Tiene otra especialidad técnica? Complete nuestro <a href="/empleo" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Formulario General de Postulación</a>. Postulate sin hacer ningún test o entra directamente al formulario de postulación.
+      </p>
     </div>
   </section>
 

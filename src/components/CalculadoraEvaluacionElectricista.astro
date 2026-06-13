@@ -1,0 +1,214 @@
+---
+// src/components/CalculadoraEvaluacionElectricista.astro
+// Portal de Autoevaluación y Certificación de Oficios - Electricidad
+---
+<section class="section section-alt" id="evaluacion-electricista">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: var(--accent);">Recursos Humanos & Capacitación</span>
+      <h2 class="section-title">Portal de Autoevaluación Técnica de Oficios</h2>
+      <p class="section-desc">
+        Ponga a prueba su nivel técnico, mida sus competencias y obtenga una recomendación de categoría operativa homologada bajo los estándares de N3i Engineering & Maintenance.
+      </p>
+    </div>
+
+    <div class="eval-portal-grid">
+      <!-- Tarjeta informativa -->
+      <div class="eval-portal-info card reveal">
+        <h3 style="color: var(--accent); border-bottom: 1px solid rgba(140, 198, 63, 0.15); padding-bottom: 10px; margin-bottom: 20px;">
+          Autoevaluación: Electricista Industrial / Civil
+        </h3>
+        <p style="color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6;">
+          Esta herramienta interactiva de 20 preguntas técnicas evalúa sus destrezas ante situaciones reales de obra y normativas vigentes en Argentina.
+        </p>
+
+        <h4 style="color: var(--text-primary); margin-bottom: 12px; font-size: 0.95rem;">Áreas de Conocimiento Evaluadas:</h4>
+        <ul class="eval-feature-list">
+          <li><strong>Normativa AEA:</strong> Reglamento 90364-7-771/701 (caída de tensión, bocas, colores de cables, volúmenes de baños).</li>
+          <li><strong>Destreza Técnica:</strong> Selectividad de protecciones, curvas de disparo Schneider, tableros principales y medición de puesta a tierra.</li>
+          <li><strong>Interpretación de Planos:</strong> Potencia en circuitos trifásicos, factor de potencia, compensación, canalizaciones y luces de emergencia.</li>
+          <li><strong>Seguridad e Higiene:</strong> Aplicación de las 5 Reglas de Oro, EPPs dieléctricos, protocolo LOTO y prevención de arco eléctrico.</li>
+        </ul>
+      </div>
+
+      <!-- Tarjeta de Acción / Preview del Dashboard -->
+      <div class="eval-portal-action card reveal" style="transition-delay: 0.1s;">
+        <div class="action-sticky-box">
+          <div class="badge-preview">
+            <span class="badge-glow"></span>
+            <div class="badge-icon">⚡</div>
+            <div class="badge-title">Certificación N3i</div>
+            <div class="badge-subtitle">Nivel Técnico de Electricistas</div>
+          </div>
+          
+          <div class="eval-benefits">
+            <div class="benefit-item">
+              <span class="benefit-icon">📊</span>
+              <div>
+                <strong>Informe de Competencias</strong>
+                <p>Matriz de destrezas en formato radar/barras interactivo.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">📖</span>
+              <div>
+                <strong>Feedback Educativo (Regla de Oro)</strong>
+                <p>Justificación detallada de errores según norma AEA.</p>
+              </div>
+            </div>
+          </div>
+
+          <a href="/evaluacion/electricista/" class="btn btn-primary btn-full-width" style="margin-top: 15px; padding: 16px;">
+            Comenzar Autoevaluación
+            <span class="btn-icon">⚡</span>
+          </a>
+          
+          <p style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 10px; line-height: 1.4;">
+            Es totalmente gratuito. Podrás realizarlo de forma privada o enviar los resultados a N3i para postularte.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .eval-portal-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  @media (min-width: 768px) {
+    .eval-portal-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+
+  .eval-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .eval-feature-list li {
+    position: relative;
+    padding-left: 28px;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .eval-feature-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+
+  .action-sticky-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* Preview de la insignia de nivel */
+  .badge-preview {
+    position: relative;
+    background: rgba(140, 198, 63, 0.03);
+    border: 1px solid rgba(140, 198, 63, 0.15);
+    border-radius: var(--radius-md, 12px);
+    padding: 25px;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+
+  .badge-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(140, 198, 63, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge-icon {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 12px;
+    animation: pulseGlow 3s infinite ease-in-out;
+  }
+
+  .badge-title {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .eval-benefits {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 0;
+  }
+
+  .benefit-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .benefit-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .benefit-item strong {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+  }
+
+  .benefit-item p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 2px 0 0 0;
+    line-height: 1.4;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 5px rgba(140, 198, 63, 0.2));
+    }
+    50% {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 15px rgba(140, 198, 63, 0.5));
+    }
+  }
+</style>

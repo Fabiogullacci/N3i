@@ -13,7 +13,7 @@ import Footer from '../components/Footer.astro';
       <span class="section-subtitle">Únete al Equipo N3i</span>
       <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 20px;">Únase al Equipo</h1>
       <p class="hero-subtitle" style="margin: 0 auto; max-width: 700px; color: var(--text-light);">
-        Se seleccionan técnicos, oficiales y contratistas altamente capacitados para incorporar a los equipos de trabajo. Complete el siguiente cuestionario técnico para evaluar el perfil. No se requiere currículum en PDF.
+        Se seleccionan técnicos, oficiales y contratistas altamente capacitados para incorporar a los equipos de trabajo. Complete el siguiente Formulario General de Postulación para evaluar su perfil. No se requiere currículum en PDF.
       </p>
     </div>
   </section>
@@ -21,6 +21,21 @@ import Footer from '../components/Footer.astro';
   <!-- Formulario Section -->
   <section class="section section-alt" id="cuestionario">
     <div class="container reveal">
+      
+      <!-- Callout Autoevaluación -->
+      <div style="max-width: 800px; margin: 0 auto 30px auto; background: rgba(140, 198, 63, 0.05); border: 1px solid rgba(140, 198, 63, 0.2); border-radius: 12px; padding: 25px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;" class="reveal">
+        <div style="flex: 1; min-width: 280px; text-align: left;">
+          <h4 style="color: var(--accent); margin-bottom: 8px; font-family: var(--font-title); font-size: 1.1rem;">⚡ ¿Sos Electricista?</h4>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin: 0;">
+            Te sugerimos realizar nuestra <strong>Autoevaluación Técnica de Electricidad</strong> antes de postularte. Podrás medir tus conocimientos sobre normas AEA y seguridad, certificar tu categoría (Ayudante, Oficial, Oficial Especializado) y adjuntar automáticamente el reporte a tu postulación.
+          </p>
+        </div>
+        <a href="/evaluacion/electricista/" class="btn btn-primary" style="padding: 12px 20px; font-size: 0.85rem; min-height: auto; white-space: nowrap;">
+          Realizar Autoevaluación
+          <span class="btn-icon">⚡</span>
+        </a>
+      </div>
+
       <div class="form-container" style="max-width: 800px; margin: 0 auto; background: var(--card-bg); border-radius: 12px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);">
         
         <form action="https://formsubmit.co/n3ibhi@gmail.com" method="POST" id="job-form">

@@ -11,6 +11,7 @@ if exist _astro rmdir /S /Q _astro
 if exist assets rmdir /S /Q assets
 if exist auditoria rmdir /S /Q auditoria
 if exist empleo rmdir /S /Q empleo
+if exist evaluacion rmdir /S /Q evaluacion
 if exist en rmdir /S /Q en
 if exist gracias rmdir /S /Q gracias
 if exist herramientas rmdir /S /Q herramientas
