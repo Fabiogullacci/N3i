@@ -273,6 +273,7 @@ p {
   min-height: 44px;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .nav-link::after {
@@ -1527,6 +1528,63 @@ textarea.form-control {
   }
 }
 
+/* Compact desktop menu layouts to prevent collisions */
+@media (min-width: 993px) and (max-width: 1200px) {
+  .nav-menu {
+    gap: 12px;
+  }
+  .nav-link {
+    font-size: 13px;
+  }
+  .logo img {
+    height: 60px;
+  }
+  .logo-text {
+    font-size: 1.1rem;
+  }
+  .logo-text span {
+    font-size: 0.8rem;
+  }
+  .lang-switcher {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+  .nav-menu .btn-outline {
+    padding: 6px 12px !important;
+    font-size: 13px;
+  }
+  .header.scrolled {
+    height: 75px;
+  }
+  .header.scrolled .logo img {
+    height: 52px;
+  }
+}
+
+@media (min-width: 1201px) and (max-width: 1366px) {
+  .nav-menu {
+    gap: 16px;
+  }
+  .nav-link {
+    font-size: 14px;
+  }
+  .logo img {
+    height: 70px;
+  }
+  .logo-text {
+    font-size: 1.18rem;
+  }
+  .logo-text span {
+    font-size: 0.85rem;
+  }
+  .header.scrolled {
+    height: 80px;
+  }
+  .header.scrolled .logo img {
+    height: 58px;
+  }
+}
+
 /* Keyframes and Animations */
 @keyframes marquee {
   0% {
@@ -1600,7 +1658,7 @@ textarea.form-control {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .header {
     height: 70px;
   }
@@ -1639,7 +1697,9 @@ textarea.form-control {
   .nav-menu.active {
     right: 0;
   }
-  
+}
+
+@media (max-width: 768px) {
   .hero .container {
     grid-template-columns: 1fr;
     padding-top: 40px;
