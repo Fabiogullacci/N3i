@@ -1,0 +1,2013 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout 
+  title="Evaluación Técnica - Climatización y Refrigeración | N3i" 
+  description="Examen técnico e informe de competencias para la clasificación de técnicos en refrigeración y climatización de N3i Engineering & Maintenance."
+>
+  <Header />
+
+  <!-- Hero Section -->
+  <section class="page-hero" style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary)); border-bottom: 1px solid var(--border-color); padding: 140px 20px 60px 20px; text-align: center;">
+    <div class="container">
+      <span class="section-subtitle" style="color: var(--accent);">Evaluación de Competencias</span>
+      <h1 class="hero-title" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 15px;">Clasificación Técnica: Climatización</h1>
+      <p class="hero-subtitle" style="margin: 0 auto; max-width: 700px; color: var(--text-secondary); font-size: 1.05rem;">
+        Cuestionario de evaluación y autoevaluación técnica para determinar la categoría operativa en obras de N3i (Ayudante, Oficial, Oficial Especializado o Responsable Técnico).
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Container Section -->
+  <section style="padding: 60px 20px; background-color: var(--bg-primary); min-height: 70vh; position: relative;">
+    <div class="container">
+      
+      <!-- EVALUATION CARD WRAPPER -->
+      <div class="eval-card" id="eval-card">
+        
+        <!-- STEP 1: REGISTRATION -->
+        <div id="step-registration" class="step-container active">
+          <div class="step-header">
+            <h2 class="step-title">Registro del Postulante</h2>
+            <p class="step-desc">Ingrese sus datos para comenzar la evaluación de 20 preguntas técnicas de selección múltiple.</p>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="reg-nombre">Nombre y Apellido Completo *</label>
+              <input type="text" id="reg-nombre" placeholder="Ej. Carlos Alberto Gómez" class="eval-input" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-telefono">Teléfono / WhatsApp *</label>
+              <input type="tel" id="reg-telefono" placeholder="Ej. 2914567890" class="eval-input" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-email">Correo Electrónico *</label>
+              <input type="email" id="reg-email" placeholder="Ej. carlos.gomez@gmail.com" class="eval-input" required />
+            </div>
+          </div>
+
+          <div style="margin-bottom: 25px;">
+            <label class="eval-checkbox-label">
+              <input type="checkbox" id="reg-postularse" checked />
+              <div style="font-size: 0.92rem; color: var(--text-light); line-height: 1.4;">
+                <strong>Quiero postularme a N3i con estos resultados</strong><br>
+                <span style="font-size: 0.82rem; color: var(--text-secondary);">Si marcas esta opción, tus respuestas y perfil técnico se enviarán automáticamente al equipo de Ingeniería de N3i. Si la desmarcas, solo realizarás el test para medir tu nivel de forma privada.</span>
+              </div>
+            </label>
+          </div>
+          
+          <div class="info-alert" style="border-color: rgba(63, 198, 180, 0.3); background: rgba(63, 198, 180, 0.05);">
+            <span class="alert-icon">💡</span>
+            <div class="alert-text">
+              <strong>Enfoque Educativo y de Capacitación:</strong> En N3i fomentamos la formación continua. Este test está diseñado para ser una herramienta de aprendizaje. Cada pregunta incluye explicaciones técnicas detalladas y estándares de calidad para que puedas estudiar. Si querés repasar antes de comenzar o profundizar tus conocimientos, te sugerimos consultar:<br>
+              <ul style="margin-top: 8px; margin-bottom: 0; padding-left: 20px; color: var(--text-secondary);">
+                <li>El portal educativo y cursos de la <a href="https://www.cacaav.org.ar/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Cámara Argentina de Calefacción, Aire Acondicionado y Ventilación (CACAAV)</a>.</li>
+                <li>Los manuales de buenas prácticas de refrigeración y eliminación de gases que agotan la capa de ozono del <a href="https://www.argentina.gob.ar/ambiente/desarrollo-sostenible/ozono" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Programa de Ozono de la Nación (SAyDS Argentina)</a>.</li>
+                <li>Las guías de servicio técnico y diagnóstico de fallas de <a href="https://www.danfoss.com/es-es/service-and-support/learning/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Danfoss Learning</a> o <a href="https://www.bgh.com.ar/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600;">BGH Climatización Profesional</a>.</li>
+              </ul>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary btn-full-width" id="btn-start">
+            Comenzar Autoevaluación
+            <span class="btn-icon">❄️</span>
+          </button>
+          
+          <button class="btn btn-outline btn-full-width" id="btn-direct-postulation" style="margin-top: 15px; font-size: 0.95rem; justify-content: center; border: 1px solid var(--accent); color: #ffffff;">
+            Postularse directamente (Sin realizar el test)
+            <span class="btn-icon">📋</span>
+          </button>
+        </div>
+
+
+        <!-- STEP 2: QUESTIONNAIRE (DYNAMIC) -->
+        <div id="step-quiz" class="step-container">
+          <div class="quiz-progress-bar-container">
+            <div class="quiz-progress-meta">
+              <span id="quiz-question-index">Pregunta 1 de 20</span>
+              <span id="quiz-percent">0%</span>
+            </div>
+            <div class="quiz-progress-bar">
+              <div class="quiz-progress-fill" id="quiz-progress-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+          
+          <div class="question-box">
+            <div class="question-category-tag" id="question-category">Buenas Prácticas</div>
+            <h3 class="question-text" id="question-text">¿Cargando pregunta?</h3>
+            
+            <div class="options-list" id="options-list">
+              <!-- Dynamically populated options -->
+            </div>
+          </div>
+          
+          <div class="quiz-nav">
+            <button class="btn btn-outline" id="btn-prev" disabled>
+              <span class="btn-icon">⬅️</span> Anterior
+            </button>
+            <button class="btn btn-primary" id="btn-next" disabled>
+              Siguiente <span class="btn-icon">➡️</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3: LOADING / PROCCESSING SCREEN -->
+        <div id="step-loading" class="step-container">
+          <div class="loader-wrapper">
+            <div class="loader-spinner" style="border-top-color: #3fc6b4;"></div>
+            <h3 class="loader-title">Procesando Examen Técnico</h3>
+            <p class="loader-msg" id="loader-msg">Analizando ciclos termodinámicos y diagramando la matriz de competencias...</p>
+          </div>
+        </div>
+
+        <!-- STEP 4: RESULTS DASHBOARD -->
+        <div id="step-results" class="step-container">
+          
+          <!-- PDF / Print Header (Hidden on Screen) -->
+          <div class="print-only-header">
+            <div class="print-brand-row">
+              <div class="print-brand-logo">N3i Engineering & Maintenance</div>
+              <div class="print-brand-sub">Evaluación y Clasificación Técnica de Contratistas</div>
+            </div>
+            <hr class="print-hr" />
+          </div>
+
+          <div class="results-header">
+            <span class="section-subtitle">RESULTADOS DE LA EVALUACIÓN</span>
+            <h2 class="step-title" style="font-size: 2.2rem; margin-bottom: 5px;">Informe de Aptitud Técnica</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 25px;" id="res-meta">Postulante: Juan Pérez | Fecha: --/--/----</p>
+          </div>
+
+          <div class="dashboard-grid">
+            
+            <!-- Puntaje y Clasificación -->
+            <div class="dash-card score-card">
+              <div class="score-circle-wrapper">
+                <svg viewBox="0 0 100 100" class="score-circle-svg">
+                  <circle cx="50" cy="50" r="45" class="bg-ring"></circle>
+                  <circle cx="50" cy="50" r="45" class="fg-ring" id="score-ring" stroke-dasharray="283" stroke-dashoffset="283" style="stroke: #3fc6b4;"></circle>
+                </svg>
+                <div class="score-text">
+                  <span id="res-score-value">0</span>
+                  <span class="score-max">/100</span>
+                </div>
+              </div>
+              <div style="text-align: center; margin-top: 15px;">
+                <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;">Categoría N3i Sugerida</h4>
+                <div class="category-badge" id="res-category">Calculando...</div>
+              </div>
+            </div>
+
+            <!-- Veredicto Final e Interpretación Amigable -->
+            <div class="dash-card verdict-card">
+              <h3>Veredicto de Ingreso</h3>
+              <div class="verdict-box" id="res-verdict-box">
+                <span class="verdict-icon" id="res-verdict-icon">❓</span>
+                <span class="verdict-text" id="res-verdict-text">Evaluando aptitud...</span>
+              </div>
+              <div class="verdict-explanation" id="res-friendly-explanation">
+                <!-- Friendly, interpretive feedback will go here -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Matriz de Competencias -->
+          <div class="dash-card" style="margin-top: 25px;">
+            <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px; font-size: 1.25rem;">Matriz de Competencias Técnicas</h3>
+            <div class="competency-grid">
+              
+              <div class="comp-item">
+                <div class="comp-meta">
+                  <span class="comp-name">Buenas Prácticas y Normas Ambientales (Vacío / Recuperación)</span>
+                  <span class="comp-value" id="comp-val-normativa">0%</span>
+                </div>
+                <div class="comp-bar"><div class="comp-bar-fill" id="comp-fill-normativa" style="width: 0%;"></div></div>
+              </div>
+
+              <div class="comp-item">
+                <div class="comp-meta">
+                  <span class="comp-name">Termodinámica y Ciclo (Presiones, Sobrecalentamiento y Carga)</span>
+                  <span class="comp-value" id="comp-val-tecnica">0%</span>
+                </div>
+                <div class="comp-bar"><div class="comp-bar-fill" id="comp-fill-tecnica" style="width: 0%;"></div></div>
+              </div>
+
+              <div class="comp-item">
+                <div class="comp-meta">
+                  <span class="comp-name">Sistemas Eléctricos y de Control (Inverter / Sensores)</span>
+                  <span class="comp-value" id="comp-val-planos">0%</span>
+                </div>
+                <div class="comp-bar"><div class="comp-bar-fill" id="comp-fill-planos" style="width: 0%;"></div></div>
+              </div>
+
+              <div class="comp-item">
+                <div class="comp-meta">
+                  <span class="comp-name">Seguridad Industrial y Soldadura (Gases Inflamables / Altura)</span>
+                  <span class="comp-value" id="comp-val-seguridad">0%</span>
+                </div>
+                <div class="comp-bar"><div class="comp-bar-fill" id="comp-fill-seguridad" style="width: 0%;"></div></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- REGLA DE ORO / FEEDBACK EDUCATIVO DETALLADO -->
+          <div class="feedback-section" id="feedback-section" style="display: none; margin-top: 35px;">
+            <div class="feedback-section-header">
+              <span class="section-subtitle" style="color: #ffb703;">SOPORTE Y CAPACITACIÓN</span>
+              <h3 style="font-size: 1.5rem; color: var(--text-primary); margin-top: 5px;">Revisión de Seguridad y Normas - Regla de Oro</h3>
+              <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 5px;">
+                A continuación, detallamos las respuestas incorrectas o saltadas, las normas vulneradas y el estándar de calidad N3i exigido en obra para tu aprendizaje, estudio y mejora profesional.
+              </p>
+            </div>
+            
+            <div id="feedback-list" class="feedback-list">
+              <!-- Dynamically populated cards of incorrect answers -->
+            </div>
+          </div>
+
+          <!-- Acciones finales -->
+          <div class="results-actions" style="margin-top: 40px; display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="btn-print-pdf" style="padding: 14px 28px;">
+              Descargar Informe en PDF
+              <span class="btn-icon">📄</span>
+            </button>
+            <button class="btn btn-primary" id="btn-postularse-post" style="padding: 14px 28px; background-color: #3b82f6; display: none;">
+              Enviar Postulación a N3i
+              <span class="btn-icon">✉️</span>
+            </button>
+            <span id="postulacion-enviada-msg" style="color: var(--accent); font-weight: 600; display: none; align-items: center; gap: 8px;">
+              ✓ Su postulación ha sido enviada a N3i.
+            </span>
+            <a href="/empleo" class="btn btn-outline" style="padding: 14px 28px;">
+              Volver a Empleo
+              <span class="btn-icon">💼</span>
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  /* Base evaluacion custom colors */
+  :root {
+    --eval-card-bg: rgba(17, 20, 22, 0.75);
+    --eval-border: rgba(255, 255, 255, 0.05);
+    --eval-border-hover: rgba(63, 198, 180, 0.3);
+  }
+
+  .eval-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(63, 198, 180, 0.04);
+    border: 1px solid rgba(63, 198, 180, 0.15);
+    padding: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .eval-checkbox-label:hover {
+    background: rgba(63, 198, 180, 0.08);
+    border-color: rgba(63, 198, 180, 0.3);
+  }
+  .eval-checkbox-label input[type="checkbox"] {
+    margin-top: 4px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .eval-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--eval-card-bg);
+    border: 1px solid var(--eval-border);
+    border-radius: var(--radius-md, 16px);
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(63, 198, 180, 0.02);
+    backdrop-filter: blur(12px);
+    transition: var(--transition-smooth, all 0.4s cubic-bezier(0.16, 1, 0.3, 1));
+  }
+
+  .step-container {
+    display: none;
+  }
+
+  .step-container.active {
+    display: block;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .step-header {
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+  }
+
+  .step-title {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .step-desc {
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+  }
+
+  /* Form inputs */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  @media (min-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .form-grid .form-group:first-child {
+      grid-column: span 2;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .eval-input {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 8px);
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+  }
+
+  .eval-input:focus {
+    border-color: var(--accent);
+    background: rgba(63, 198, 180, 0.03);
+    box-shadow: 0 0 10px rgba(63, 198, 180, 0.1);
+  }
+
+  .btn-full-width {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Alert box */
+  .info-alert {
+    display: flex;
+    gap: 15px;
+    border-radius: var(--radius-sm, 8px);
+    padding: 20px;
+    margin-bottom: 30px;
+    align-items: flex-start;
+  }
+
+  .alert-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .alert-text {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Progress bar */
+  .quiz-progress-bar-container {
+    margin-bottom: 30px;
+  }
+
+  .quiz-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .quiz-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill {
+    height: 100%;
+    background: #3fc6b4;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(63, 198, 180, 0.3);
+  }
+
+  /* Question Box */
+  .question-box {
+    margin-bottom: 35px;
+  }
+
+  .question-category-tag {
+    display: inline-block;
+    background: rgba(63, 198, 180, 0.1);
+    color: #3fc6b4;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 15px;
+  }
+
+  .question-text {
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    margin-bottom: 25px;
+    font-family: var(--font-title);
+  }
+
+  /* Options list */
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 8px);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    user-select: none;
+  }
+
+  .option-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .option-card.selected {
+    background: rgba(63, 198, 180, 0.06);
+    border-color: #3fc6b4;
+    box-shadow: 0 0 15px rgba(63, 198, 180, 0.05);
+  }
+
+  .option-card.option-dont-know {
+    border-style: dashed;
+    border-color: var(--text-muted);
+    opacity: 0.85;
+    margin-top: 15px;
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .option-card.option-dont-know:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+  .option-card.option-dont-know.selected {
+    background: rgba(239, 68, 68, 0.04);
+    border-color: #ef4444;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.08);
+  }
+  .option-card.option-dont-know.selected .option-letter {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #ffffff;
+  }
+
+  .option-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition-smooth);
+    flex-shrink: 0;
+  }
+
+  .option-card.selected .option-letter {
+    background: #3fc6b4;
+    border-color: #3fc6b4;
+    color: #000000;
+  }
+
+  .option-text-span {
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    transition: var(--transition-smooth);
+  }
+
+  .option-card.selected .option-text-span {
+    color: var(--text-primary);
+  }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 25px;
+  }
+
+  /* Loader spinner */
+  .loader-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  .loader-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(63, 198, 180, 0.1);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 25px;
+    box-shadow: 0 0 15px rgba(63, 198, 180, 0.1);
+  }
+
+  .loader-title {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .loader-msg {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Results dashboard layout */
+  .results-header {
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+  }
+
+  @media (min-width: 768px) {
+    .dashboard-grid {
+      grid-template-columns: 320px 1fr;
+    }
+  }
+
+  .dash-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 12px);
+    padding: 25px;
+  }
+
+  /* Circular score meter */
+  .score-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-circle-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+  }
+
+  .score-circle-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .score-circle-svg circle {
+    fill: none;
+    stroke-width: 8;
+  }
+
+  .score-circle-svg .bg-ring {
+    stroke: rgba(255, 255, 255, 0.05);
+  }
+
+  .score-circle-svg .fg-ring {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-in-out;
+  }
+
+  .score-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-title);
+  }
+
+  #res-score-value {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+
+  .score-max {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .category-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 4px;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-family: var(--font-title);
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+  }
+
+  /* Veredicto card styling */
+  .verdict-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .verdict-card h3 {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 15px;
+  }
+
+  .verdict-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+
+  .verdict-box.apto {
+    background: rgba(140, 198, 63, 0.1);
+    border: 1px solid rgba(140, 198, 63, 0.3);
+    color: #bbf7d0;
+  }
+
+  .verdict-box.apto-supervision {
+    background: rgba(255, 183, 3, 0.08);
+    border: 1px solid rgba(255, 183, 3, 0.3);
+    color: #ffedd5;
+  }
+
+  .verdict-box.no-apto {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fee2e2;
+  }
+
+  .verdict-icon {
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+
+  .verdict-explanation {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.01);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  /* Competency Grid */
+  .competency-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .competency-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .comp-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .comp-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  .comp-name {
+    color: var(--text-secondary);
+  }
+
+  .comp-value {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .comp-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .comp-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease-in-out;
+  }
+
+  /* Dynamic competency fill colors */
+  #comp-fill-normativa { background: #3fc6b4; }
+  #comp-fill-tecnica { background: var(--accent); }
+  #comp-fill-planos { background: #3b82f6; }
+  #comp-fill-seguridad { background: #ffb703; }
+
+  /* Feedback Section */
+  .feedback-section-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+  }
+
+  .feedback-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .feedback-card {
+    background: rgba(239, 68, 68, 0.015);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    border-left: 4px solid #ef4444;
+    border-radius: 0 12px 12px 0;
+    padding: 25px;
+  }
+
+  .feedback-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    padding-bottom: 10px;
+  }
+
+  .feedback-question-title {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-family: var(--font-title);
+    line-height: 1.4;
+  }
+
+  .feedback-answers {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 6px;
+  }
+
+  @media (min-width: 576px) {
+    .feedback-answers {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .ans-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.88rem;
+  }
+
+  .ans-box strong {
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+  }
+
+  .ans-box.wrong { color: #fca5a5; }
+  .ans-box.correct { color: #bbf7d0; }
+
+  .feedback-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .detail-block {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.03);
+    border-radius: 6px;
+    padding: 16px;
+  }
+
+  .detail-block-title {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .detail-block-desc {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Print Header styling (hidden by default on screen) */
+  .print-only-header {
+    display: none;
+  }
+
+  /* PRINT CSS */
+  @media print {
+    header, footer, nav, .quiz-nav, .results-actions, .page-hero {
+      display: none !important;
+    }
+
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-size: 12pt !important;
+    }
+
+    .eval-card {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      backdrop-filter: none !important;
+      max-width: 100% !important;
+    }
+
+    .print-only-header {
+      display: block !important;
+      margin-bottom: 25px;
+    }
+
+    .print-brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .print-brand-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16pt;
+      font-weight: 800;
+      color: #000000 !important;
+    }
+
+    .print-brand-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      color: #666666 !important;
+      text-transform: uppercase;
+    }
+
+    .print-hr {
+      border: none;
+      border-top: 2px solid #3fc6b4;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+
+    .results-header h2 {
+      color: #000000 !important;
+      font-size: 20pt !important;
+    }
+
+    .results-header p {
+      color: #444444 !important;
+      font-size: 11pt !important;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: 200px 1fr !important;
+      gap: 20px !important;
+      margin-bottom: 20px !important;
+      page-break-inside: avoid;
+    }
+
+    .dash-card {
+      background: #f8f9fa !important;
+      border: 1px solid #dddddd !important;
+      color: #000000 !important;
+      padding: 15px !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+
+    .score-circle-svg .bg-ring {
+      stroke: #eeeeee !important;
+    }
+
+    .score-circle-svg .fg-ring {
+      stroke: #3fc6b4 !important;
+    }
+
+    #res-score-value {
+      color: #000000 !important;
+    }
+
+    .category-badge {
+      background-color: #e2e8f0 !important;
+      color: #000000 !important;
+      border: 1px solid #cbd5e1 !important;
+      font-size: 10pt !important;
+    }
+
+    .verdict-box {
+      padding: 10px 15px !important;
+      margin-bottom: 10px !important;
+      font-size: 11pt !important;
+      border-radius: 4px !important;
+    }
+
+    .verdict-box.apto {
+      background: #e6f4ea !important;
+      border: 1px solid #34a853 !important;
+      color: #137333 !important;
+    }
+
+    .verdict-box.apto-supervision {
+      background: #fef7e0 !important;
+      border: 1px solid #fbbc04 !important;
+      color: #b06000 !important;
+    }
+
+    .verdict-box.no-apto {
+      background: #fce8e6 !important;
+      border: 1px solid #ea4335 !important;
+      color: #c5221f !important;
+    }
+
+    .verdict-explanation {
+      font-size: 10pt !important;
+      color: #333333 !important;
+      border: 1px solid #eeeeee !important;
+      background: #ffffff !important;
+      padding: 10px !important;
+    }
+
+    .comp-item {
+      page-break-inside: avoid;
+    }
+
+    .comp-meta {
+      color: #000000 !important;
+    }
+
+    .comp-name {
+      color: #444444 !important;
+    }
+
+    .comp-value {
+      color: #000000 !important;
+    }
+
+    .comp-bar {
+      background: #eeeeee !important;
+      border: 1px solid #cccccc !important;
+    }
+
+    #comp-fill-normativa { background: #333333 !important; }
+    #comp-fill-tecnica { background: #555555 !important; }
+    #comp-fill-planos { background: #777777 !important; }
+    #comp-fill-seguridad { background: #999999 !important; }
+
+    .feedback-section {
+      page-break-before: always;
+      display: block !important;
+    }
+
+    .feedback-section-header h3 {
+      color: #000000 !important;
+    }
+
+    .feedback-section-header p {
+      color: #555555 !important;
+    }
+
+    .feedback-card {
+      background: #ffffff !important;
+      border: 1px solid #cccccc !important;
+      border-left: 4px solid #ea4335 !important;
+      color: #000000 !important;
+      page-break-inside: avoid;
+      margin-bottom: 15px !important;
+      padding: 15px !important;
+      border-radius: 4px !important;
+    }
+
+    .feedback-question-title {
+      color: #000000 !important;
+    }
+
+    .feedback-answers {
+      background: #f8f9fa !important;
+      border: 1px solid #e9ecef !important;
+      padding: 10px !important;
+      margin-bottom: 12px !important;
+    }
+
+    .ans-box.wrong { color: #c5221f !important; }
+    .ans-box.correct { color: #137333 !important; }
+
+    .detail-block {
+      background: #ffffff !important;
+      border: 1px solid #eeeeee !important;
+      padding: 8px 12px !important;
+    }
+
+    .detail-block-title {
+      color: #333333 !important;
+      border-bottom: 1px solid #eeeeee;
+      padding-bottom: 2px;
+      margin-bottom: 4px;
+    }
+
+    .detail-block-desc {
+      color: #111111 !important;
+      font-size: 9.5pt !important;
+    }
+  }
+</style>
+
+<!-- CLIENT SIDE LOGIC -->
+<script is:inline>
+  // BANK OF 20 QUESTIONS
+  const quizQuestions = [
+    // Competencia Normativa y Buenas Prácticas Ambientales (normativa)
+    {
+      id: 1,
+      category: "normativa",
+      categoryName: "Buenas Prácticas y Normas",
+      question: "¿Por qué es fundamental realizar el vacío con un vacuómetro digital y a qué nivel de vacío (en micrones) se debe llegar antes de liberar el refrigerante en un sistema con aceite sintético POE?",
+      options: [
+        { text: "Solo se necesita usar el manómetro común y succionar durante 15 minutos; no importa la lectura en micrones.", val: "A" },
+        { text: "Se debe alcanzar un vacío inferior a 500 micrones (y mantenerlo estable) para asegurar la eliminación total de humedad incondensable, ya que el aceite POE es altamente higroscópico.", val: "B" },
+        { text: "Llegar a 2000 micrones es suficiente para cualquier tipo de refrigerante y aceite en climatización civil.", val: "C" },
+        { text: "El vacío solo sirve para detectar fugas de gran tamaño, no para evaporar agua o humedad interna.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El vacío elimina el aire y evapora la humedad interna del circuito. En sistemas con aceite POE (Poliólester), común en equipos con R410A, la humedad reacciona químicamente creando ácidos que atacan el bobinado del compresor. Se exige alcanzar menos de 500 micrones (estabilizado) medido con vacuómetro digital. Estándar de calidad N3i: En N3i, no liberamos refrigerante sin verificar esta estanqueidad estable de menos de 500 micrones para proteger la vida útil de los compresores.",
+      studyLink: "https://www.danfoss.com/es-es/service-and-support/learning/",
+      studyLinkText: "Guía de Vacío y Humedad - Danfoss Learning"
+    },
+    {
+      id: 2,
+      category: "normativa",
+      categoryName: "Buenas Prácticas y Normas",
+      question: "¿Cuál es el procedimiento correcto y el gas adecuado para realizar la prueba de estanqueidad (presurización) en un sistema de R410A que opera a presiones elevadas?",
+      options: [
+        { text: "Presurizar con el propio refrigerante R410A hasta 150 PSI y buscar burbujas de jabón.", val: "A" },
+        { text: "Presurizar con aire comprimido común hasta 300 PSI para ahorrar nitrógeno.", val: "B" },
+        { text: "Presurizar con Nitrógeno Seco (OFN) en etapas hasta alcanzar entre 550 y 600 PSI (según especificación del equipo), usando regulador de alta presión, y verificar con detector de fugas o espuma.", val: "C" },
+        { text: "Presurizar con oxígeno industrial hasta 100 PSI para asegurar una combustión limpia en las tuberías.", val: "D" }
+      ],
+      answer: "C",
+      explanation: "Presurizar con oxígeno es extremadamente peligroso y puede causar una explosión al contacto con los aceites. El aire comprimido introduce humedad inaceptable. El nitrógeno seco es inerte, libre de humedad y seguro. Para R410A, debido a sus altas presiones de trabajo, la prueba se realiza en etapas hasta alcanzar unas 550-600 PSI en el lado de alta. Estándar de calidad N3i: En N3i realizamos la presurización con nitrógeno seco obligatoriamente usando reguladores calibrados para evitar accidentes por sobrepresión.",
+      studyLink: "https://www.cacaav.org.ar/",
+      studyLinkText: "Manual de Instalación Comercial - CACAAV"
+    },
+    {
+      id: 3,
+      category: "normativa",
+      categoryName: "Buenas Prácticas y Normas",
+      question: "En cumplimiento del Protocolo de Montreal y las reglamentaciones nacionales de la OPDS/SAyDS, ¿cuál es el estado de uso del refrigerante R22 y qué buenas prácticas se exigen ante su sustitución o mantenimiento?",
+      options: [
+        { text: "El R22 puede liberarse a la atmósfera libremente porque no afecta la capa de ozono.", val: "A" },
+        { text: "El R22 es un HCFC en proceso de eliminación total; está prohibida su importación para equipos nuevos y en mantenimiento se debe recuperar obligatoriamente sin liberarlo a la atmósfera, empleando cilindros de recuperación adecuados.", val: "B" },
+        { text: "Se permite rellenar equipos con R22 mezclándolo directamente con R410A en proporciones iguales.", val: "C" },
+        { text: "El R22 ha sido sustituido por R12 en todas las aplicaciones de aire acondicionado residencial.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El R22 es un hidroclorofluorocarbono (HCFC) con alto potencial de agotamiento de la capa de ozono (ODP). El Protocolo de Montreal exige su eliminación gradual. Está prohibido liberar gases fluorados a la atmósfera. Estándar de calidad N3i: En N3i, todo gas refrigerante de descarte se recupera en cilindros específicos mediante estaciones de recuperación portátiles para su posterior tratamiento o reciclaje.",
+      studyLink: "https://www.argentina.gob.ar/ambiente/desarrollo-sostenible/ozono",
+      studyLinkText: "Programa Nacional de Ozono (SAyDS Argentina)"
+    },
+    {
+      id: 4,
+      category: "normativa",
+      categoryName: "Buenas Prácticas y Normas",
+      question: "¿Cómo debe realizarse obligatoriamente la carga de un refrigerante del tipo mezcla zeotrópica como el R410A en un sistema de climatización y por qué?",
+      options: [
+        { text: "Siempre en fase gaseosa (garrafa vertical) por la válvula de servicio de succión para no dañar el compresor.", val: "A" },
+        { text: "Únicamente en fase líquida (garrafa invertida o con tubo de pescar), controlando con balanza digital y dosificando lentamente a través de un difusor en la succión para no dañar el compresor.", val: "B" },
+        { text: "En cualquier fase (líquido o gas) indistintamente, ya que los componentes de la mezcla tienen el mismo punto de ebullición.", val: "C" },
+        { text: "Calentando la garrafa con soplete para forzar la entrada de gas rápidamente.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El R410A es una mezcla casi azeotrópica (R32 y R125). Si se carga en fase gaseosa, los dos gases se evaporan a distintas tasas dentro de la garrafa (fraccionamiento), alterando la composición química de la mezcla cargada y arruinando el rendimiento del equipo. Se debe cargar en fase líquida. Estándar de calidad N3i: En N3i, dosificamos el líquido de forma muy lenta usando balanza digital de precisión para asegurar la carga nominal exacta indicada en la placa del fabricante.",
+      studyLink: "https://www.cacaav.org.ar/",
+      studyLinkText: "Buenas Prácticas en Sistemas de R410A - CACAAV"
+    },
+    {
+      id: 5,
+      category: "normativa",
+      categoryName: "Buenas Prácticas y Normas",
+      question: "Al recuperar refrigerante de un equipo para realizar una soldadura en el evaporador, ¿cuál es el procedimiento seguro respecto a los cilindros de recuperación y el equipo recuperador?",
+      options: [
+        { text: "Se puede usar cualquier garrafa de refrigerante descartable vacía para almacenar el gas recuperado.", val: "A" },
+        { text: "Se debe utilizar un cilindro de recuperación homologado (con doble válvula y certificado de presión de prueba), realizarle vacío previo antes de recibir el gas, y no llenarlo a más del 80% de su capacidad en peso para evitar sobrepresión hidráulica por temperatura.", val: "B" },
+        { text: "El cilindro debe llenarse al 100% de su capacidad física para optimizar el espacio y ahorrar cilindros.", val: "C" },
+        { text: "Se puede purgar el aire del cilindro inyectando refrigerante directamente y dejándolo escapar al aire libre.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Las garrafas descartables no están diseñadas para soportar presiones repetidas ni tienen válvulas de seguridad adecuadas; usarlas para recuperar refrigerante está terminantemente prohibido por seguridad vial e industrial. Los cilindros de recuperación homologados pintados de gris con cuello amarillo son obligatorios y solo se llenan al 80% máximo por expansión térmica. Estándar de calidad N3i: En N3i el pesaje en recuperación es verificado rigurosamente por el supervisor de obra.",
+      studyLink: "https://www.argentina.gob.ar/ambiente/desarrollo-sostenible/ozono",
+      studyLinkText: "Manual de Buenas Prácticas en Refrigeración (UNEP)"
+    },
+
+    // Termodinámica y Ciclo de Refrigeración (tecnica)
+    {
+      id: 6,
+      category: "tecnica",
+      categoryName: "Termodinámica y Ciclo",
+      question: "¿Qué mide el Sobrecalentamiento (Superheat) en la línea de succión de un aire acondicionado, cómo se calcula y cuál es su rango óptimo en un sistema con capilar?",
+      options: [
+        { text: "Mide la temperatura del aire a la salida del evaporador; se calcula restando la temperatura ambiente y su valor debe ser 20°C.", val: "A" },
+        { text: "Mide la elevación de temperatura del refrigerante gaseoso después de evaporarse completamente. Se calcula restando la temperatura de saturación (obtenida con el manómetro de baja y tabla P-T) de la temperatura real del tubo de succión. El rango óptimo es entre 5°C y 8°C (o 8 K a 12 K según la carga térmica).", val: "B" },
+        { text: "Mide la presión del condensador; se calcula multiplicando la corriente del motor por el voltaje de red y debe dar menos de 5°C.", val: "C" },
+        { text: "Es la diferencia de temperatura entre el aire que entra al evaporador y el que sale, y su rango óptimo debe ser de 15°C.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El sobrecalentamiento asegura que el refrigerante entre al compresor 100% en fase gaseosa. Si es muy bajo (cercano a 0°C), hay riesgo de retorno de líquido y rotura del compresor. Si es muy alto, el compresor se recalentará. Estándar de calidad N3i: En N3i, el ajuste del sobrecalentamiento es el paso final indispensable en toda puesta en marcha comercial para certificar que el equipo funcione en su punto de máxima eficiencia termodinámica.",
+      studyLink: "https://www.danfoss.com/es-es/service-and-support/learning/",
+      studyLinkText: "Cálculo de Sobrecalentamiento - Danfoss Learning"
+    },
+    {
+      id: 7,
+      category: "tecnica",
+      categoryName: "Termodinámica y Ciclo",
+      question: "¿Qué indica un Subenfriamiento (Subcooling) anormalmente bajo en la salida del condensador de un sistema con Válvula de Expansión Termostática (TXV)?",
+      options: [
+        { text: "Indica que el evaporador está congelado debido a falta de flujo de aire.", val: "A" },
+        { text: "Indica falta de refrigerante en el sistema (carga incompleta), ya que no se acumula suficiente líquido en el fondo del condensador para subenfriarse por debajo de la temperatura de condensación.", val: "B" },
+        { text: "Señala que el compresor está succionando refrigerante líquido directo del acumulador.", val: "C" },
+        { text: "Significa que la tensión eléctrica de alimentación de la unidad exterior es deficiente.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El subenfriamiento es la diferencia entre la temperatura de condensación saturada (obtenida de la presión de alta) y la temperatura real leída en la línea de líquido. Si hay poco refrigerante, no habrá suficiente líquido acumulado en el condensador, bajando el subenfriamiento. Estándar de calidad N3i: En N3i verificamos tanto el sobrecalentamiento como el subenfriamiento antes de dar por aprobado un sistema de caudal variable para evitar fallas tempranas por falta de lubricación.",
+      studyLink: "https://www.danfoss.com/es-es/service-and-support/learning/",
+      studyLinkText: "Cálculo de Subenfriamiento - Danfoss"
+    },
+    {
+      id: 8,
+      category: "tecnica",
+      categoryName: "Termodinámica y Ciclo",
+      question: "Si un plano detalla una oficina comercial de 6m de largo, 4m de ancho y 3m de altura (volumen total 72 m³), con una gran superficie vidriada expuesta al sol por la tarde en Bahía Blanca y una ocupación de 4 personas con computadoras. ¿Cuál es la capacidad térmica estimada recomendable para la selección del equipo de aire acondicionado split?",
+      options: [
+        { text: "Con un equipo de 2250 Frigorías/h (9000 BTU/h) es suficiente ya que es una oficina pequeña.", val: "A" },
+        { text: "Se requieren aproximadamente entre 4500 y 5000 Frigorías/h (18000 BTU/h o 1.5 TR) calculando el volumen térmico base del local, sumado a la ganancia por radiación solar de la superficie vidriada, luminarias, computadoras y personas.", val: "B" },
+        { text: "Se requiere un equipo industrial de 15000 Frigorías/h (60000 BTU/h) con conductos únicamente.", val: "C" },
+        { text: "Con un equipo de 3000 Frigorías/h (12000 BTU/h) es suficiente porque el aire acondicionado inverter rinde el doble.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El cálculo rápido estándar de 50 frigorías por metro cúbico arroja un base de 3600 Frigorías/h. Sin embargo, al tener superficies vidriadas (ganancia por radiación directa), equipos eléctricos encendidos (computadoras) y ocupación de personas, se debe sobredimensionar la carga en al menos un 25-30% para asegurar el confort térmico. Se aconseja instalar un equipo de 4500 a 5000 Frigorías/h. Estándar de calidad N3i: En N3i realizamos balances térmicos detallados por planilla de carga según orientación cardinal y tipo de vidrios (DVH o simple) para evitar sobredimensionar o subdimensionar los equipos, garantizando eficiencia de consumo y confort del cliente.",
+      studyLink: "https://www.cacaav.org.ar/",
+      studyLinkText: "Manual de Balance Térmico y Carga de Refrigeración - CACAAV"
+    },
+    {
+      id: 9,
+      category: "tecnica",
+      categoryName: "Termodinámica y Ciclo",
+      question: "Si un equipo de aire acondicionado presenta congelamiento en el evaporador de la unidad interior y una presión de baja de 80 PSI en un sistema de R410A, ¿cuáles son las dos causas mecánicas más probables?",
+      options: [
+        { text: "Alta tensión de red y compresor sobredimensionado.", val: "A" },
+        { text: "Restricción del flujo de aire en la unidad interior (filtros o turbina tapados con suciedad / motor de evaporadora lento) o una fuga de refrigerante que provoca una carga insuficiente.", val: "B" },
+        { text: "Condensador exterior obstruido por suciedad y exceso de refrigerante líquido en el sistema.", val: "C" },
+        { text: "Válvula inversora rota trabada en modo calefacción y sensor de pozo descalibrado.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El congelamiento del evaporador se produce cuando la temperatura de ebullición del refrigerante desciende por debajo de 0°C. Esto ocurre si no hay suficiente flujo de aire para transferir calor al refrigerante (filtros sucios, turbina obstruida) o si hay falta de gas (baja presión y baja temperatura en el evaporador). Estándar de calidad N3i: En N3i realizamos primero la limpieza química profunda de filtros, serpentina y turbina antes de diagnosticar falta de gas para no sobrecargar el sistema con refrigerante inútilmente.",
+      studyLink: "https://www.danfoss.com/es-es/service-and-support/learning/",
+      studyLinkText: "Diagnóstico de Fallas en Evaporadores - Danfoss"
+    },
+    {
+      id: 10,
+      category: "tecnica",
+      categoryName: "Termodinámica y Ciclo",
+      question: "¿Qué ventaja principal ofrece una Válvula de Expansión Termostática (TXV) frente a un tubo capilar en sistemas de climatización comercial de mediana y gran capacidad?",
+      options: [
+        { text: "La TXV consume menos energía eléctrica directa y reduce el ruido del compresor en el arranque.", val: "A" },
+        { text: "Modula activamente el flujo de refrigerante hacia el evaporador en respuesta a las variaciones de carga térmica en el ambiente, manteniendo un sobrecalentamiento constante en la succión y optimizando la eficiencia del evaporador.", val: "B" },
+        { text: "La TXV permite prescindir completamente del condensador exterior en climas fríos.", val: "C" },
+        { text: "Permite mezclar refrigerantes de distintas marcas sin que pierdan sus propiedades lubricantes.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El tubo capilar es un dispositivo de expansión restrictivo de sección fija, eficiente solo en un punto de diseño. La TXV cuenta con un bulbo sensor en la salida del evaporador que abre o cierra la válvula para regular el flujo de líquido en tiempo real según la carga térmica real del ambiente, lo que protege el compresor de inundaciones de líquido y maximiza el rendimiento energético del evaporador. Estándar de calidad N3i: Para todas nuestras instalaciones comerciales de mediana escala como equipos Rooftop o Chillers, exigimos el uso de TXV o válvulas de expansión electrónicas para garantizar máxima eficiencia estacional.",
+      studyLink: "https://www.danfoss.com/es-es/service-and-support/learning/",
+      studyLinkText: "Dispositivos de Expansión Termostática - Danfoss"
+    },
+
+    // Electricidad y Control en Climatización (planos)
+    {
+      id: 11,
+      category: "planos",
+      categoryName: "Sistemas Eléctricos y de Control",
+      question: "¿Cómo funciona el control de velocidad y de capacidad en un compresor con tecnología Inverter y qué tipo de corriente y señales utiliza el motor del compresor?",
+      options: [
+        { text: "Arranca y para el compresor de manera constante usando un relé electromecánico de alta velocidad.", val: "A" },
+        { text: "La placa electrónica de control rectifica la corriente alterna de la red a corriente continua y luego un puente inversor (IPM) genera una corriente alterna trifásica de frecuencia y voltaje variables para alimentar un motor de imanes permanentes (BLDC), regulando así su velocidad de giro de forma progresiva.", val: "B" },
+        { text: "Alimenta el compresor con 12V de corriente continua pura directo desde la unidad interior.", val: "C" },
+        { text: "Utiliza un capacitor de marcha variable que aumenta la corriente reactiva según la temperatura ambiente.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Los compresores inverter no arrancan y paran constantemente como los on-off; varían su frecuencia (Hz) para regular las RPM del motor trifásico BLDC. Esto elimina los picos de corriente en el arranque y estabiliza la temperatura ambiente con ahorros de hasta el 40% de energía. Estándar de calidad N3i: En N3i, exigimos a nuestros técnicos el conocimiento en el testeo de placas inverter mediante la medición de la salida trifásica U, V, W balanceada de la placa hacia el compresor.",
+      studyLink: "https://www.bgh.com.ar/",
+      studyLinkText: "Guía de Tecnología Inverter - BGH Climatización"
+    },
+    {
+      id: 12,
+      category: "planos",
+      categoryName: "Sistemas Eléctricos y de Control",
+      question: "En un equipo de climatización comercial monofásico que requiere un alto torque de arranque, ¿qué función cumple el relé voltimétrico asociado a un capacitor de arranque?",
+      options: [
+        { text: "Mide la tensión de red y apaga el equipo si desciende de 200V para proteger el bobinado.", val: "A" },
+        { text: "Conecta el capacitor de arranque en paralelo con el de marcha durante la puesta en marcha, y desconecta el capacitor de arranque una vez que el motor alcanza aproximadamente el 75-80% de su velocidad nominal, detectando la tensión inducida (fuerza contraelectromotriz) en el bobinado de arranque.", val: "B" },
+        { text: "Regula la velocidad del forzador exterior del condensador para estabilizar la presión de alta.", val: "C" },
+        { text: "Conecta la línea de tierra a las bobinas del compresor para neutralizar corrientes parásitas.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Los motores monofásicos de gran tamaño (compresores de 2 a 5 HP) necesitan un torque de arranque muy elevado que solo se logra con un capacitor de arranque electrolítico adicional. El relé voltimétrico es el encargado de desconectarlo rápidamente una vez que el motor gira para evitar que se queme el bobinado de arranque o explote el capacitor. Su bobina sensa la tensión generada en los bornes del motor. Estándar de calidad N3i: En tableros comerciales con compresores monofásicos pesados, instalamos sistemas de arranque suave o relés voltimétricos originales certificados para garantizar la estabilidad eléctrica de la planta.",
+      studyLink: "https://www.danfoss.com/es-es/service-and-support/learning/",
+      studyLinkText: "Sistemas de Arranque y Control de Motores - Danfoss"
+    },
+    {
+      id: 13,
+      category: "planos",
+      categoryName: "Sistemas Eléctricos y de Control",
+      question: "Al medir un sensor de temperatura de pozo (tubo) o de ambiente del tipo NTC a temperatura ambiente, ¿cómo varía su resistencia eléctrica ante el calor y qué falla típica genera en la placa de control si el sensor se descalibra o se abre?",
+      options: [
+        { text: "Su resistencia aumenta al aumentar la temperatura; causa que el equipo consuma más corriente.", val: "A" },
+        { text: "Su resistencia disminuye al aumentar la temperatura (Coeficiente de Temperatura Negativo). Si se descalibra (por ejemplo, marcando alta resistencia constante como si hiciera frío), la placa electrónica puede bloquear la unidad interior por supuesto congelamiento o reportar códigos de error de comunicación o sensores en el display.", val: "B" },
+        { text: "Mantiene su resistencia constante en todo momento; causa que la turbina interior gire al revés.", val: "C" },
+        { text: "Emite una señal de 220V CA en pulsos directos hacia la válvula inversora de cuatro vías.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Los sensores NTC son termistores cuya resistencia cae al calentarse (valores típicos comunes: 5kΩ, 10kΩ o 15kΩ a 25°C). Si se descalibran, la placa del microcontrolador recibe lecturas de tensión erróneas y bloquea el funcionamiento del equipo reportando códigos de error (ej. E1, E2, F1). Estándar de calidad N3i: En N3i, nuestros técnicos miden la resistencia del sensor con multímetro y verifican con tabla de temperatura del fabricante antes de reemplazar placas de control.",
+      studyLink: "https://www.bgh.com.ar/",
+      studyLinkText: "Manual de Sensores y Códigos de Error - BGH"
+    },
+    {
+      id: 14,
+      category: "planos",
+      categoryName: "Sistemas Eléctricos y de Control",
+      question: "¿Cómo se conecta eléctricamente un presostato de seguridad de alta presión rearmable manualmente y en qué parte del ciclo físico debe instalarse su toma de presión?",
+      options: [
+        { text: "Se conecta en paralelo con el interruptor general y su toma se ubica en el retorno de líquido del evaporador.", val: "A" },
+        { text: "Se conecta en serie con la bobina del contactor que energiza el compresor (línea de control de 24V o 220V), y su toma de presión se instala en la línea de descarga del compresor (antes del condensador).", val: "B" },
+        { text: "Se conecta en serie con el forzador de aire del evaporador y su toma se conecta a la succión.", val: "C" },
+        { text: "Se instala en el cárter del compresor para medir el nivel de aceite hidráulico.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El presostato de alta presión protege al compresor contra presiones peligrosas (ej. por falla del forzador de condensadora o circuito tapado). Al superar el límite seteado, abre su contacto eléctrico seco interrumpiendo la corriente hacia el contactor del compresor, deteniéndolo inmediatamente. Para R410A, se calibran en valores cercanos a las 550-600 PSI con rearme manual obligatorio por seguridad. Estándar de calidad N3i: Todo presostato industrial es cableado en serie con el lazo de parada de emergencia para asegurar que ninguna falla en la placa electrónica mantenga encendido el compresor de forma forzada.",
+      studyLink: "https://www.danfoss.com/es-es/service-and-support/learning/",
+      studyLinkText: "Presostatos de Control y Seguridad - Danfoss"
+    },
+    {
+      id: 15,
+      category: "planos",
+      categoryName: "Sistemas Eléctricos y de Control",
+      question: "Al operar un equipo split en modo calefacción (bomba de calor) durante el invierno con temperaturas exteriores inferiores a 4°C, ¿cómo se soluciona el congelamiento de la serpentina exterior y qué ciclo realiza el equipo de forma automática?",
+      options: [
+        { text: "El equipo detiene el compresor y activa una resistencia eléctrica en la unidad interior únicamente.", val: "A" },
+        { text: "La placa de control activa el ciclo de desescarche (defrost): detiene la turbina interior para evitar soplar aire frío, apaga el forzador exterior, e invierte la válvula de 4 vías a modo frío por unos minutos para derretir la escarcha con el gas de descarga caliente del compresor.", val: "B" },
+        { text: "El compresor invierte su sentido de giro mecánico para succionar calor de la tierra.", val: "C" },
+        { text: "El equipo requiere que el usuario rocíe agua caliente manualmente sobre la unidad exterior.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Cuando la humedad exterior se congela en la serpentina exterior (que actúa como evaporador en modo calor), obstruye el paso del aire e impide la absorción de calor. Para solucionarlo de forma automática, el sistema invierte temporalmente a modo refrigeración (frío) dirigiendo el gas caliente hacia el exterior para derretir el hielo. Para no molestar al usuario, la turbina interior se detiene. Estándar de calidad N3i: Es crucial verificar el correcto funcionamiento del sensor de serpentina exterior (sensor de pozo) y el drenaje de la unidad exterior en invierno, asegurando que el agua derretida escurra libremente y no se vuelva a congelar en la base de la unidad.",
+      studyLink: "https://www.danfoss.com/es-es/service-and-support/learning/",
+      studyLinkText: "Ciclos de Desescarche en Bombas de Calor - Danfoss Learning"
+    },
+
+    // Seguridad e Higiene (seguridad)
+    {
+      id: 16,
+      category: "seguridad",
+      categoryName: "Seguridad y Soldadura",
+      question: "Al realizar una soldadura con soplete oxigas en cañerías de cobre de refrigeración, ¿cuál es el procedimiento obligatorio para prevenir la formación de cascarilla de carbón (hollín/óxido de cobre) en el interior de la tubería?",
+      options: [
+        { text: "Sopletear con agua jabonosa el interior de los caños después de soldar.", val: "A" },
+        { text: "Hacer circular un flujo lento y continuo de Nitrógeno Seco a muy baja presión (aproximadamente 2-3 PSI) por el interior del caño durante todo el proceso de soldadura para desplazar el oxígeno.", val: "B" },
+        { text: "Soldar manteniendo el caño lleno de refrigerante R410A líquido.", val: "C" },
+        { text: "Lijar fuertemente las paredes externas del caño y aplicar abundante pasta decapante en el interior antes de calentar.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Al calentar el cobre con el soplete en presencia de aire (oxígeno), se produce una rápida oxidación que genera escamas negras de hollín (óxido cúprico) dentro del caño. Estas escamas se desprenden luego con el refrigerante, tapando capilares, filtros deshidratadores o destruyendo los conductos internos del compresor. El nitrógeno desplaza al oxígeno previniendo esta oxidación. Estándar de calidad N3i: En N3i, la soldadura con purga de nitrógeno es un estándar obligatorio en todas las instalaciones comerciales e industriales para certificar la durabilidad del compresor.",
+      studyLink: "https://www.cacaav.org.ar/",
+      studyLinkText: "Manual de Soldadura Oxigás de Cobre - CACAAV"
+    },
+    {
+      id: 17,
+      category: "seguridad",
+      categoryName: "Seguridad y Soldadura",
+      question: "Para presurizar un sistema de refrigeración a 500 PSI con nitrógeno, ¿qué dispositivo de seguridad debe utilizarse obligatoriamente conectado al cilindro de nitrógeno y por qué?",
+      options: [
+        { text: "Un acople rápido directo de manguera común sin llaves intermedias.", val: "A" },
+        { text: "Un regulador de presión de doble manómetro homologado para alta presión (apto para salida de al menos 600 PSI) que controle y reduzca la presión extrema del cilindro (que ronda las 2000-3000 PSI) a un nivel seguro.", val: "B" },
+        { text: "Un regulador común de gas envasado doméstico (tipo garrafa de cocina).", val: "C" },
+        { text: "Basta con abrir muy despacio la válvula del cilindro controlando el flujo a mano con un guante de cuero.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El nitrógeno en el tubo está a presiones de hasta 3000 PSI (200 bar), capaces de hacer estallar las mangueras del manifold, los caños de cobre o causar lesiones mortales si entra en contacto directo con el cuerpo. Jamás debe conectarse un tubo de nitrógeno de forma directa a la instalación sin un regulador adecuado para alta presión. Estándar de calidad N3i: En N3i, es obligatorio inspeccionar el regulador y verificar que la manguera esté en óptimas condiciones de servicio antes de presurizar.",
+      studyLink: "https://www.cacaav.org.ar/",
+      studyLinkText: "Manual de Seguridad en Alta Presión - CACAAV"
+    },
+    {
+      id: 18,
+      category: "seguridad",
+      categoryName: "Seguridad y Soldadura",
+      question: "El refrigerante R32 (A2L - ligeramente inflamable) y el R290/Propano (A3 - altamente inflamable) se utilizan cada vez más en climatización y refrigeración comercial ligera. ¿Qué medidas de seguridad específicas se exigen para trabajar con estos gases?",
+      options: [
+        { text: "Trabajar sin ventilación para no dispersar el gas y soldar sin recuperar el refrigerante para sellar fugas rápidamente.", val: "A" },
+        { text: "Asegurar una excelente ventilación del área, utilizar un detector de fugas específico para hidrocarburos/gases inflamables, contar con una bomba de vacío y estación de recuperación con motores antichispas (brushless certificados para A2L/A3), y purgar con nitrógeno antes de desoldar.", val: "B" },
+        { text: "Utilizar las mismas herramientas eléctricas estándar y manifolds comunes sin importar que produzcan chispas.", val: "C" },
+        { text: "Rociar agua sobre la placa electrónica de la unidad exterior durante la carga para evitar sobrecalentamientos por chispa.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Al trabajar con refrigerantes inflamables como R290 (propano) o R32, cualquier chispa en relés, motores de la bomba de vacío o estaciones de recuperación convencionales puede causar una explosión fatal. Es obligatorio usar herramientas certificadas antichispas y ventilar el espacio de trabajo. Estándar de calidad N3i: Está estrictamente prohibido desoldar cañerías que contengan restos de estos gases sin antes haber hecho vacío y purgado con nitrógeno seco.",
+      studyLink: "https://www.cacaav.org.ar/",
+      studyLinkText: "Guía de Seguridad para Refrigerantes A2L y A3 - CACAAV"
+    },
+    {
+      id: 19,
+      category: "seguridad",
+      categoryName: "Seguridad y Soldadura",
+      question: "Al instalar una unidad condensadora exterior de 60 kg suspendida en altura (ej. a 4 metros en fachada exterior) sobre ménsulas metálicas, ¿cuál es el protocolo de anclaje de ménsulas y de seguridad del instalador exigido?",
+      options: [
+        { text: "Fijar las ménsulas con tarugos plásticos comunes de 8 mm y trabajar parado sobre la baranda de un andamio sin arnés.", val: "A" },
+        { text: "Utilizar ménsulas reforzadas de espesor adecuado, fijadas con anclajes químicos o bulones pasantes con arandela y tuerca (o tarugos metálicos de expansión de buena sección), y que el instalador use arnés de cuerpo completo con cola de amarre sujeta a un punto de anclaje estructural independiente de la fachada.", val: "B" },
+        { text: "Sujetar el equipo solo con alambre galvanizado envuelto en las barandas de los balcones y trabajar con zapatillas deportivas.", val: "C" },
+        { text: "Soldar las ménsulas directamente a la chapa del aire acondicionado para ahorrar pernos de fijación.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Una condensadora de gran peso expuesta a vientos y vibraciones mecánicas continuas del compresor puede colapsar si se usan tarugos plásticos comunes de baja calidad. Se exige anclaje mecánico pasante o tacos expansivos metálicos. Asimismo, el operario debe estar amarrado a una estructura sólida e independiente para evitar caídas al vacío. Estándar de calidad N3i: Para anclajes sobre ladrillo hueco en fachadas de altura, en N3i es obligatorio el uso de anclaje químico (tamiz e inyección de resina poliéster) con espárragos roscados de 3/8 para garantizar máxima resistencia estructural.",
+      studyLink: "https://www.cacaav.org.ar/",
+      studyLinkText: "Estándar de Montaje de Condensadoras - CACAAV"
+    },
+    {
+      id: 20,
+      category: "seguridad",
+      categoryName: "Seguridad y Soldadura",
+      question: "¿Qué peligro físico inmediato presenta el contacto directo de refrigerante en estado líquido (ej. R410A o R134a) al conectarse/desconectarse mangueras bajo presión de la válvula de servicio del equipo, y qué EPPs específicos lo previenen?",
+      options: [
+        { text: "El refrigerante líquido produce descargas eléctricas en la piel; se previene con botas dieléctricas.", val: "A" },
+        { text: "Causa quemaduras criogénicas graves (congelamiento instantáneo de los tejidos debido a la rápida evaporación del refrigerante a temperaturas de hasta -50°C) y puede causar ceguera si salpica a los ojos. Se previene usando obligatoriamente anteojos de seguridad con protección lateral y guantes de protección química o nitrilo grueso resistentes al frío.", val: "B" },
+        { text: "No presenta ningún peligro para la piel humana y no requiere el uso de ningún elemento de protección personal.", val: "C" },
+        { text: "Provoca una alergia cutánea térmica leve que se cura al enjuagar con agua caliente de inmediato.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El refrigerante líquido, al liberarse a la atmósfera, se evapora de forma instantánea absorbiendo calor violentamente del entorno, lo que enfría la zona hasta temperaturas extremadamente bajas (por debajo de -40°C). El contacto con los ojos o la piel desprotegida causa daños irreparables similares a quemaduras de tercer grado. Estándar de calidad N3i: En N3i exigimos el uso de gafas de seguridad y guantes adecuados en toda maniobra de medición de presiones.",
+      studyLink: "https://www.cacaav.org.ar/",
+      studyLinkText: "Seguridad y EPPs en Manipulación de Refrigerantes - CACAAV"
+    }
+  ];
+
+  // STATE MANAGEMENT
+  let candidateData = {
+    nombre: "",
+    telefono: "",
+    email: ""
+  };
+  let currentQuestionIndex = 0;
+  let userAnswers = {}; // Map of questionId -> selectedOption (A, B, C, D)
+
+  // DOM ELEMENTS
+  const stepReg = document.getElementById("step-registration");
+  const stepQuiz = document.getElementById("step-quiz");
+  const stepLoading = document.getElementById("step-loading");
+  const stepResults = document.getElementById("step-results");
+
+  const inputNombre = document.getElementById("reg-nombre");
+  const inputTelefono = document.getElementById("reg-telefono");
+  const inputEmail = document.getElementById("reg-email");
+  const btnStart = document.getElementById("btn-start");
+
+  const quizQuestionIndex = document.getElementById("quiz-question-index");
+  const quizPercent = document.getElementById("quiz-percent");
+  const quizProgressFill = document.getElementById("quiz-progress-fill");
+  const questionCategory = document.getElementById("question-category");
+  const questionText = document.getElementById("question-text");
+  const optionsList = document.getElementById("options-list");
+  const btnPrev = document.getElementById("btn-prev");
+  const btnNext = document.getElementById("btn-next");
+
+  const loaderMsg = document.getElementById("loader-msg");
+
+  // INITIALIZATION AND REGISTRATION
+  btnStart.addEventListener("click", () => {
+    const nombre = inputNombre.value.trim();
+    const telefono = inputTelefono.value.trim();
+    const email = inputEmail.value.trim();
+
+    if (!nombre || !telefono || !email) {
+      alert("Por favor complete todos los datos requeridos.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Por favor ingrese un correo electrónico válido.");
+      return;
+    }
+
+    candidateData = { nombre, telefono, email };
+    
+    // Switch to quiz step
+    stepReg.classList.remove("active");
+    stepQuiz.classList.add("active");
+    
+    renderQuestion();
+  });
+
+  const btnDirectPostulation = document.getElementById("btn-direct-postulation");
+  if (btnDirectPostulation) {
+    btnDirectPostulation.addEventListener("click", () => {
+      const nombre = inputNombre.value.trim();
+      const telefono = inputTelefono.value.trim();
+      const email = inputEmail.value.trim();
+
+      if (!nombre || !telefono || !email) {
+        alert("Por favor complete todos los datos requeridos.");
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Por favor ingrese un correo electrónico válido.");
+        return;
+      }
+
+      candidateData = { nombre, telefono, email };
+
+      // Switch to loading step
+      stepReg.classList.remove("active");
+      stepLoading.classList.add("active");
+      loaderMsg.innerText = "Enviando postulación al equipo de N3i...";
+
+      fetch("https://formsubmit.co/ajax/n3ibhi@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          _subject: `NUEVO POSTULANTE DIRECTO (SIN TEST) - N3i`,
+          Nombre: candidateData.nombre,
+          Telefono: candidateData.telefono,
+          Email: candidateData.email,
+          Oficio: "Refrigeración (Postulación directa sin realizar test)",
+          Comentarios: "El candidato prefirió postularse directamente sin realizar la autoevaluación técnica."
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Postulación directa enviada exitosamente:", data);
+        window.location.href = "https://n3i.com.ar/gracias/";
+      })
+      .catch(error => {
+        console.error("Error al enviar postulación directa:", error);
+        alert("Ocurrió un error al enviar el mail. Por favor, intente de nuevo.");
+        stepLoading.classList.remove("active");
+        stepReg.classList.add("active");
+      });
+    });
+  }
+
+  // QUIZ ENGINE
+  function renderQuestion() {
+    const currentQuestion = quizQuestions[currentQuestionIndex];
+    
+    // Update progress metadata
+    const questionNumber = currentQuestionIndex + 1;
+    const totalQuestions = quizQuestions.length;
+    const progressPercent = Math.round(((questionNumber - 1) / totalQuestions) * 100);
+    
+    quizQuestionIndex.textContent = `Pregunta ${questionNumber} de ${totalQuestions}`;
+    quizPercent.textContent = `${progressPercent}%`;
+    quizProgressFill.style.width = `${progressPercent}%`;
+
+    // Render text
+    questionCategory.textContent = currentQuestion.categoryName;
+    questionText.textContent = currentQuestion.question;
+
+    // Render options
+    optionsList.innerHTML = "";
+    currentQuestion.options.forEach(opt => {
+      const optionCard = document.createElement("div");
+      optionCard.className = "option-card";
+      if (userAnswers[currentQuestion.id] === opt.val) {
+        optionCard.classList.add("selected");
+      }
+
+      optionCard.innerHTML = `
+        <div class="option-letter">${opt.val}</div>
+        <span class="option-text-span">${opt.text}</span>
+      `;
+
+      optionCard.addEventListener("click", () => {
+        // Remove selection from others
+        document.querySelectorAll(".option-card").forEach(el => el.classList.remove("selected"));
+        optionCard.classList.add("selected");
+        
+        // Save answer
+        userAnswers[currentQuestion.id] = opt.val;
+        
+        // Enable next button
+        btnNext.removeAttribute("disabled");
+      });
+
+      optionsList.appendChild(optionCard);
+    });
+
+    // Add "No sé la respuesta" option
+    const dontKnowCard = document.createElement("div");
+    dontKnowCard.className = "option-card option-dont-know";
+    if (userAnswers[currentQuestion.id] === "NOSAE") {
+      dontKnowCard.classList.add("selected");
+    }
+
+    dontKnowCard.innerHTML = `
+      <div class="option-letter">?</div>
+      <span class="option-text-span" style="color: var(--text-muted); font-style: italic;">No sé la respuesta a esta pregunta / Saltar</span>
+    `;
+
+    dontKnowCard.addEventListener("click", () => {
+      document.querySelectorAll(".option-card").forEach(el => el.classList.remove("selected"));
+      dontKnowCard.classList.add("selected");
+      userAnswers[currentQuestion.id] = "NOSAE";
+      btnNext.removeAttribute("disabled");
+    });
+
+    optionsList.appendChild(dontKnowCard);
+
+    // Update navigation button states
+    if (currentQuestionIndex === 0) {
+      btnPrev.setAttribute("disabled", "true");
+    } else {
+      btnPrev.removeAttribute("disabled");
+    }
+
+    // Next button state
+    if (userAnswers[currentQuestion.id]) {
+      btnNext.removeAttribute("disabled");
+    } else {
+      btnNext.setAttribute("disabled", "true");
+    }
+
+    // Change next button text on final question
+    if (currentQuestionIndex === totalQuestions - 1) {
+      btnNext.innerHTML = `Finalizar Evaluación <span class="btn-icon">🏁</span>`;
+    } else {
+      btnNext.innerHTML = `Siguiente <span class="btn-icon">➡️</span>`;
+    }
+  }
+
+  // NAVIGATION EVENT LISTENERS
+  btnPrev.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      renderQuestion();
+    }
+  });
+
+  btnNext.addEventListener("click", () => {
+    const totalQuestions = quizQuestions.length;
+    
+    if (currentQuestionIndex < totalQuestions - 1) {
+      currentQuestionIndex++;
+      renderQuestion();
+    } else {
+      // Finished!
+      processResults();
+    }
+  });
+
+  // PROCESSING AND CALCULATING RESULTS
+  function processResults() {
+    stepQuiz.classList.remove("active");
+    stepLoading.classList.add("active");
+
+    const loadingMessages = [
+      "Analizando respuestas de buenas prácticas ambientales...",
+      "Calculando sobrecalentamiento y balances térmicos...",
+      "Evaluando conocimientos en control eléctrico e inverter...",
+      "Calificando la matriz de seguridad industrial y soldadura...",
+      "Sincronizando reporte de competencias técnicas...",
+      "Registrando veredicto de ingreso..."
+    ];
+
+    let msgIndex = 0;
+    const interval = setInterval(() => {
+      if (msgIndex < loadingMessages.length) {
+        loaderMsg.textContent = loadingMessages[msgIndex];
+        msgIndex++;
+      }
+    }, 600);
+
+    // Compute metrics
+    let correctCount = 0;
+    let categoryScores = {
+      normativa: { correct: 0, total: 5 },
+      tecnica: { correct: 0, total: 5 },
+      planos: { correct: 0, total: 5 },
+      seguridad: { correct: 0, total: 5 }
+    };
+
+    let incorrectList = [];
+
+    quizQuestions.forEach(q => {
+      const selected = userAnswers[q.id];
+      const isCorrect = (selected === q.answer);
+      
+      if (isCorrect) {
+        correctCount++;
+        categoryScores[q.category].correct++;
+      } else {
+        // Log details of incorrect answers for Regla de Oro
+        const selectedOptionText = q.options.find(o => o.val === selected)?.text || "No respondida (Saltada)";
+        const correctOptionText = q.options.find(o => o.val === q.answer).text;
+
+        incorrectList.push({
+          question: q.question,
+          categoryName: q.categoryName,
+          selectedVal: selected || "N/A",
+          selectedText: selectedOptionText,
+          correctVal: q.answer,
+          correctText: correctOptionText,
+          explanation: q.explanation,
+          studyLink: q.studyLink,
+          studyLinkText: q.studyLinkText
+        });
+      }
+    });
+
+    const score = Math.round((correctCount / quizQuestions.length) * 100);
+
+    // Categories boundaries
+    let category = "Ayudante";
+    if (score > 40 && score <= 70) {
+      category = "Oficial";
+    } else if (score > 70 && score <= 90) {
+      category = "Oficial Especializado";
+    } else if (score > 90) {
+      category = "Responsable Técnico / Oficial Especializado Líder";
+    }
+
+    // Verdict
+    let verdict = "no-apto";
+    let verdictText = "NO APTO PARA OBRA";
+    let verdictIcon = "❌";
+    let friendlyExplanation = "";
+
+    if (score >= 50 && score <= 70) {
+      verdict = "apto-supervision";
+      verdictText = "APTO CON SUPERVISIÓN";
+      verdictIcon = "⚠️";
+      friendlyExplanation = `
+        <strong>¡Hola ${candidateData.nombre}!</strong> Completaste la autoevaluación y has demostrado tener una buena base de conocimientos prácticos en climatización, clasificando como <strong>Oficial</strong> en obra. 
+        <br><br>
+        Tenés claros los principios de refrigeración y el circuito de cañerías, pero observamos algunos puntos a reforzar en cálculo preciso de sobrecalentamiento, presiones de refrigerantes inflamables y soldaduras industriales con nitrógeno. En N3i cuidamos mucho el estándar de nuestras instalaciones, por lo cual tu ingreso sugerido sería <strong>bajo la supervisión inicial</strong> de un Oficial Especializado. ¡Te animamos a leer con atención el feedback didáctico y los enlaces de estudio que preparamos para vos al final de esta página para seguir capacitándote!
+      `;
+    } else if (score > 70) {
+      verdict = "apto";
+      verdictText = "APTO PARA OBRA";
+      verdictIcon = "✅";
+      friendlyExplanation = `
+        <strong>¡Excelente desempeño, ${candidateData.nombre}!</strong> Has superado con creces las expectativas de nuestra evaluación técnica de climatización, clasificando como <strong>${category}</strong>.
+        <br><br>
+        Demostrás un dominio sólido tanto del ciclo termodinámico (sobrecalentamiento/subenfriamiento) y buenas prácticas ambientales (vacío estricto en micrones, no liberación de refrigerantes), como del testeo de compresores Inverter y las medidas de seguridad de gases inflamables (R32, R290). Tu perfil tiene la autonomía y la solvencia técnica necesarias para integrarse directamente a los proyectos más complejos de N3i. ¡Felicitaciones!
+      `;
+    } else {
+      verdict = "no-apto";
+      verdictText = "NO APTO (REQUIERE INDUCCIÓN)";
+      verdictIcon = "❌";
+      friendlyExplanation = `
+        <strong>Gracias por tu tiempo, ${candidateData.nombre}.</strong> Tras procesar la autoevaluación técnica, observamos que tu puntaje no alcanza los mínimos requeridos para desempeñarte de forma autónoma en obra como oficial técnico de refrigeración de N3i, clasificando en la categoría de <strong>Ayudante</strong>.
+        <br><br>
+        En nuestra ingeniería el cumplimiento estricto del vacío, la presurización correcta con nitrógeno y la seguridad eléctrica son indispensables para evitar accidentes o pérdidas de garantía de los equipos. Te recomendamos revisar minuciosamente las justificaciones técnicas y consultar los <strong>recursos de estudio recomendados</strong> en la sección <strong>"Regla de Oro"</strong> al final de esta página. Te servirán como una excelente guía de estudio para capacitarte y volver a postularte con nosotros.
+      `;
+    }
+
+    // Calculate competencies percentages
+    const compNormativa = Math.round((categoryScores.normativa.correct / categoryScores.normativa.total) * 100);
+    const compTecnica = Math.round((categoryScores.tecnica.correct / categoryScores.tecnica.total) * 100);
+    const compPlanos = Math.round((categoryScores.planos.correct / categoryScores.planos.total) * 100);
+    const compSeguridad = Math.round((categoryScores.seguridad.correct / categoryScores.seguridad.total) * 100);
+
+    // Build plain text summary of incorrect answers for the email
+    let emailDetail = "";
+    if (incorrectList.length === 0) {
+      emailDetail = "¡El candidato respondió todas las preguntas de manera correcta!";
+    } else {
+      incorrectList.forEach((item, index) => {
+        emailDetail += `${index + 1}) PREGUNTA: ${item.question}\n`;
+        emailDetail += `   - Respuesta dada: (${item.selectedVal}) ${item.selectedText}\n`;
+        emailDetail += `   - Respuesta correcta: (${item.correctVal}) ${item.correctText}\n`;
+        emailDetail += `   - Norma / Justificación: ${item.explanation}\n`;
+        emailDetail += `   - Recurso de estudio sugerido: ${item.studyLinkText} (${item.studyLink})\n\n`;
+      });
+    }
+
+    let postuladoEnviado = false;
+    const postularseAlInicio = document.getElementById("reg-postularse").checked;
+
+    function sendEmail() {
+      return fetch("https://formsubmit.co/ajax/n3ibhi@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          _subject: `EXAMEN REFRIGERACIÓN: ${candidateData.nombre} - Puntaje: ${score}/100`,
+          Nombre: candidateData.nombre,
+          Telefono: candidateData.telefono,
+          Email: candidateData.email,
+          Puntaje: `${score}/100`,
+          Categoria_Sugerida: category,
+          Veredicto_Final: verdictText,
+          "Comp. Normas Ambientales": `${compNormativa}%`,
+          "Comp. Termodinamica y Ciclo": `${compTecnica}%`,
+          "Comp. Sistemas Electricos/Control": `${compPlanos}%`,
+          "Comp. Seguridad Industrial": `${compSeguridad}%`,
+          "Preguntas Correctas": correctCount,
+          "Preguntas Incorrectas": incorrectList.length,
+          "DETALLE EXAMEN (Regla de Oro)": emailDetail
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Resultados enviados por mail exitosamente:", data);
+        postuladoEnviado = true;
+        document.getElementById("postulacion-enviada-msg").style.display = "inline-flex";
+        document.getElementById("btn-postularse-post").style.display = "none";
+      })
+      .catch(error => {
+        console.error("Error al enviar reporte por email:", error);
+        alert("Ocurrió un error al enviar el mail. Por favor, intente de nuevo.");
+      });
+    }
+
+    if (postularseAlInicio) {
+      sendEmail().finally(() => {
+        finalizeUI();
+      });
+    } else {
+      finalizeUI();
+    }
+
+    function finalizeUI() {
+      // Transition out of loading to results
+      clearInterval(interval);
+      stepLoading.classList.remove("active");
+      stepResults.classList.add("active");
+      
+      // Populate results UI
+      document.getElementById("res-meta").innerHTML = `<strong>Postulante:</strong> ${candidateData.nombre} | <strong>Celular:</strong> ${candidateData.telefono} | <strong>Email:</strong> ${candidateData.email}`;
+      document.getElementById("res-score-value").textContent = score;
+      document.getElementById("res-category").textContent = category;
+      
+      // Update verdict box classes
+      const vBox = document.getElementById("res-verdict-box");
+      vBox.className = `verdict-box ${verdict}`;
+      document.getElementById("res-verdict-icon").textContent = verdictIcon;
+      document.getElementById("res-verdict-text").textContent = verdictText;
+      
+      // Set friendly explanation
+      document.getElementById("res-friendly-explanation").innerHTML = friendlyExplanation;
+
+      // Update ring SVG
+      const scoreRing = document.getElementById("score-ring");
+      const radius = 45;
+      const circumference = 2 * Math.PI * radius; // ~282.7
+      const offset = circumference - (score / 100) * circumference;
+      scoreRing.style.strokeDashoffset = offset;
+
+      // Update progress bars values and widths
+      document.getElementById("comp-val-normativa").textContent = `${compNormativa}%`;
+      document.getElementById("comp-fill-normativa").style.width = `${compNormativa}%`;
+
+      document.getElementById("comp-val-tecnica").textContent = `${compTecnica}%`;
+      document.getElementById("comp-fill-tecnica").style.width = `${compTecnica}%`;
+
+      document.getElementById("comp-val-planos").textContent = `${compPlanos}%`;
+      document.getElementById("comp-fill-planos").style.width = `${compPlanos}%`;
+
+      document.getElementById("comp-val-seguridad").textContent = `${compSeguridad}%`;
+      document.getElementById("comp-fill-seguridad").style.width = `${compSeguridad}%`;
+
+      // Show/Hide post-apply buttons based on status
+      const btnPost = document.getElementById("btn-postularse-post");
+      const msgPost = document.getElementById("postulacion-enviada-msg");
+      if (postuladoEnviado) {
+        btnPost.style.display = "none";
+        msgPost.style.display = "inline-flex";
+      } else {
+        btnPost.style.display = "inline-flex";
+        msgPost.style.display = "none";
+        
+        // Add click listener to the post-apply button
+        btnPost.onclick = () => {
+          btnPost.setAttribute("disabled", "true");
+          btnPost.innerHTML = `Enviando... <span class="btn-icon">⏳</span>`;
+          sendEmail();
+        };
+      }
+
+      // Render Regla de Oro (Feedback Educativo)
+      const feedbackSection = document.getElementById("feedback-section");
+      const feedbackList = document.getElementById("feedback-list");
+      
+      if (incorrectList.length > 0) {
+        feedbackSection.style.display = "block";
+        feedbackList.innerHTML = "";
+
+        incorrectList.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "feedback-card";
+          
+          // Split explanation safely
+          let explanationPart = "";
+          let standardPart = "";
+          if (item.explanation.includes("Estándar")) {
+            explanationPart = item.explanation.split("Estándar")[0].trim();
+            if (explanationPart.endsWith(".")) {
+              explanationPart = explanationPart.slice(0, -1);
+            }
+            standardPart = "Estándar" + item.explanation.split("Estándar")[1];
+          } else {
+            explanationPart = item.explanation;
+            standardPart = "En N3i exigimos la aplicación estricta de las normas de calidad, buenas prácticas ambientales y uso de herramientas e instrumentos de medición homologados en todas las etapas de montaje y reparación.";
+          }
+
+          card.innerHTML = `
+            <div class="feedback-card-header">
+              <h4 class="feedback-question-title">${item.question}</h4>
+              <span class="question-category-tag" style="margin-bottom:0; background:rgba(63, 198, 180, 0.1); color:#3fc6b4;">${item.categoryName}</span>
+            </div>
+            
+            <div class="feedback-answers">
+              <div class="ans-box wrong">
+                <strong>Tu Respuesta / Estado</strong>
+                <span>(${item.selectedVal}) ${item.selectedText}</span>
+              </div>
+              <div class="ans-box correct">
+                <strong>Respuesta Correcta</strong>
+                <span>(${item.correctVal}) ${item.correctText}</span>
+              </div>
+            </div>
+
+            <div class="feedback-details">
+              <div class="detail-block">
+                <div class="detail-block-title">
+                  <span>⚠️</span> Concepto Técnico y Norma Vulnerada
+                </div>
+                <div class="detail-block-desc">
+                  ${explanationPart}
+                </div>
+              </div>
+              
+              <div class="detail-block" style="border-color: rgba(63, 198, 180, 0.2);">
+                <div class="detail-block-title" style="color: var(--accent);">
+                  <span>🛠️</span> Estándar de Ejecución de Calidad N3i
+                </div>
+                <div class="detail-block-desc">
+                  ${standardPart}
+                </div>
+              </div>
+
+              <div class="detail-block" style="border-color: rgba(59, 130, 246, 0.25);">
+                <div class="detail-block-title" style="color: #3b82f6;">
+                  <span>📖</span> Recurso de Estudio Recomendado
+                </div>
+                <div class="detail-block-desc">
+                  Para profundizar y estudiar este tema, te sugerimos repasar el siguiente material:<br>
+                  <a href="${item.studyLink}" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
+                    ${item.studyLinkText} <span>🔗</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+          feedbackList.appendChild(card);
+        });
+      } else {
+        feedbackSection.style.display = "none";
+      }
+    }
+  }
+
+  // Print PDF action
+  document.getElementById("btn-print-pdf").addEventListener("click", () => {
+    window.print();
+  });
+</script>
