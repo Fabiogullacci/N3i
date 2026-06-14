@@ -1,0 +1,2013 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout 
+  title="Evaluación Técnica - Redes y Seguridad | N3i" 
+  description="Examen técnico e informe de competencias para la clasificación de técnicos de redes, cableado estructurado y videovigilancia de N3i Engineering & Maintenance."
+>
+  <Header />
+
+  <!-- Hero Section -->
+  <section class="page-hero" style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary)); border-bottom: 1px solid var(--border-color); padding: 140px 20px 60px 20px; text-align: center;">
+    <div class="container">
+      <span class="section-subtitle" style="color: var(--accent);">Evaluación de Competencias</span>
+      <h1 class="hero-title" style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 15px;">Clasificación Técnica: Redes y Seguridad</h1>
+      <p class="hero-subtitle" style="margin: 0 auto; max-width: 700px; color: var(--text-secondary); font-size: 1.05rem;">
+        Cuestionario de evaluación y autoevaluación técnica para determinar la categoría operativa en obras de N3i (Ayudante, Oficial, Oficial Especializado o Responsable Técnico).
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Container Section -->
+  <section style="padding: 60px 20px; background-color: var(--bg-primary); min-height: 70vh; position: relative;">
+    <div class="container">
+      
+      <!-- EVALUATION CARD WRAPPER -->
+      <div class="eval-card" id="eval-card">
+        
+        <!-- STEP 1: REGISTRATION -->
+        <div id="step-registration" class="step-container active">
+          <div class="step-header">
+            <h2 class="step-title">Registro del Postulante</h2>
+            <p class="step-desc">Ingrese sus datos para comenzar la evaluación de 20 preguntas técnicas de selección múltiple.</p>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="reg-nombre">Nombre y Apellido Completo *</label>
+              <input type="text" id="reg-nombre" placeholder="Ej. Carlos Alberto Gómez" class="eval-input" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-telefono">Teléfono / WhatsApp *</label>
+              <input type="tel" id="reg-telefono" placeholder="Ej. 2914567890" class="eval-input" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-email">Correo Electrónico *</label>
+              <input type="email" id="reg-email" placeholder="Ej. carlos.gomez@gmail.com" class="eval-input" required />
+            </div>
+          </div>
+
+          <div style="margin-bottom: 25px;">
+            <label class="eval-checkbox-label">
+              <input type="checkbox" id="reg-postularse" checked />
+              <div style="font-size: 0.92rem; color: var(--text-light); line-height: 1.4;">
+                <strong>Quiero postularme a N3i con estos resultados</strong><br>
+                <span style="font-size: 0.82rem; color: var(--text-secondary);">Si marcas esta opción, tus respuestas y perfil técnico se enviarán automáticamente al equipo de Ingeniería de N3i. Si la desmarcas, solo realizarás el test para medir tu nivel de forma privada.</span>
+              </div>
+            </label>
+          </div>
+          
+          <div class="info-alert" style="border-color: rgba(99, 102, 241, 0.3); background: rgba(99, 102, 241, 0.05);">
+            <span class="alert-icon">💡</span>
+            <div class="alert-text">
+              <strong>Enfoque Educativo y de Capacitación:</strong> En N3i fomentamos la formación continua. Este test está diseñado para ser una herramienta de aprendizaje. Cada pregunta incluye explicaciones técnicas detalladas y estándares de calidad para que puedas estudiar. Si querés repasar antes de comenzar o profundizar tus conocimientos, te sugerimos consultar:<br>
+              <ul style="margin-top: 8px; margin-bottom: 0; padding-left: 20px; color: var(--text-secondary);">
+                <li>El portal educativo y cursos de redes de la academia oficial <a href="https://www.netacad.com/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Cisco Networking Academy</a>.</li>
+                <li>Los manuales de diseño y configuración de cámaras analógicas e IP en <a href="https://cctv.hikvision.com/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Hikvision Academy</a> o en <a href="https://dahuawiki.com/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Dahua Wiki</a>.</li>
+                <li>Las guías de configuración de redes Wi-Fi mesh y cámaras inalámbricas en la web de <a href="https://www.tp-link.com/es/support/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Soporte Técnico de TP-Link</a>.</li>
+              </ul>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary btn-full-width" id="btn-start">
+            Comenzar Autoevaluación
+            <span class="btn-icon">🌐</span>
+          </button>
+          
+          <button class="btn btn-outline btn-full-width" id="btn-direct-postulation" style="margin-top: 15px; font-size: 0.95rem; justify-content: center; border: 1px solid var(--accent); color: #ffffff;">
+            Postularse directamente (Sin realizar el test)
+            <span class="btn-icon">📋</span>
+          </button>
+        </div>
+
+
+        <!-- STEP 2: QUESTIONNAIRE (DYNAMIC) -->
+        <div id="step-quiz" class="step-container">
+          <div class="quiz-progress-bar-container">
+            <div class="quiz-progress-meta">
+              <span id="quiz-question-index">Pregunta 1 de 20</span>
+              <span id="quiz-percent">0%</span>
+            </div>
+            <div class="quiz-progress-bar">
+              <div class="quiz-progress-fill" id="quiz-progress-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+          
+          <div class="question-box">
+            <div class="question-category-tag" id="question-category">Cableado y Racks</div>
+            <h3 class="question-text" id="question-text">¿Cargando pregunta?</h3>
+            
+            <div class="options-list" id="options-list">
+              <!-- Dynamically populated options -->
+            </div>
+          </div>
+          
+          <div class="quiz-nav">
+            <button class="btn btn-outline" id="btn-prev" disabled>
+              <span class="btn-icon">⬅️</span> Anterior
+            </button>
+            <button class="btn btn-primary" id="btn-next" disabled>
+              Siguiente <span class="btn-icon">➡️</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3: LOADING / PROCCESSING SCREEN -->
+        <div id="step-loading" class="step-container">
+          <div class="loader-wrapper">
+            <div class="loader-spinner" style="border-top-color: #6366f1;"></div>
+            <h3 class="loader-title">Procesando Examen Técnico</h3>
+            <p class="loader-msg" id="loader-msg">Analizando topologías de red y segmentaciones lógicas...</p>
+          </div>
+        </div>
+
+        <!-- STEP 4: RESULTS DASHBOARD -->
+        <div id="step-results" class="step-container">
+          
+          <!-- PDF / Print Header (Hidden on Screen) -->
+          <div class="print-only-header">
+            <div class="print-brand-row">
+              <div class="print-brand-logo">N3i Engineering & Maintenance</div>
+              <div class="print-brand-sub">Evaluación y Clasificación Técnica de Contratistas</div>
+            </div>
+            <hr class="print-hr" />
+          </div>
+
+          <div class="results-header">
+            <span class="section-subtitle">RESULTADOS DE LA EVALUACIÓN</span>
+            <h2 class="step-title" style="font-size: 2.2rem; margin-bottom: 5px;">Informe de Aptitud Técnica</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 25px;" id="res-meta">Postulante: Juan Pérez | Fecha: --/--/----</p>
+          </div>
+
+          <div class="dashboard-grid">
+            
+            <!-- Puntaje y Clasificación -->
+            <div class="dash-card score-card">
+              <div class="score-circle-wrapper">
+                <svg viewBox="0 0 100 100" class="score-circle-svg">
+                  <circle cx="50" cy="50" r="45" class="bg-ring"></circle>
+                  <circle cx="50" cy="50" r="45" class="fg-ring" id="score-ring" stroke-dasharray="283" stroke-dashoffset="283" style="stroke: #6366f1;"></circle>
+                </svg>
+                <div class="score-text">
+                  <span id="res-score-value">0</span>
+                  <span class="score-max">/100</span>
+                </div>
+              </div>
+              <div style="text-align: center; margin-top: 15px;">
+                <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;">Categoría N3i Sugerida</h4>
+                <div class="category-badge" id="res-category">Calculando...</div>
+              </div>
+            </div>
+
+            <!-- Veredicto Final e Interpretación Amigable -->
+            <div class="dash-card verdict-card">
+              <h3>Veredicto de Ingreso</h3>
+              <div class="verdict-box" id="res-verdict-box">
+                <span class="verdict-icon" id="res-verdict-icon">❓</span>
+                <span class="verdict-text" id="res-verdict-text">Evaluando aptitud...</span>
+              </div>
+              <div class="verdict-explanation" id="res-friendly-explanation">
+                <!-- Friendly, interpretive feedback will go here -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Matriz de Competencias -->
+          <div class="dash-card" style="margin-top: 25px;">
+            <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px; font-size: 1.25rem;">Matriz de Competencias Técnicas</h3>
+            <div class="competency-grid">
+              
+              <div class="comp-item">
+                <div class="comp-meta">
+                  <span class="comp-name">Infraestructura de Red (Cableado y Racks)</span>
+                  <span class="comp-value" id="comp-val-normativa">0%</span>
+                </div>
+                <div class="comp-bar"><div class="comp-bar-fill" id="comp-fill-normativa" style="width: 0%;"></div></div>
+              </div>
+
+              <div class="comp-item">
+                <div class="comp-meta">
+                  <span class="comp-name">Seguridad Electrónica (CCTV Analógico/IP/Wi-Fi)</span>
+                  <span class="comp-value" id="comp-val-tecnica">0%</span>
+                </div>
+                <div class="comp-bar"><div class="comp-bar-fill" id="comp-fill-tecnica" style="width: 0%;"></div></div>
+              </div>
+
+              <div class="comp-item">
+                <div class="comp-meta">
+                  <span class="comp-name">Conectividad de Datos y Wi-Fi Mesh</span>
+                  <span class="comp-value" id="comp-val-planos">0%</span>
+                </div>
+                <div class="comp-bar"><div class="comp-bar-fill" id="comp-fill-planos" style="width: 0%;"></div></div>
+              </div>
+
+              <div class="comp-item">
+                <div class="comp-meta">
+                  <span class="comp-name">Seguridad Física, Lógica y Trabajo en Altura</span>
+                  <span class="comp-value" id="comp-val-seguridad">0%</span>
+                </div>
+                <div class="comp-bar"><div class="comp-bar-fill" id="comp-fill-seguridad" style="width: 0%;"></div></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- REGLA DE ORO / FEEDBACK EDUCATIVO DETALLADO -->
+          <div class="feedback-section" id="feedback-section" style="display: none; margin-top: 35px;">
+            <div class="feedback-section-header">
+              <span class="section-subtitle" style="color: #ffb703;">SOPORTE Y CAPACITACIÓN</span>
+              <h3 style="font-size: 1.5rem; color: var(--text-primary); margin-top: 5px;">Revisión de Seguridad y Normas - Regla de Oro</h3>
+              <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 5px;">
+                A continuación, detallamos las respuestas incorrectas o saltadas, las normas de red vulneradas y el estándar de calidad N3i exigido en obra para tu aprendizaje, estudio y mejora profesional.
+              </p>
+            </div>
+            
+            <div id="feedback-list" class="feedback-list">
+              <!-- Dynamically populated cards of incorrect answers -->
+            </div>
+          </div>
+
+          <!-- Acciones finales -->
+          <div class="results-actions" style="margin-top: 40px; display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="btn-print-pdf" style="padding: 14px 28px;">
+              Descargar Informe en PDF
+              <span class="btn-icon">📄</span>
+            </button>
+            <button class="btn btn-primary" id="btn-postularse-post" style="padding: 14px 28px; background-color: #3b82f6; display: none;">
+              Enviar Postulación a N3i
+              <span class="btn-icon">✉️</span>
+            </button>
+            <span id="postulacion-enviada-msg" style="color: var(--accent); font-weight: 600; display: none; align-items: center; gap: 8px;">
+              ✓ Su postulación ha sido enviada a N3i.
+            </span>
+            <a href="/empleo" class="btn btn-outline" style="padding: 14px 28px;">
+              Volver a Empleo
+              <span class="btn-icon">💼</span>
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  /* Base evaluacion custom colors */
+  :root {
+    --eval-card-bg: rgba(17, 20, 22, 0.75);
+    --eval-border: rgba(255, 255, 255, 0.05);
+    --eval-border-hover: rgba(99, 102, 241, 0.3);
+  }
+
+  .eval-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(99, 102, 241, 0.04);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    padding: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .eval-checkbox-label:hover {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+  .eval-checkbox-label input[type="checkbox"] {
+    margin-top: 4px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .eval-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--eval-card-bg);
+    border: 1px solid var(--eval-border);
+    border-radius: var(--radius-md, 16px);
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.02);
+    backdrop-filter: blur(12px);
+    transition: var(--transition-smooth, all 0.4s cubic-bezier(0.16, 1, 0.3, 1));
+  }
+
+  .step-container {
+    display: none;
+  }
+
+  .step-container.active {
+    display: block;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .step-header {
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+  }
+
+  .step-title {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .step-desc {
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+  }
+
+  /* Form inputs */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  @media (min-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .form-grid .form-group:first-child {
+      grid-column: span 2;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .eval-input {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 8px);
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+  }
+
+  .eval-input:focus {
+    border-color: var(--accent);
+    background: rgba(99, 102, 241, 0.03);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.1);
+  }
+
+  .btn-full-width {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Alert box */
+  .info-alert {
+    display: flex;
+    gap: 15px;
+    border-radius: var(--radius-sm, 8px);
+    padding: 20px;
+    margin-bottom: 30px;
+    align-items: flex-start;
+  }
+
+  .alert-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .alert-text {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Progress bar */
+  .quiz-progress-bar-container {
+    margin-bottom: 30px;
+  }
+
+  .quiz-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .quiz-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill {
+    height: 100%;
+    background: #6366f1;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+  }
+
+  /* Question Box */
+  .question-box {
+    margin-bottom: 35px;
+  }
+
+  .question-category-tag {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 15px;
+  }
+
+  .question-text {
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    margin-bottom: 25px;
+    font-family: var(--font-title);
+  }
+
+  /* Options list */
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 8px);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    user-select: none;
+  }
+
+  .option-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .option-card.selected {
+    background: rgba(99, 102, 241, 0.06);
+    border-color: #6366f1;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.05);
+  }
+
+  .option-card.option-dont-know {
+    border-style: dashed;
+    border-color: var(--text-muted);
+    opacity: 0.85;
+    margin-top: 15px;
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .option-card.option-dont-know:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+  .option-card.option-dont-know.selected {
+    background: rgba(239, 68, 68, 0.04);
+    border-color: #ef4444;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.08);
+  }
+  .option-card.option-dont-know.selected .option-letter {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #ffffff;
+  }
+
+  .option-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition-smooth);
+    flex-shrink: 0;
+  }
+
+  .option-card.selected .option-letter {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: #ffffff;
+  }
+
+  .option-text-span {
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    transition: var(--transition-smooth);
+  }
+
+  .option-card.selected .option-text-span {
+    color: var(--text-primary);
+  }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 25px;
+  }
+
+  /* Loader spinner */
+  .loader-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  .loader-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(99, 102, 241, 0.1);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 25px;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+  }
+
+  .loader-title {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .loader-msg {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Results dashboard layout */
+  .results-header {
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+  }
+
+  @media (min-width: 768px) {
+    .dashboard-grid {
+      grid-template-columns: 320px 1fr;
+    }
+  }
+
+  .dash-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 12px);
+    padding: 25px;
+  }
+
+  /* Circular score meter */
+  .score-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-circle-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+  }
+
+  .score-circle-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .score-circle-svg circle {
+    fill: none;
+    stroke-width: 8;
+  }
+
+  .score-circle-svg .bg-ring {
+    stroke: rgba(255, 255, 255, 0.05);
+  }
+
+  .score-circle-svg .fg-ring {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-in-out;
+  }
+
+  .score-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-title);
+  }
+
+  #res-score-value {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+
+  .score-max {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .category-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 4px;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-family: var(--font-title);
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+  }
+
+  /* Veredicto card styling */
+  .verdict-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .verdict-card h3 {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 15px;
+  }
+
+  .verdict-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+
+  .verdict-box.apto {
+    background: rgba(140, 198, 63, 0.1);
+    border: 1px solid rgba(140, 198, 63, 0.3);
+    color: #bbf7d0;
+  }
+
+  .verdict-box.apto-supervision {
+    background: rgba(255, 183, 3, 0.08);
+    border: 1px solid rgba(255, 183, 3, 0.3);
+    color: #ffedd5;
+  }
+
+  .verdict-box.no-apto {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fee2e2;
+  }
+
+  .verdict-icon {
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+
+  .verdict-explanation {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.01);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  /* Competency Grid */
+  .competency-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .competency-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .comp-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .comp-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  .comp-name {
+    color: var(--text-secondary);
+  }
+
+  .comp-value {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .comp-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .comp-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease-in-out;
+  }
+
+  /* Dynamic competency fill colors */
+  #comp-fill-normativa { background: #3b82f6; }
+  #comp-fill-tecnica { background: #8b5cf6; }
+  #comp-fill-planos { background: #ec4899; }
+  #comp-fill-seguridad { background: #ef4444; }
+
+  /* Feedback Section */
+  .feedback-section-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+  }
+
+  .feedback-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .feedback-card {
+    background: rgba(239, 68, 68, 0.015);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    border-left: 4px solid #ef4444;
+    border-radius: 0 12px 12px 0;
+    padding: 25px;
+  }
+
+  .feedback-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    padding-bottom: 10px;
+  }
+
+  .feedback-question-title {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-family: var(--font-title);
+    line-height: 1.4;
+  }
+
+  .feedback-answers {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 6px;
+  }
+
+  @media (min-width: 576px) {
+    .feedback-answers {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .ans-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.88rem;
+  }
+
+  .ans-box strong {
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+  }
+
+  .ans-box.wrong { color: #fca5a5; }
+  .ans-box.correct { color: #bbf7d0; }
+
+  .feedback-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .detail-block {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.03);
+    border-radius: 6px;
+    padding: 16px;
+  }
+
+  .detail-block-title {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .detail-block-desc {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Print Header styling (hidden by default on screen) */
+  .print-only-header {
+    display: none;
+  }
+
+  /* PRINT CSS */
+  @media print {
+    header, footer, nav, .quiz-nav, .results-actions, .page-hero {
+      display: none !important;
+    }
+
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-size: 12pt !important;
+    }
+
+    .eval-card {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      backdrop-filter: none !important;
+      max-width: 100% !important;
+    }
+
+    .print-only-header {
+      display: block !important;
+      margin-bottom: 25px;
+    }
+
+    .print-brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .print-brand-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16pt;
+      font-weight: 800;
+      color: #000000 !important;
+    }
+
+    .print-brand-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      color: #666666 !important;
+      text-transform: uppercase;
+    }
+
+    .print-hr {
+      border: none;
+      border-top: 2px solid #6366f1;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+
+    .results-header h2 {
+      color: #000000 !important;
+      font-size: 20pt !important;
+    }
+
+    .results-header p {
+      color: #444444 !important;
+      font-size: 11pt !important;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: 200px 1fr !important;
+      gap: 20px !important;
+      margin-bottom: 20px !important;
+      page-break-inside: avoid;
+    }
+
+    .dash-card {
+      background: #f8f9fa !important;
+      border: 1px solid #dddddd !important;
+      color: #000000 !important;
+      padding: 15px !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+
+    .score-circle-svg .bg-ring {
+      stroke: #eeeeee !important;
+    }
+
+    .score-circle-svg .fg-ring {
+      stroke: #6366f1 !important;
+    }
+
+    #res-score-value {
+      color: #000000 !important;
+    }
+
+    .category-badge {
+      background-color: #e2e8f0 !important;
+      color: #000000 !important;
+      border: 1px solid #cbd5e1 !important;
+      font-size: 10pt !important;
+    }
+
+    .verdict-box {
+      padding: 10px 15px !important;
+      margin-bottom: 10px !important;
+      font-size: 11pt !important;
+      border-radius: 4px !important;
+    }
+
+    .verdict-box.apto {
+      background: #e6f4ea !important;
+      border: 1px solid #34a853 !important;
+      color: #137333 !important;
+    }
+
+    .verdict-box.apto-supervision {
+      background: #fef7e0 !important;
+      border: 1px solid #fbbc04 !important;
+      color: #b06000 !important;
+    }
+
+    .verdict-box.no-apto {
+      background: #fce8e6 !important;
+      border: 1px solid #ea4335 !important;
+      color: #c5221f !important;
+    }
+
+    .verdict-explanation {
+      font-size: 10pt !important;
+      color: #333333 !important;
+      border: 1px solid #eeeeee !important;
+      background: #ffffff !important;
+      padding: 10px !important;
+    }
+
+    .comp-item {
+      page-break-inside: avoid;
+    }
+
+    .comp-meta {
+      color: #000000 !important;
+    }
+
+    .comp-name {
+      color: #444444 !important;
+    }
+
+    .comp-value {
+      color: #000000 !important;
+    }
+
+    .comp-bar {
+      background: #eeeeee !important;
+      border: 1px solid #cccccc !important;
+    }
+
+    #comp-fill-normativa { background: #333333 !important; }
+    #comp-fill-tecnica { background: #555555 !important; }
+    #comp-fill-planos { background: #777777 !important; }
+    #comp-fill-seguridad { background: #999999 !important; }
+
+    .feedback-section {
+      page-break-before: always;
+      display: block !important;
+    }
+
+    .feedback-section-header h3 {
+      color: #000000 !important;
+    }
+
+    .feedback-section-header p {
+      color: #555555 !important;
+    }
+
+    .feedback-card {
+      background: #ffffff !important;
+      border: 1px solid #cccccc !important;
+      border-left: 4px solid #ea4335 !important;
+      color: #000000 !important;
+      page-break-inside: avoid;
+      margin-bottom: 15px !important;
+      padding: 15px !important;
+      border-radius: 4px !important;
+    }
+
+    .feedback-question-title {
+      color: #000000 !important;
+    }
+
+    .feedback-answers {
+      background: #f8f9fa !important;
+      border: 1px solid #e9ecef !important;
+      padding: 10px !important;
+      margin-bottom: 12px !important;
+    }
+
+    .ans-box.wrong { color: #c5221f !important; }
+    .ans-box.correct { color: #137333 !important; }
+
+    .detail-block {
+      background: #ffffff !important;
+      border: 1px solid #eeeeee !important;
+      padding: 8px 12px !important;
+    }
+
+    .detail-block-title {
+      color: #333333 !important;
+      border-bottom: 1px solid #eeeeee;
+      padding-bottom: 2px;
+      margin-bottom: 4px;
+    }
+
+    .detail-block-desc {
+      color: #111111 !important;
+      font-size: 9.5pt !important;
+    }
+  }
+</style>
+
+<!-- CLIENT SIDE LOGIC -->
+<script is:inline>
+  // BANK OF 20 QUESTIONS
+  const quizQuestions = [
+    // Categoria 1: Infraestructura y Cableado Estructurado (normativa)
+    {
+      id: 1,
+      category: "normativa",
+      categoryName: "Cableado y Racks",
+      question: "Según el estándar ANSI/TIA-568 para cableado estructurado de cobre (Cat6/Cat6a), ¿cuál es la longitud máxima permitida para el canal de enlace horizontal permanente y cómo se distribuye con los patch cords?",
+      options: [
+        { text: "150 metros en total, distribuidos libremente según el tamaño del edificio.", val: "A" },
+        { text: "100 metros en total, distribuidos en un enlace permanente máximo de 90 metros y un total de 10 metros para patch cords en ambos extremos (rack y área de trabajo).", val: "B" },
+        { text: "50 metros máximo para evitar interferencias, sin importar los patch cords.", val: "C" },
+        { text: "90 metros máximo en total, incluyendo patch cords y el cableado de montantes vertical.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El límite de 100 metros del canal asegura que no se pierda la velocidad de transmisión de datos debido a la atenuación del cobre en frecuencias elevadas (hasta 250 MHz para Cat6). Superar los 90 metros en el tendido de pared (enlace permanente) degrada severamente el ancho de banda y genera retransmisión de paquetes. Estándar de calidad N3i: En N3i nunca excedemos los 90 metros de tirada fija y certificamos cada boca de red mediante testers Fluke calificados para garantizar la velocidad de 1 Gbps nominal.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Estándares de Cableado Estructurado - Cisco NetAcad"
+    },
+    {
+      id: 2,
+      category: "normativa",
+      categoryName: "Cableado y Racks",
+      question: "Al realizar el peinado de cables UTP Cat6 y organizarlos dentro del rack, ¿qué cuidado de tracción y flexión mecánica se debe respetar para evitar degradar la transmisión de datos a gigabit?",
+      options: [
+        { text: "Se deben atar lo más fuerte posible con precintos plásticos apretados con pinzas para que el rack se vea ultra prolijo, y doblarlos en ángulos cerrados de 90 grados para que quepan en las esquinas.", val: "A" },
+        { text: "Se debe evitar tensionar el cable al tirar (fuerza de tracción menor a 110 N) y respetar un radio de curvatura mínimo de 4 veces el diámetro del cable en reposo (y 8 veces en tracción), fijándolos holgadamente con cintas de velcro (abrojo) para no aplastar los pares internos.", val: "B" },
+        { text: "Se permite doblar y retorcer el cable libremente, ya que la vaina exterior de PVC protege los pares de cualquier deformación física.", val: "C" },
+        { text: "Los cables de red Cat6 deben peinarse atándolos en paralelo junto a los cables de alimentación eléctrica de 220V/380V del rack para ahorrar espacio en las bandejas.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Apretar excesivamente los cables con precintos de plástico o doblarlos en ángulos cerrados destruye la simetría y el paso de trenzado de los 4 pares internos, aumentando la diafonía (cross-talk) y degradando la señal. Asimismo, el cableado de datos debe ir separado de las líneas eléctricas para evitar interferencia electromagnética (EMI). Estándar de calidad N3i: En N3i desterramos el uso de precintos plásticos apretados en racks, utilizando únicamente cintas de velcro reutilizables y manteniendo canalizaciones separadas para datos y energía.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Buenas Prácticas de Canalización y Montaje de Racks - Cisco"
+    },
+    {
+      id: 3,
+      category: "normativa",
+      categoryName: "Cableado y Racks",
+      question: "En un proyecto industrial que conecta la oficina de administración con un galpón de producción ubicado a 180 metros de distancia, atravesando un área con motores y transformadores de alta tensión, ¿por qué es técnica y normativamente obligatorio optar por un enlace de Fibra Óptica en lugar de un cable de cobre UTP/FTP?",
+      options: [
+        { text: "El cobre no funciona porque es conductor eléctrico y el estándar de red exige que la administración tenga siempre mayor ancho de banda que la producción.", val: "A" },
+        { text: "La fibra óptica es inmune a las interferencias electromagnéticas (EMI) generadas por los motores de alta potencia y permite superar el límite de distancia física de 100 metros del cobre, garantizando la integridad de los datos y aislando galvánicamente ambos edificios.", val: "B" },
+        { text: "El cable FTP de cobre Cat6 puede alcanzar hasta 300 metros si se conecta a un switch especial y se une la malla metálica a tierra en ambos extremos.", val: "C" },
+        { text: "La fibra óptica se elige únicamente por motivos de velocidad, ya que el cobre Cat5e rinde igual a esa distancia en entornos industriales de alta interferencia.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El cobre tiene dos limitaciones insalvables aquí: la distancia máxima (100m) y su susceptibilidad al ruido electromagnético de los motores y transformadores que induce errores de trama. Además, conectar dos edificios distantes con cobre puede quemar los switches debido a diferencias de potencial de tierra en una tormenta eléctrica. La fibra óptica transmite pulsos de luz, aislando eléctricamente ambos extremos y permitiendo kilómetros de tendido. Estándar de calidad N3i: En N3i implementamos enlaces de fibra óptica monomodo (SM) o multimodo (MM) para interconexión de naves industriales, protegiendo el hardware contra sobretensiones transitorias.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Fundamentos de Fibra Óptica en Redes de Datos - Cisco"
+    },
+    {
+      id: 4,
+      category: "normativa",
+      categoryName: "Cableado y Racks",
+      question: "¿Cuál es la diferencia principal entre una fibra óptica Monomodo (SM) y una Multimodo (MM), y en qué escenario se aconseja instalar cada una?",
+      options: [
+        { text: "La Monomodo utiliza luz LED de bajo costo y sirve para cablear tramos muy cortos dentro del mismo rack; la Multimodo utiliza láser para distancias de kilómetros.", val: "A" },
+        { text: "La Monomodo (SM) posee un núcleo muy pequeño (ej. 9 micrones) y transmite un solo haz de luz láser, ideal para largas distancias (kilómetros) y alto ancho de banda. La Multimodo (MM) tiene un núcleo mayor (50 o 62.5 micrones) que propaga múltiples haces de luz LED/láser VCSEL, ideal para distancias cortas a medianas (hasta 550m) en data centers o backbone de edificios.", val: "B" },
+        { text: "La fibra Multimodo es compatible con conectores RJ45 comunes, mientras que la Monomodo requiere soldadura de cobre líquida.", val: "C" },
+        { text: "La única diferencia es el color exterior del forro plástico del cable y no influye en las interfaces SFP (transceivers) utilizadas en los switches.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El diámetro del núcleo define cómo viaja la luz. En la fibra Multimodo, la luz rebota en múltiples ángulos generando dispersión modal, lo que limita su distancia eficaz. En la Monomodo, la luz viaja recta, permitiendo enlaces de hasta 40 km sin repetidores. Sin embargo, las interfaces ópticas (SFPs) para monomodo son más costosas debido al láser de alta precisión. Estándar de calidad N3i: En N3i utilizamos transceivers SFP+ de marcas certificadas coordinados con el tipo de fibra (OM3/OM4 para multimodo, G652D para monomodo) para evitar pérdidas de potencia por desalineación de núcleos.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Tipos de Fibra y Transceivers de Fibra - Cisco NetAcad"
+    },
+    {
+      id: 5,
+      category: "normativa",
+      categoryName: "Cableado y Racks",
+      question: "Al crimpar conectores RJ45 o ponchar fichas Keystone y Patch Panels según la norma ANSI/TIA-568-B, ¿cuál es el orden correcto de los pines de izquierda a derecha (mirando el conector RJ45 con la pestaña hacia abajo)?",
+      options: [
+        { text: "1: Blanco-Verde, 2: Verde, 3: Blanco-Naranja, 4: Azul, 5: Blanco-Azul, 6: Naranja, 7: Blanco-Marrón, 8: Marrón.", val: "A" },
+        { text: "1: Blanco-Naranja, 2: Naranja, 3: Blanco-Verde, 4: Azul, 5: Blanco-Azul, 6: Verde, 7: Blanco-Marrón, 8: Marrón.", val: "B" },
+        { text: "1: Blanco-Naranja, 2: Naranja, 3: Blanco-Marrón, 4: Marrón, 5: Blanco-Verde, 6: Verde, 7: Blanco-Azul, 8: Azul.", val: "C" },
+        { text: "Da igual el orden de los colores siempre y cuando coincidan exactamente en ambos extremos del cable de red.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El orden de colores de la norma T568B es: Blanco-Naranja, Naranja, Blanco-Verde, Azul, Blanco-Azul, Verde, Blanco-Marrón, Marrón. Seguir este orden no es caprichoso: los pines 1-2 y 3-6 deben formar pares trenzados específicos dentro de la estructura física del cable para cancelar el ruido electromagnético. No respetar el orden causa interferencias graves y caídas de velocidad. Estándar de calidad N3i: En N3i estandarizamos el uso absoluto de la norma T568B en todas nuestras instalaciones para facilitar el mantenimiento y la prolijidad técnica.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Código de Colores y Crimpado RJ45 - Cisco"
+    },
+
+    // Categoria 2: Sistemas de Seguridad y Videovigilancia (CCTV) (tecnica)
+    {
+      id: 6,
+      category: "tecnica",
+      categoryName: "Seguridad Electrónica",
+      question: "Al instalar cámaras de seguridad analógicas de alta resolución (TVI/CVI/AHD de 4MP o más) utilizando cable UTP en lugar de cable coaxial, ¿qué componente pasivo es obligatorio colocar en ambos extremos del cable UTP y por qué?",
+      options: [
+        { text: "Un switch PoE para alimentar las cámaras y convertir la señal analógica a datos IP.", val: "A" },
+        { text: "Un transceptor pasivo de video (Balun), que adapta la impedancia desbalanceada de 75 ohms del conector BNC de la cámara y del DVR a la impedancia balanceada de 100 ohms del par trenzado UTP, reduciendo el ruido e interferencias en la imagen a largas distancias.", val: "B" },
+        { text: "Un inyector PoE pasivo de 48V para enviar energía a la cámara a través del par naranja.", val: "C" },
+        { text: "Un adaptador hembra RJ45 a BNC directo sin bobina interna ni filtros de acoplamiento.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El cable coaxial tiene una impedancia desbalanceada de 75Ω. El cable UTP tiene 100Ω balanceados. Si se conectan de forma directa, se produce un rebote de señal y acoplamiento de ruido electromagnético que distorsiona la imagen (fantasma, rayas). El Balun (BALanced-UNbalanced) adapta esta impedancia mediante transformadores toroidales internos. Estándar de calidad N3i: En N3i utilizamos baluns de alta gama certificados para resoluciones 4K y fuentes de alimentación switching centralizadas con fusibles independientes para proteger la instalación contra cortocircuitos.",
+      studyLink: "https://cctv.hikvision.com/",
+      studyLinkText: "CCTV Analógico y Uso de Baluns - Hikvision Academy"
+    },
+    {
+      id: 7,
+      category: "tecnica",
+      categoryName: "Seguridad Electrónica",
+      question: "En un sistema de videovigilancia IP comercial con un NVR de 16 canales y cámaras IP PoE, ¿qué ventaja ofrece el estándar PoE+ (802.3at) frente al PoE común (802.3af) y cómo influye en la selección de cámaras domo motorizadas PTZ?",
+      options: [
+        { text: "El PoE+ permite transmitir video en formato analógico a través de fibra óptica plástica sin pérdidas.", val: "A" },
+        { text: "El PoE+ (802.3at) suministra hasta 30 Watts de potencia por puerto (el doble que el PoE 802.3af de 15.4W), lo cual es indispensable para alimentar cámaras PTZ pesadas con motores de movimiento y calefactores internos para exterior.", val: "B" },
+        { text: "El PoE+ reduce a la mitad la velocidad de transmisión de datos para ahorrar energía eléctrica en los switches.", val: "C" },
+        { text: "Permite conectar cámaras a distancias de hasta 500 metros sin necesidad de switches repetidores en el medio.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Las cámaras IP estándar (domos o bullets fijas) consumen menos de 10W, por lo que funcionan con PoE común (802.3af). Sin embargo, las cámaras PTZ (Pan-Tilt-Zoom) exteriores que mueven motores de rotación y activan calefactores para evitar empañamiento o potentes infrarrojos de largo alcance consumen hasta 25-30W, requiriendo PoE+ (802.3at). Estándar de calidad N3i: En N3i calculamos el presupuesto de potencia total (PoE Power Budget) de los switches industriales antes del montaje para garantizar que todos los equipos funcionen de forma estable con los iluminadores IR encendidos al 100% de noche.",
+      studyLink: "https://cctv.hikvision.com/",
+      studyLinkText: "Estándares Power over Ethernet (PoE) - Hikvision"
+    },
+    {
+      id: 8,
+      category: "tecnica",
+      categoryName: "Seguridad Electrónica",
+      question: "Las cámaras Wi-Fi inteligentes (como TP-Link Tapo, Ezviz o Movi) son una excelente solución de rápida instalación. ¿Qué factores críticos de red Wi-Fi y de almacenamiento se deben tener en cuenta al planificar la instalación de 8 cámaras de este tipo en una PyME?",
+      options: [
+        { text: "Estas cámaras no necesitan conexión a internet para configurarse y el almacenamiento en la nube es 100% gratuito e ilimitado de por vida.", val: "A" },
+        { text: "La saturación del espectro de la banda de 2.4 GHz de la red Wi-Fi (ya que el tráfico de video HD es continuo) y la necesidad de contar con tarjetas microSD de alta gama del tipo 'High Endurance' para grabación local continua, o balancear el ancho de banda contratado de subida si se graba en la nube.", val: "B" },
+        { text: "Se debe cablear cada cámara con fibra óptica monomodo ya que el Wi-Fi de estas marcas no tolera encriptación WPA2.", val: "C" },
+        { text: "Estas cámaras causan interferencia en los presostatos de los aires acondicionados comerciales y deben instalarse en frecuencias UHF.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El Wi-Fi de 2.4 GHz tiene un canal saturado con solo 3 canales no superpuestos (1, 6, 11). Si colocamos 8 cámaras transmitiendo video 2K de forma inalámbrica continua, colapsaremos la red de datos interna, afectando a las computadoras de la empresa. Además, las tarjetas SD comunes se destruyen en pocos meses por los ciclos constantes de escritura de video, requiriendo memorias del tipo 'High Endurance'. Estándar de calidad N3i: En N3i, para más de 3 cámaras en un mismo comercio, priorizamos sistemas IP cableados PoE independientes para no saturar la red Wi-Fi administrativa y de clientes.",
+      studyLink: "https://www.tp-link.com/es/support/",
+      studyLinkText: "Planificación de Redes Wi-Fi y Cámaras Tapo - TP-Link"
+    },
+    {
+      id: 9,
+      category: "tecnica",
+      categoryName: "Seguridad Electrónica",
+      question: "Una cámara analógica instalada a 60 metros del DVR funciona perfectamente durante el día, pero al caer la noche la imagen se apaga, parpadea constantemente o muestra rayas horizontales ruidosas. ¿Cuál es el diagnóstico técnico más probable de esta falla?",
+      options: [
+        { text: "El sensor de imagen CMOS de la cámara está quemado y no detecta luz.", val: "A" },
+        { text: "Caída de tensión excesiva en la línea de alimentación de 12V debido al aumento de consumo eléctrico cuando la cámara enciende los LEDs infrarrojos nocturnos, provocando que la tensión descienda por debajo del mínimo de operación de la cámara.", val: "B" },
+        { text: "El DVR analógico no tiene capacidad para almacenar video en formato blanco y negro nocturno.", val: "C" },
+        { text: "El UTP está conduciendo electricidad estática desde el suelo de la obra hacia el DVR.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Los LEDs infrarrojos pueden triplicar el consumo de corriente de una cámara. Si el cable de alimentación es muy fino o el tramo es largo, la caída de tensión en el cable aumenta (V = I * R). Durante el día, con baja corriente, la tensión llega a 11.5V (suficiente). De noche, la corriente sube, la caída de tensión aumenta y a la cámara le llegan menos de 10V, lo que causa reinicios constantes o pérdida de video. Estándar de calidad N3i: En N3i calculamos la caída de tensión para tramos largos y cableamos la alimentación usando pares dobles de UTP o instalamos fuentes individuales de 12V con mayor amperaje, o elevamos el voltaje a 13.8V desde la fuente regulable centralizada para compensar la caída térmica.",
+      studyLink: "https://cctv.hikvision.com/",
+      studyLinkText: "Diagnóstico de Alimentación y Caída de Tensión en CCTV - Hikvision"
+    },
+    {
+      id: 10,
+      category: "tecnica",
+      categoryName: "Seguridad Electrónica",
+      question: "¿Qué beneficio operativo representa seleccionar el formato de compresión H.265+ (o H.265) en lugar del estándar H.264 anterior al configurar el grabador (DVR/NVR) de un sistema de videovigilancia?",
+      options: [
+        { text: "El H.265+ aumenta el consumo de gigabytes en el disco duro pero permite que las cámaras graben audio analógico en estéreo.", val: "A" },
+        { text: "Reduce el ancho de banda de red necesario para transmitir video y disminuye hasta un 70-80% el consumo de espacio en el disco duro, duplicando o triplicando los días de almacenamiento del equipo sin perder calidad visual de imagen.", val: "B" },
+        { text: "Permite prescindir por completo de la fuente de alimentación de las cámaras analógicas.", val: "C" },
+        { text: "Hace que las cámaras infrarrojas graben video en color real en total oscuridad.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El codec H.265+ es un algoritmo de compresión inteligente que analiza los cuadros estáticos y solo procesa los píxeles en movimiento. Esto ahorra inmensas cantidades de ancho de banda y espacio de almacenamiento frente al H.264, que procesa todo el frame constantemente. Estándar de calidad N3i: En N3i configuramos por defecto el codec H.265+ junto con tasa de bits (bitrate) variable para optimizar la durabilidad del disco rígido especial de CCTV (WD Purple o Seagate SkyHawk).",
+      studyLink: "https://cctv.hikvision.com/",
+      studyLinkText: "Algoritmos de Compresión de Video H.265+ - Hikvision"
+    },
+
+    // Categoria 3: Redes de Datos y Wi-Fi Mesh (planos)
+    {
+      id: 11,
+      category: "planos",
+      categoryName: "Conectividad y Wi-Fi Mesh",
+      question: "¿Qué diferencia técnica fundamental existe entre un sistema de Wi-Fi Mesh (Red Mallada, ej. TP-Link Deco) y el uso de repetidores/extensores Wi-Fi tradicionales en una casa o local comercial grande?",
+      options: [
+        { text: "El Wi-Fi Mesh requiere cambiar todas las tarjetas de red de las computadoras a fibra óptica para poder conectarse.", val: "A" },
+        { text: "Los repetidores comunes crean redes separadas (SSIDs distintos) y reducen el ancho de banda a la mitad por cada salto; el sistema Wi-Fi Mesh funciona como una sola red unificada con el mismo SSID y contraseña, donde los nodos se comunican de manera inteligente entre sí y gestionan el roaming automático del cliente (802.11k/v/r) sin microcortes al caminar por el espacio.", val: "B" },
+        { text: "Los sistemas Mesh no emiten ondas electromagnéticas sino que transmiten el internet por las tuberías de agua.", val: "C" },
+        { text: "El Wi-Fi Mesh solo sirve para conectar cámaras de seguridad de la marca Tapo y no permite computadoras ni celulares.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Con extensores comunes, el celular se queda 'enganchado' con señal débil al router principal de la sala aunque estemos parados al lado del repetidor de la planta alta, requiriendo apagar y encender el Wi-Fi del celular para conmutar. El sistema Mesh cuenta con protocolos de roaming (802.11k/v) que fuerzan activamente el cambio al nodo con mejor señal en milisegundos sin que el usuario lo note (ideal para llamadas VoIP o streaming). Estándar de calidad N3i: En N3i cableamos los nodos Mesh (Ethernet Backhaul) siempre que la estructura del edificio lo permita, liberando la barra inalámbrica para la conexión pura de los clientes y maximizando el rendimiento.",
+      studyLink: "https://www.tp-link.com/es/support/",
+      studyLinkText: "Sistemas Wi-Fi Mesh y Roaming Inteligente - TP-Link"
+    },
+    {
+      id: 12,
+      category: "planos",
+      categoryName: "Conectividad y Wi-Fi Mesh",
+      question: "Al instalar un sistema Wi-Fi Mesh de 3 nodos en una oficina con paredes gruesas de hormigón armado, ¿cuál es la mejor práctica de interconexión física entre los nodos para garantizar el máximo ancho de banda y menor latencia?",
+      options: [
+        { text: "Dejar que los nodos se conecten entre sí inalámbricamente a la mayor distancia posible.", val: "A" },
+        { text: "Conectar cada nodo secundario al nodo principal (o a un switch central conectado al nodo principal) mediante cables de red UTP Cat6 fijos (Ethernet Backhaul), permitiendo que la banda inalámbrica se use de forma exclusiva para los dispositivos móviles de los usuarios.", val: "B" },
+        { text: "Utilizar cables coaxiales de televisión viejos y baluns de video para interconectar los nodos.", val: "C" },
+        { text: "Colocar los nodos en cascada conectándolos uno a continuación del otro usando la red eléctrica doméstica sin filtros.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Aunque los sistemas Mesh se comunican de forma inalámbrica usando una banda dedicada (backhaul inalámbrico), el hormigón y el hierro atenúan drásticamente la señal de alta frecuencia (5 GHz). Interconectarlos por cable de cobre (Ethernet Backhaul) asegura que no haya devaluación de velocidad entre nodos, ofreciendo una experiencia de navegación gigabit inalámbrica real en toda la planta. Estándar de calidad N3i: Cableamos siempre con UTP Cat6 Trefilcon el enlace de retorno (Backhaul) de los nodos Deco para garantizar estabilidad absoluta en oficinas corporativas.",
+      studyLink: "https://www.tp-link.com/es/support/",
+      studyLinkText: "Configuración de Ethernet Backhaul en Deco - TP-Link"
+    },
+    {
+      id: 13,
+      category: "planos",
+      categoryName: "Conectividad y Wi-Fi Mesh",
+      question: "Al configurar una red local comercial para 30 computadoras, 10 cámaras IP y un NVR, ¿cuál es la mejor práctica de direccionamiento IP para evitar conflictos de red que desautoricen el acceso al NVR o las cámaras?",
+      options: [
+        { text: "Configurar todos los dispositivos (computadoras, cámaras, NVR y teléfonos) para que obtengan IP por DHCP dinámico sin reservas de ningún tipo.", val: "A" },
+        { text: "Configurar las computadoras y teléfonos mediante DHCP dinámico automático, y asignar IPs estáticas fijas manualmente a las cámaras IP y al NVR fuera del rango del pool de DHCP del router (o mediante reserva por dirección MAC en el router), documentando la planilla de direccionamiento local.", val: "B" },
+        { text: "Asignar la misma dirección IP (ej. 192.168.1.100) a todos los equipos para que puedan compartir las carpetas en red sin claves.", val: "C" },
+        { text: "Desactivar la máscara de subred para que las IPs se conecten directo a internet sin pasar por el switch.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Si las cámaras o el NVR tienen IP dinámica (DHCP), al reiniciarse el router tras un corte de luz podrían recibir una IP distinta. El NVR perderá la conexión con las cámaras y las computadoras no podrán acceder a las grabaciones. Además, si el DHCP entrega a una computadora la IP que ya tenía asignada una cámara de forma fija, se produce un 'Conflicto de IP' y ambos equipos perderán conectividad. Estándar de calidad N3i: En N3i creamos y documentamos la matriz de direccionamiento IP de la obra, separando rangos específicos para control, servidores, cámaras e impresoras.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Introducción al direccionamiento IP y subredes - Cisco NetAcad"
+    },
+    {
+      id: 14,
+      category: "planos",
+      categoryName: "Conectividad y Wi-Fi Mesh",
+      question: "Una computadora no tiene acceso a internet pero sí puede abrir la página de configuración del switch local. Al ejecutar la consola de comandos de Windows (cmd), haces 'ping 8.8.8.8' y responde con éxito, pero al hacer 'ping google.com' reporta 'No se pudo encontrar el host'. ¿Cuál es el problema de red que presenta la PC?",
+      options: [
+        { text: "La placa de red Ethernet de la computadora está quemada físicamente.", val: "A" },
+        { text: "El servidor DNS está mal configurado o no responde en la PC, por lo que puede comunicarse con IPs públicas numéricas pero no puede traducir/resolver los nombres de dominio a direcciones IP.", val: "B" },
+        { text: "El cable de red UTP tiene los pares de transmisión cruzados y no permite cargar páginas web.", val: "C" },
+        { text: "El router principal de la planta está apagado y la PC está conectada a la red eléctrica sin internet.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El comando `ping 8.8.8.8` (servidor de DNS público de Google) demuestra que la computadora tiene conectividad física, ruta IP y salida a internet. Si falla el ping al nombre de dominio `google.com`, significa que la PC no puede resolver el nombre, indicando un fallo en la configuración de la dirección IP del servidor DNS local. Estándar de calidad N3i: En N3i configuramos por DHCP DNS redundantes (DNS local + DNS público de Google 8.8.8.8 / Cloudflare 1.1.1.1) para mitigar caídas de resolución del ISP local.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Diagnóstico de Redes con Ping, Tracert y NSLookup - Cisco"
+    },
+    {
+      id: 15,
+      category: "planos",
+      categoryName: "Conectividad y Wi-Fi Mesh",
+      question: "Si un switch PoE de 8 puertos tiene un presupuesto de potencia (PoE Budget) máximo especificado de 60 Watts y conectamos 7 cámaras IP fijas estándar de 9 Watts de consumo nominal cada una, ¿cómo se comportará la red eléctrica del switch y qué ocurrirá en el sistema?",
+      options: [
+        { text: "El switch aumentará su tensión a 220V para suministrar los watts necesarios sin problemas.", val: "A" },
+        { text: "El consumo total de las cámaras (63W) supera el presupuesto máximo del switch (60W). El switch experimentará una sobrecarga, provocando que los últimos puertos conectados se apaguen intermitentemente o que el switch completo se reinicie de forma constante, especialmente cuando las cámaras enciendan sus iluminadores infrarrojos.", val: "B" },
+        { text: "Las cámaras IP reducirán automáticamente su resolución a 480p para consumir exactamente 4 Watts cada una.", val: "C" },
+        { text: "El cable de red UTP Cat6 comenzará a calentarse hasta fundirse debido a la sobrecorriente.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "El switch PoE tiene una fuente de alimentación interna con un límite de entrega física (PoE budget). Superar este límite causa inestabilidad en el suministro eléctrico. Los dispositivos PoE se negocian en clases (Clase 1, 2, 3, 4) y el switch reserva potencia según la clase declarada. Estándar de calidad N3i: En N3i realizamos siempre la sumatoria de consumos nocturnos máximos y dejamos un margen de seguridad del 20% en el switch PoE para evitar caídas imprevistas de videovigilancia.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Presupuesto de Potencia PoE en switches - Cisco NetAcad"
+    },
+
+    // Categoria 4: Seguridad Industrial e Información (seguridad)
+    {
+      id: 16,
+      category: "seguridad",
+      categoryName: "Seguridad y Trabajo en Altura",
+      question: "¿Por qué es fundamental y obligatorio conectar físicamente la estructura metálica del rack de comunicaciones y las bandejas metálicas a la barra de puesta a tierra (PAT) general de la instalación eléctrica?",
+      options: [
+        { text: "Para evitar que el polvo ambiental ensucie los cables de red por estática.", val: "A" },
+        { text: "Para canalizar a tierra descargas electrostáticas (ESD) y sobretensiones que puedan dañar los equipos sensibles (switches, servidores, NVR), y para garantizar la seguridad de las personas ante fallas de aislación de las fuentes de 220V de los equipos montados.", val: "B" },
+        { text: "La puesta a tierra del rack es opcional y solo se realiza si los switches son de más de 48 puertos.", val: "C" },
+        { text: "Sirve para amplificar la señal de las antenas de los routers Wi-Fi colocados dentro del gabinete.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Los chasis de los equipos montados en rack (como switches y servidores) tienen filtros capacitivos que derivan pequeñas corrientes de fuga al chasis. Si el rack no está a tierra, el metal del rack acumulará voltaje, dando 'patadas' eléctricas a los operarios. Además, las descargas electrostáticas (ESD) del aire o del cuerpo humano pueden quemar las placas electrónicas de red sensibles al tocarlas. Estándar de calidad N3i: En N3i conectamos el chasis del rack a la jabalina general mediante conductor Verde/Amarillo de 4 o 6 mm² y colocamos trencillas de continuidad flexibles en las puertas batientes del rack.",
+      studyLink: "https://www.cacaav.com.ar/",
+      studyLinkText: "Manual de Instalaciones de Red y Cableado de Racks - CACAAV"
+    },
+    {
+      id: 17,
+      category: "seguridad",
+      categoryName: "Seguridad y Trabajo en Altura",
+      question: "Al finalizar la instalación de un DVR, NVR o router de red de clientes, ¿cuál es el protocolo obligatorio de seguridad de acceso lógico (software) que debe realizar el instalador antes de entregar el sistema de forma segura?",
+      options: [
+        { text: "Dejar el usuario y clave por defecto (ej. admin/admin o admin/12345) y anotar la clave en un sticker visible pegado al rack.", val: "A" },
+        { text: "Modificar obligatoriamente las contraseñas por defecto estableciendo claves seguras alfanuméricas complejas, actualizar el firmware del equipo a la última versión para corregir fallas de seguridad conocidas, y deshabilitar servicios innecesarios expuestos a internet (como Telnet o UPnP).", val: "B" },
+        { text: "Desactivar las contraseñas del sistema para facilitar el acceso rápido del cliente en caso de robo.", val: "C" },
+        { text: "Habilitar el acceso remoto SSH sin contraseña para que el equipo de soporte pueda ingresar libremente.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Mantener las credenciales por defecto es la principal causa de intrusiones cibernéticas y secuestro de cámaras. Existen buscadores en internet (como Shodan) que escanean puertos abiertos de DVRs y routers con claves por defecto y los exponen públicamente. Estándar de calidad N3i: En N3i entregamos una planilla de control digital segura y encriptada al administrador del cliente con todas las claves personalizadas modificadas en obra.",
+      studyLink: "https://cctv.hikvision.com/",
+      studyLinkText: "Manual de Ciberseguridad y Endurecimiento de DVR/NVR - Hikvision"
+    },
+    {
+      id: 18,
+      category: "seguridad",
+      categoryName: "Seguridad y Trabajo en Altura",
+      question: "En una red empresarial donde conviven computadoras administrativas de facturación, computadoras de uso de clientes y un sistema de 15 cámaras IP con NVR, ¿qué tecnología se recomienda configurar en los switches administrables para proteger los datos corporativos de accesos no autorizados?",
+      options: [
+        { text: "Crear subredes usando diferentes colores de cable UTP para cada sector.", val: "A" },
+        { text: "Configurar VLANs (Redes de Área Local Virtuales) independientes para segmentar y aislar lógicamente el tráfico de las cámaras de seguridad y de los clientes invitados del tráfico de la red corporativa de administración, controlando los accesos mediante listas de control de acceso (ACLs) en el router.", val: "B" },
+        { text: "Apagar el DHCP corporativo y configurar todos los equipos con IPs públicas directas.", val: "C" },
+        { text: "Instalar switches separados sin conexión a internet y usar adaptadores Wi-Fi USB en todas las PCs.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Las VLANs permiten subdividir un único switch físico en múltiples redes virtuales lógicamente aisladas. Esto impide que un cliente malintencionado conectado al Wi-Fi de invitados o un hacker que acceda físicamente a un cable UTP exterior de una cámara IP pueda ingresar a la red de facturación y servidores de la empresa. Estándar de calidad N3i: Configuramos VLANs dedicadas en switches administrables Cisco/Ubiquiti para aislar el tráfico de CCTV y datos de control en plantas industriales.",
+      studyLink: "https://www.netacad.com/",
+      studyLinkText: "Configuración de Redes VLANs y Seguridad - Cisco NetAcad"
+    },
+    {
+      id: 19,
+      category: "seguridad",
+      categoryName: "Seguridad y Trabajo en Altura",
+      question: "¿Qué función cumple una UPS (Uninterruptible Power Supply / Sistema de Alimentación Ininterrumpida) instalada dentro de un rack de comunicaciones y cómo se dimensiona técnicamente para un NVR y switches?",
+      options: [
+        { text: "Convierte la corriente continua en alterna para alimentar el aire acondicionado del rack.", val: "A" },
+        { text: "Filtra picos de tensión de red, regula el voltaje (AVR) y proporciona energía eléctrica de respaldo mediante baterías internas ante cortes de luz, dimensionándose sumando el consumo en Watts de todos los equipos y calculando la capacidad en VA (Volt-Amperes) necesaria para la autonomía requerida.", val: "B" },
+        { text: "Reduce el voltaje de entrada de 220V a 12V de forma directa para alimentar las cámaras.", val: "C" },
+        { text: "Estabiliza la frecuencia inalámbrica del Wi-Fi de los routers ante bajas de tensión.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "La UPS es el corazón de la seguridad del rack. Si se corta la luz por un intruso o falla eléctrica, la UPS mantiene encendido el grabador, las cámaras y los switches para registrar el incidente. Para dimensionarla, se suma la potencia de los equipos (ej. NVR: 30W, Switch PoE: 80W, Router: 15W = 125W) y se selecciona una UPS con factor de potencia y banco de baterías que asegure al menos 30 a 60 minutos de autonomía. Estándar de calidad N3i: En todos nuestros racks de seguridad instalamos UPS del tipo Line-Interactive o de Doble Conversión Online con alarmas de red SNMP.",
+      studyLink: "https://www.cacaav.com.ar/",
+      studyLinkText: "Sistemas de Respaldo de Energía y UPS - CACAAV"
+    },
+    {
+      id: 20,
+      category: "seguridad",
+      categoryName: "Seguridad y Trabajo en Altura",
+      question: "Al realizar el tendido de cables de red y montaje de cámaras de seguridad perimetrales exteriores en naves industriales a 5 metros de altura sobre andamios o plataformas elevadoras, ¿cuál es la medida de seguridad laboral obligatoria exigida por la ART y la normativa laboral?",
+      options: [
+        { text: "Usar calzado deportivo liviano para mejor agarre y sujetarse de las tuberías de gas si es necesario.", val: "A" },
+        { text: "Utilizar arnés de seguridad anticaídas de cuerpo completo con doble línea de vida (con amortiguador de impacto), casco de seguridad con barboquejo, calzado de seguridad con suela antideslizante, y anclar la línea de vida a un punto estructural sólido independiente de la plataforma de trabajo.", val: "B" },
+        { text: "Trabajar de forma rápida para reducir la exposición al peligro de altura y usar guantes de látex finos.", val: "C" },
+        { text: "Subir las herramientas sueltas en los bolsillos del pantalón y apoyarse sobre caños metálicos de cables.", val: "D" }
+      ],
+      answer: "B",
+      explanation: "Las caídas de altura son la principal causa de accidentes graves en el montaje de cámaras perimetrales. El uso del arnés con doble cola permite estar anclado el 100% del tiempo mientras se desplaza el operario. El casco debe contar con barboquejo (correa en el mentón) para que no se caiga ante un tropiezo. Estándar de calidad N3i: En N3i prohibimos el ascenso sin verificar previamente la habilitación de aptitud en altura del personal técnico y el estado de la línea de vida.",
+      studyLink: "https://www.cacaav.com.ar/",
+      studyLinkText: "Seguridad Laboral en Alturas - CACAAV"
+    }
+  ];
+
+  // STATE MANAGEMENT
+  let candidateData = {
+    nombre: "",
+    telefono: "",
+    email: ""
+  };
+  let currentQuestionIndex = 0;
+  let userAnswers = {}; // Map of questionId -> selectedOption (A, B, C, D)
+
+  // DOM ELEMENTS
+  const stepReg = document.getElementById("step-registration");
+  const stepQuiz = document.getElementById("step-quiz");
+  const stepLoading = document.getElementById("step-loading");
+  const stepResults = document.getElementById("step-results");
+
+  const inputNombre = document.getElementById("reg-nombre");
+  const inputTelefono = document.getElementById("reg-telefono");
+  const inputEmail = document.getElementById("reg-email");
+  const btnStart = document.getElementById("btn-start");
+
+  const quizQuestionIndex = document.getElementById("quiz-question-index");
+  const quizPercent = document.getElementById("quiz-percent");
+  const quizProgressFill = document.getElementById("quiz-progress-fill");
+  const questionCategory = document.getElementById("question-category");
+  const questionText = document.getElementById("question-text");
+  const optionsList = document.getElementById("options-list");
+  const btnPrev = document.getElementById("btn-prev");
+  const btnNext = document.getElementById("btn-next");
+
+  const loaderMsg = document.getElementById("loader-msg");
+
+  // INITIALIZATION AND REGISTRATION
+  btnStart.addEventListener("click", () => {
+    const nombre = inputNombre.value.trim();
+    const telefono = inputTelefono.value.trim();
+    const email = inputEmail.value.trim();
+
+    if (!nombre || !telefono || !email) {
+      alert("Por favor complete todos los datos requeridos.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Por favor ingrese un correo electrónico válido.");
+      return;
+    }
+
+    candidateData = { nombre, telefono, email };
+    
+    // Switch to quiz step
+    stepReg.classList.remove("active");
+    stepQuiz.classList.add("active");
+    
+    renderQuestion();
+  });
+
+  const btnDirectPostulation = document.getElementById("btn-direct-postulation");
+  if (btnDirectPostulation) {
+    btnDirectPostulation.addEventListener("click", () => {
+      const nombre = inputNombre.value.trim();
+      const telefono = inputTelefono.value.trim();
+      const email = inputEmail.value.trim();
+
+      if (!nombre || !telefono || !email) {
+        alert("Por favor complete todos los datos requeridos.");
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Por favor ingrese un correo electrónico válido.");
+        return;
+      }
+
+      candidateData = { nombre, telefono, email };
+
+      // Switch to loading step
+      stepReg.classList.remove("active");
+      stepLoading.classList.add("active");
+      loaderMsg.innerText = "Enviando postulación al equipo de N3i...";
+
+      fetch("https://formsubmit.co/ajax/n3ibhi@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          _subject: `NUEVO POSTULANTE DIRECTO (SIN TEST) - N3i`,
+          Nombre: candidateData.nombre,
+          Telefono: candidateData.telefono,
+          Email: candidateData.email,
+          Oficio: "Redes y Seguridad (Postulación directa sin realizar test)",
+          Comentarios: "El candidato prefirió postularse directamente sin realizar la autoevaluación técnica."
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Postulación directa enviada exitosamente:", data);
+        window.location.href = "https://n3i.com.ar/gracias/";
+      })
+      .catch(error => {
+        console.error("Error al enviar postulación directa:", error);
+        alert("Ocurrió un error al enviar el mail. Por favor, intente de nuevo.");
+        stepLoading.classList.remove("active");
+        stepReg.classList.add("active");
+      });
+    });
+  }
+
+  // QUIZ ENGINE
+  function renderQuestion() {
+    const currentQuestion = quizQuestions[currentQuestionIndex];
+    
+    // Update progress metadata
+    const questionNumber = currentQuestionIndex + 1;
+    const totalQuestions = quizQuestions.length;
+    const progressPercent = Math.round(((questionNumber - 1) / totalQuestions) * 100);
+    
+    quizQuestionIndex.textContent = `Pregunta ${questionNumber} de ${totalQuestions}`;
+    quizPercent.textContent = `${progressPercent}%`;
+    quizProgressFill.style.width = `${progressPercent}%`;
+
+    // Render text
+    questionCategory.textContent = currentQuestion.categoryName;
+    questionText.textContent = currentQuestion.question;
+
+    // Render options
+    optionsList.innerHTML = "";
+    currentQuestion.options.forEach(opt => {
+      const optionCard = document.createElement("div");
+      optionCard.className = "option-card";
+      if (userAnswers[currentQuestion.id] === opt.val) {
+        optionCard.classList.add("selected");
+      }
+
+      optionCard.innerHTML = `
+        <div class="option-letter">${opt.val}</div>
+        <span class="option-text-span">${opt.text}</span>
+      `;
+
+      optionCard.addEventListener("click", () => {
+        // Remove selection from others
+        document.querySelectorAll(".option-card").forEach(el => el.classList.remove("selected"));
+        optionCard.classList.add("selected");
+        
+        // Save answer
+        userAnswers[currentQuestion.id] = opt.val;
+        
+        // Enable next button
+        btnNext.removeAttribute("disabled");
+      });
+
+      optionsList.appendChild(optionCard);
+    });
+
+    // Add "No sé la respuesta" option
+    const dontKnowCard = document.createElement("div");
+    dontKnowCard.className = "option-card option-dont-know";
+    if (userAnswers[currentQuestion.id] === "NOSAE") {
+      dontKnowCard.classList.add("selected");
+    }
+
+    dontKnowCard.innerHTML = `
+      <div class="option-letter">?</div>
+      <span class="option-text-span" style="color: var(--text-muted); font-style: italic;">No sé la respuesta a esta pregunta / Saltar</span>
+    `;
+
+    dontKnowCard.addEventListener("click", () => {
+      document.querySelectorAll(".option-card").forEach(el => el.classList.remove("selected"));
+      dontKnowCard.classList.add("selected");
+      userAnswers[currentQuestion.id] = "NOSAE";
+      btnNext.removeAttribute("disabled");
+    });
+
+    optionsList.appendChild(dontKnowCard);
+
+    // Update navigation button states
+    if (currentQuestionIndex === 0) {
+      btnPrev.setAttribute("disabled", "true");
+    } else {
+      btnPrev.removeAttribute("disabled");
+    }
+
+    // Next button state
+    if (userAnswers[currentQuestion.id]) {
+      btnNext.removeAttribute("disabled");
+    } else {
+      btnNext.setAttribute("disabled", "true");
+    }
+
+    // Change next button text on final question
+    if (currentQuestionIndex === totalQuestions - 1) {
+      btnNext.innerHTML = `Finalizar Evaluación <span class="btn-icon">🏁</span>`;
+    } else {
+      btnNext.innerHTML = `Siguiente <span class="btn-icon">➡️</span>`;
+    }
+  }
+
+  // NAVIGATION EVENT LISTENERS
+  btnPrev.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      renderQuestion();
+    }
+  });
+
+  btnNext.addEventListener("click", () => {
+    const totalQuestions = quizQuestions.length;
+    
+    if (currentQuestionIndex < totalQuestions - 1) {
+      currentQuestionIndex++;
+      renderQuestion();
+    } else {
+      // Finished!
+      processResults();
+    }
+  });
+
+  // PROCESSING AND CALCULATING RESULTS
+  function processResults() {
+    stepQuiz.classList.remove("active");
+    stepLoading.classList.add("active");
+
+    const loadingMessages = [
+      "Analizando respuestas de infraestructura de cobre y fibra...",
+      "Evaluando conocimientos en CCTV analógico e IP...",
+      "Calificando configuraciones de red, DNS y Wi-Fi Mesh...",
+      "Calificando la matriz de seguridad física y lógica...",
+      "Sincronizando reporte de competencias técnicas...",
+      "Registrando veredicto de ingreso..."
+    ];
+
+    let msgIndex = 0;
+    const interval = setInterval(() => {
+      if (msgIndex < loadingMessages.length) {
+        loaderMsg.textContent = loadingMessages[msgIndex];
+        msgIndex++;
+      }
+    }, 600);
+
+    // Compute metrics
+    let correctCount = 0;
+    let categoryScores = {
+      normativa: { correct: 0, total: 5 },
+      tecnica: { correct: 0, total: 5 },
+      planos: { correct: 0, total: 5 },
+      seguridad: { correct: 0, total: 5 }
+    };
+
+    let incorrectList = [];
+
+    quizQuestions.forEach(q => {
+      const selected = userAnswers[q.id];
+      const isCorrect = (selected === q.answer);
+      
+      if (isCorrect) {
+        correctCount++;
+        categoryScores[q.category].correct++;
+      } else {
+        // Log details of incorrect answers for Regla de Oro
+        const selectedOptionText = q.options.find(o => o.val === selected)?.text || "No respondida (Saltada)";
+        const correctOptionText = q.options.find(o => o.val === q.answer).text;
+
+        incorrectList.push({
+          question: q.question,
+          categoryName: q.categoryName,
+          selectedVal: selected || "N/A",
+          selectedText: selectedOptionText,
+          correctVal: q.answer,
+          correctText: correctOptionText,
+          explanation: q.explanation,
+          studyLink: q.studyLink,
+          studyLinkText: q.studyLinkText
+        });
+      }
+    });
+
+    const score = Math.round((correctCount / quizQuestions.length) * 100);
+
+    // Categories boundaries
+    let category = "Ayudante";
+    if (score > 40 && score <= 70) {
+      category = "Oficial";
+    } else if (score > 70 && score <= 90) {
+      category = "Oficial Especializado";
+    } else if (score > 90) {
+      category = "Responsable Técnico / Oficial Especializado Líder";
+    }
+
+    // Verdict
+    let verdict = "no-apto";
+    let verdictText = "NO APTO PARA OBRA";
+    let verdictIcon = "❌";
+    let friendlyExplanation = "";
+
+    if (score >= 50 && score <= 70) {
+      verdict = "apto-supervision";
+      verdictText = "APTO CON SUPERVISIÓN";
+      verdictIcon = "⚠️";
+      friendlyExplanation = `
+        <strong>¡Hola ${candidateData.nombre}!</strong> Completaste la autoevaluación y has demostrado tener una buena base práctica en infraestructura y cableado estructurado, clasificando como <strong>Oficial</strong> en obra. 
+        <br><br>
+        Tenés claros los esquemas de ponchado y colocación de cámaras, pero observamos algunos puntos a reforzar en cálculo de presupuestos PoE, tendidos industriales de fibra óptica y configuraciones avanzadas de direccionamiento IP y switches administrables. En N3i cuidamos el estándar de seguridad lógica de nuestros clientes, por lo cual tu ingreso sugerido sería <strong>bajo la supervisión inicial</strong> de un Oficial Especializado. ¡Te invitamos a revisar los enlaces didácticos de estudio en la sección "Regla de Oro" al final de la página!
+      `;
+    } else if (score > 70) {
+      verdict = "apto";
+      verdictText = "APTO PARA OBRA";
+      verdictIcon = "✅";
+      friendlyExplanation = `
+        <strong>¡Excelente desempeño, ${candidateData.nombre}!</strong> Has superado con creces las expectativas de nuestra evaluación técnica de Redes y Seguridad, clasificando como <strong>${category}</strong>.
+        <br><br>
+        Demostrás un dominio sólido tanto en la parte de infraestructura física (cableado estructurado, peinado de racks, enlaces de fibra) y videovigilancia (DVR/NVR e instalación y limitaciones de cámaras Wi-Fi residenciales Tapo/Ezviz/Movi), como en el direccionamiento IP de red local, conectividad Mesh y la seguridad eléctrica (UPS/PAT) y lógica (VLANs). Tu perfil tiene la autonomía y la solvencia técnica necesarias para integrarse directamente a los proyectos más exigentes de N3i. ¡Felicitaciones!
+      `;
+    } else {
+      verdict = "no-apto";
+      verdictText = "NO APTO (REQUIERE INDUCCIÓN)";
+      verdictIcon = "❌";
+      friendlyExplanation = `
+        <strong>Gracias por tu tiempo, ${candidateData.nombre}.</strong> Tras procesar la autoevaluación técnica, observamos que tu puntaje no alcanza los mínimos requeridos para desempeñarte de forma autónoma en obra como oficial técnico de redes de N3i, clasificando en la categoría de <strong>Ayudante</strong>.
+        <br><br>
+        En nuestro rubro la correcta conectorización, el cumplimiento de distancias máximas y el resguardo de la red local contra intrusos son esenciales. Te recomendamos revisar minuciosamente las justificaciones técnicas y consultar las <strong>academias y recursos de estudio recomendados</strong> en la sección <strong>"Regla de Oro"</strong> al final de esta página. Te servirán como una excelente guía de estudio para capacitarte y volver a postularte con nosotros en el futuro.
+      `;
+    }
+
+    // Calculate competencies percentages
+    const compNormativa = Math.round((categoryScores.normativa.correct / categoryScores.normativa.total) * 100);
+    const compTecnica = Math.round((categoryScores.tecnica.correct / categoryScores.tecnica.total) * 100);
+    const compPlanos = Math.round((categoryScores.planos.correct / categoryScores.planos.total) * 100);
+    const compSeguridad = Math.round((categoryScores.seguridad.correct / categoryScores.seguridad.total) * 100);
+
+    // Build plain text summary of incorrect answers for the email
+    let emailDetail = "";
+    if (incorrectList.length === 0) {
+      emailDetail = "¡El candidato respondió todas las preguntas de manera correcta!";
+    } else {
+      incorrectList.forEach((item, index) => {
+        emailDetail += `${index + 1}) PREGUNTA: ${item.question}\n`;
+        emailDetail += `   - Respuesta dada: (${item.selectedVal}) ${item.selectedText}\n`;
+        emailDetail += `   - Respuesta correcta: (${item.correctVal}) ${item.correctText}\n`;
+        emailDetail += `   - Norma / Justificación: ${item.explanation}\n`;
+        emailDetail += `   - Recurso de estudio sugerido: ${item.studyLinkText} (${item.studyLink})\n\n`;
+      });
+    }
+
+    let postuladoEnviado = false;
+    const postularseAlInicio = document.getElementById("reg-postularse").checked;
+
+    function sendEmail() {
+      return fetch("https://formsubmit.co/ajax/n3ibhi@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          _subject: `EXAMEN REDES Y SEGURIDAD: ${candidateData.nombre} - Puntaje: ${score}/100`,
+          Nombre: candidateData.nombre,
+          Telefono: candidateData.telefono,
+          Email: candidateData.email,
+          Puntaje: `${score}/100`,
+          Categoria_Sugerida: category,
+          Veredicto_Final: verdictText,
+          "Comp. Cableado/Racks": `${compNormativa}%`,
+          "Comp. Seguridad CCTV": `${compTecnica}%`,
+          "Comp. Redes/Wi-Fi Mesh": `${compPlanos}%`,
+          "Comp. Seguridad Fisica/Logica": `${compSeguridad}%`,
+          "Preguntas Correctas": correctCount,
+          "Preguntas Incorrectas": incorrectList.length,
+          "DETALLE EXAMEN (Regla de Oro)": emailDetail
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Resultados enviados por mail exitosamente:", data);
+        postuladoEnviado = true;
+        document.getElementById("postulacion-enviada-msg").style.display = "inline-flex";
+        document.getElementById("btn-postularse-post").style.display = "none";
+      })
+      .catch(error => {
+        console.error("Error al enviar reporte por email:", error);
+        alert("Ocurrió un error al enviar el mail. Por favor, intente de nuevo.");
+      });
+    }
+
+    if (postularseAlInicio) {
+      sendEmail().finally(() => {
+        finalizeUI();
+      });
+    } else {
+      finalizeUI();
+    }
+
+    function finalizeUI() {
+      // Transition out of loading to results
+      clearInterval(interval);
+      stepLoading.classList.remove("active");
+      stepResults.classList.add("active");
+      
+      // Populate results UI
+      document.getElementById("res-meta").innerHTML = `<strong>Postulante:</strong> ${candidateData.nombre} | <strong>Celular:</strong> ${candidateData.telefono} | <strong>Email:</strong> ${candidateData.email}`;
+      document.getElementById("res-score-value").textContent = score;
+      document.getElementById("res-category").textContent = category;
+      
+      // Update verdict box classes
+      const vBox = document.getElementById("res-verdict-box");
+      vBox.className = `verdict-box ${verdict}`;
+      document.getElementById("res-verdict-icon").textContent = verdictIcon;
+      document.getElementById("res-verdict-text").textContent = verdictText;
+      
+      // Set friendly explanation
+      document.getElementById("res-friendly-explanation").innerHTML = friendlyExplanation;
+
+      // Update ring SVG
+      const scoreRing = document.getElementById("score-ring");
+      const radius = 45;
+      const circumference = 2 * Math.PI * radius; // ~282.7
+      const offset = circumference - (score / 100) * circumference;
+      scoreRing.style.strokeDashoffset = offset;
+
+      // Update progress bars values and widths
+      document.getElementById("comp-val-normativa").textContent = `${compNormativa}%`;
+      document.getElementById("comp-fill-normativa").style.width = `${compNormativa}%`;
+
+      document.getElementById("comp-val-tecnica").textContent = `${compTecnica}%`;
+      document.getElementById("comp-fill-tecnica").style.width = `${compTecnica}%`;
+
+      document.getElementById("comp-val-planos").textContent = `${compPlanos}%`;
+      document.getElementById("comp-fill-planos").style.width = `${compPlanos}%`;
+
+      document.getElementById("comp-val-seguridad").textContent = `${compSeguridad}%`;
+      document.getElementById("comp-fill-seguridad").style.width = `${compSeguridad}%`;
+
+      // Show/Hide post-apply buttons based on status
+      const btnPost = document.getElementById("btn-postularse-post");
+      const msgPost = document.getElementById("postulacion-enviada-msg");
+      if (postuladoEnviado) {
+        btnPost.style.display = "none";
+        msgPost.style.display = "inline-flex";
+      } else {
+        btnPost.style.display = "inline-flex";
+        msgPost.style.display = "none";
+        
+        // Add click listener to the post-apply button
+        btnPost.onclick = () => {
+          btnPost.setAttribute("disabled", "true");
+          btnPost.innerHTML = `Enviando... <span class="btn-icon">⏳</span>`;
+          sendEmail();
+        };
+      }
+
+      // Render Regla de Oro (Feedback Educativo)
+      const feedbackSection = document.getElementById("feedback-section");
+      const feedbackList = document.getElementById("feedback-list");
+      
+      if (incorrectList.length > 0) {
+        feedbackSection.style.display = "block";
+        feedbackList.innerHTML = "";
+
+        incorrectList.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "feedback-card";
+          
+          // Split explanation safely
+          let explanationPart = "";
+          let standardPart = "";
+          if (item.explanation.includes("Estándar")) {
+            explanationPart = item.explanation.split("Estándar")[0].trim();
+            if (explanationPart.endsWith(".")) {
+              explanationPart = explanationPart.slice(0, -1);
+            }
+            standardPart = "Estándar" + item.explanation.split("Estándar")[1];
+          } else {
+            explanationPart = item.explanation;
+            standardPart = "En N3i exigimos la aplicación estricta de las normas de calidad, cableado estructurado y seguridad de datos, utilizando componentes normalizados y configuraciones seguras en racks y servidores.";
+          }
+
+          card.innerHTML = `
+            <div class="feedback-card-header">
+              <h4 class="feedback-question-title">${item.question}</h4>
+              <span class="question-category-tag" style="margin-bottom:0; background:rgba(99, 102, 241, 0.1); color:#6366f1;">${item.categoryName}</span>
+            </div>
+            
+            <div class="feedback-answers">
+              <div class="ans-box wrong">
+                <strong>Tu Respuesta / Estado</strong>
+                <span>(${item.selectedVal}) ${item.selectedText}</span>
+              </div>
+              <div class="ans-box correct">
+                <strong>Respuesta Correcta</strong>
+                <span>(${item.correctVal}) ${item.correctText}</span>
+              </div>
+            </div>
+
+            <div class="feedback-details">
+              <div class="detail-block">
+                <div class="detail-block-title">
+                  <span>⚠️</span> Concepto Técnico y Norma Vulnerada
+                </div>
+                <div class="detail-block-desc">
+                  ${explanationPart}
+                </div>
+              </div>
+              
+              <div class="detail-block" style="border-color: rgba(99, 102, 241, 0.2);">
+                <div class="detail-block-title" style="color: var(--accent);">
+                  <span>🛠️</span> Estándar de Ejecución de Calidad N3i
+                </div>
+                <div class="detail-block-desc">
+                  ${standardPart}
+                </div>
+              </div>
+
+              <div class="detail-block" style="border-color: rgba(59, 130, 246, 0.25);">
+                <div class="detail-block-title" style="color: #3b82f6;">
+                  <span>📖</span> Recurso de Estudio Recomendado
+                </div>
+                <div class="detail-block-desc">
+                  Para profundizar y estudiar este tema, te sugerimos repasar el siguiente material:<br>
+                  <a href="${item.studyLink}" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
+                    ${item.studyLinkText} <span>🔗</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+          feedbackList.appendChild(card);
+        });
+      } else {
+        feedbackSection.style.display = "none";
+      }
+    }
+  }
+
+  // Print PDF action
+  document.getElementById("btn-print-pdf").addEventListener("click", () => {
+    window.print();
+  });
+</script>
