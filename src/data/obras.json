@@ -1,6 +1,19 @@
 {
   "obras": [
     {
+      "id": "obra_1781924328061",
+      "title": "Diseño de Puerta Arco 1/2 Punto",
+      "category": "Herrería y Estructuras Metálicas",
+      "location": "19 de Mayo 100 (8000 Bahia Blanca)",
+      "description": "Diseño y confección de puerta para quincho, se realiza en herrería y estampadora con estructura metálica de doble hoja, perfiles soldados, bisagras reforzadas a 0,95 m y reticulado de vidrio bisel de 0,33 x 0,44 m, logrando una pieza sólida, funcional y estética para uso exterior.",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1781924327812_img_1.webp",
+        "/assets/img/obra_1781924327812_img_2.webp"
+      ],
+      "date": "2026-06-20T02:58:48.061Z"
+    },
+    {
       "id": "obra_1781308169940",
       "title": "Sucursal Selu BHI",
       "category": "Obras llave en mano",
