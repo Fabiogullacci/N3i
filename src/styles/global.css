@@ -1965,6 +1965,14 @@ textarea.form-control {
     padding-top: 40px;
   }
   
+  .services-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .service-card {
+    padding: 24px !important;
+  }
+  
   .hero-content {
     text-align: center;
   }
