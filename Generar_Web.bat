@@ -17,6 +17,7 @@ if exist gracias rmdir /S /Q gracias
 if exist herramientas rmdir /S /Q herramientas
 if exist obras rmdir /S /Q obras
 if exist portal rmdir /S /Q portal
+if exist downloads rmdir /S /Q downloads
 
 if exist index.html del /Q index.html
 if exist robots.txt del /Q robots.txt
