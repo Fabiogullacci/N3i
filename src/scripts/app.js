@@ -470,6 +470,19 @@ ${message}`;
         if (menu !== shareMenu) menu.classList.remove('active');
       });
 
+      // Adjust alignment dynamically to prevent screen overflow (mobile/tablet/desktop)
+      const rect = shareButton.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      
+      // If menu (min-width: 190px) + margin overflows the right edge, align it to the right of the button
+      if (rect.left + 200 > viewportWidth) {
+        shareMenu.style.left = 'auto';
+        shareMenu.style.right = '0';
+      } else {
+        shareMenu.style.left = '0';
+        shareMenu.style.right = 'auto';
+      }
+
       shareMenu.classList.toggle('active');
     });
 
