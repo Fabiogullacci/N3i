@@ -355,4 +355,276 @@ ${message}`;
       }
     });
   });
+
+  // =========================================================================
+  // 8. Shareable Headings & Hash Deep Linking (Premium Sharing System)
+  // =========================================================================
+  
+  // Normalize text for clean comparisons
+  const normalizeText = (text) => {
+    return text
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // removes accents
+      .replace(/[¿?¡!]/g, ""); // removes punctuation
+  };
+
+  // Find all main titles
+  const shareableTitles = document.querySelectorAll('h2.section-title, .hero-title');
+
+  shareableTitles.forEach(title => {
+    const text = title.textContent.trim();
+    if (!text) return;
+
+    // Make the title container interactive
+    title.classList.add('shareable-heading');
+    title.style.cursor = 'pointer';
+
+    // Store original text for matching
+    title.setAttribute('data-anchor-text', text);
+
+    // If the section/parent has an ID, store that too
+    const parentSection = title.closest('section');
+    if (parentSection && parentSection.id) {
+      title.setAttribute('data-section-id', parentSection.id);
+    }
+
+    // Create share container and button
+    const shareContainer = document.createElement('div');
+    shareContainer.className = 'heading-share-container';
+    // Prevent title click events from bubbling if they click the dropdown
+    shareContainer.addEventListener('click', (e) => e.stopPropagation());
+
+    const shareButton = document.createElement('button');
+    shareButton.className = 'heading-share-icon';
+    shareButton.setAttribute('aria-label', 'Compartir sección');
+    shareButton.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+      </svg>
+    `;
+    
+    // Create sharing dropdown menu
+    const shareMenu = document.createElement('div');
+    shareMenu.className = 'heading-share-menu';
+    
+    // Create menu options
+    const copyOption = document.createElement('button');
+    copyOption.className = 'heading-share-item copy-item';
+    copyOption.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      Copiar Enlace
+    `;
+
+    const whatsappOption = document.createElement('button');
+    whatsappOption.className = 'heading-share-item whatsapp-item';
+    whatsappOption.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+      </svg>
+      Compartir WhatsApp
+    `;
+
+    const emailOption = document.createElement('button');
+    emailOption.className = 'heading-share-item email-item';
+    emailOption.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+        <polyline points="22,6 12,13 2,6"></polyline>
+      </svg>
+      Enviar por Correo
+    `;
+
+    shareMenu.appendChild(copyOption);
+    shareMenu.appendChild(whatsappOption);
+    shareMenu.appendChild(emailOption);
+    
+    shareContainer.appendChild(shareButton);
+    shareContainer.appendChild(shareMenu);
+    title.appendChild(shareContainer);
+
+    // Generate hash anchor text (use section ID if available for standard sections, else use title text)
+    const getAnchorHash = () => {
+      if (parentSection && parentSection.id) {
+        return parentSection.id;
+      }
+      return text;
+    };
+
+    const getShareUrl = () => {
+      const hash = getAnchorHash();
+      return `${window.location.origin}${window.location.pathname}#${encodeURIComponent(hash)}`;
+    };
+
+    // Toggle menu open
+    shareButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      
+      // Close all other share menus first
+      document.querySelectorAll('.heading-share-menu').forEach(menu => {
+        if (menu !== shareMenu) menu.classList.remove('active');
+      });
+
+      shareMenu.classList.toggle('active');
+    });
+
+    // Option 1: Copy Link
+    copyOption.addEventListener('click', () => {
+      const url = getShareUrl();
+      const hash = getAnchorHash();
+      
+      navigator.clipboard.writeText(url).then(() => {
+        // Update browser hash
+        window.location.hash = encodeURIComponent(hash);
+        
+        shareButton.classList.add('copied');
+        showToastNotification(document.documentElement.lang === 'en' ? 'Link copied!' : '¡Enlace copiado al portapapeles!');
+        
+        setTimeout(() => {
+          shareButton.classList.remove('copied');
+        }, 1500);
+      }).catch(err => console.error(err));
+      
+      shareMenu.classList.remove('active');
+    });
+
+    // Option 2: Share via WhatsApp
+    whatsappOption.addEventListener('click', () => {
+      const url = getShareUrl();
+      const titleText = parentSection && parentSection.id ? `Sección ${text}` : text;
+      const isEnglish = document.documentElement.lang === 'en';
+      const msg = isEnglish
+        ? `Check out this section from N3i Engineering & Maintenance: ${titleText} ➔ ${url}`
+        : `Mirá esta sección de N3i Engineering & Maintenance: ${titleText} ➔ ${url}`;
+      
+      const wpUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(wpUrl, '_blank', 'noopener,noreferrer');
+      
+      // Update hash in browser
+      window.location.hash = encodeURIComponent(getAnchorHash());
+      
+      shareMenu.classList.remove('active');
+    });
+
+    // Option 3: Share via Email
+    emailOption.addEventListener('click', () => {
+      const url = getShareUrl();
+      const isEnglish = document.documentElement.lang === 'en';
+      const subject = isEnglish 
+        ? `N3i - ${text}`
+        : `N3i - ${text}`;
+      const body = isEnglish
+        ? `Hi,\n\nI wanted to share this section of N3i Engineering & Maintenance with you:\n\n${text}\nLink: ${url}\n\nRegards.`
+        : `Hola,\n\nTe comparto esta sección del sitio de N3i Engineering & Maintenance:\n\n${text}\nEnlace: ${url}\n\nSaludos.`;
+      
+      window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+      // Update hash in browser
+      window.location.hash = encodeURIComponent(getAnchorHash());
+      
+      shareMenu.classList.remove('active');
+    });
+
+    // Title text click scroll and copy shortcut
+    title.addEventListener('click', () => {
+      const hash = getAnchorHash();
+      window.location.hash = encodeURIComponent(hash);
+    });
+  });
+
+  // Global click to close any open share menus
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.heading-share-menu').forEach(menu => {
+      menu.classList.remove('active');
+    });
+  });
+
+  // Premium Toast Notification System
+  const showToastNotification = (message) => {
+    let toast = document.getElementById('toast-notification');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'toast-notification';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    
+    // Trigger animation frame
+    toast.classList.remove('show');
+    void toast.offsetWidth; // Force reflow
+    toast.classList.add('show');
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
+  };
+
+  // Scroll to hash function supporting IDs and text matches
+  const scrollToHash = () => {
+    const rawHash = window.location.hash.substring(1);
+    if (!rawHash) return;
+
+    const decodedHash = decodeURIComponent(rawHash);
+    
+    // 1. Try finding by ID directly
+    let element = document.getElementById(decodedHash);
+
+    // 2. Try normalized ID matching (replace spaces with hyphens)
+    if (!element) {
+      const normalizedHash = decodedHash.replace(/\s+/g, '-').toLowerCase();
+      element = document.getElementById(normalizedHash) || 
+                document.getElementById(decodedHash.replace(/\s+/g, '_').toLowerCase()) ||
+                document.getElementById(decodedHash.toLowerCase());
+    }
+
+    // 3. Try finding by Heading Text / Subtitle Text
+    if (!element) {
+      const headings = document.querySelectorAll('h1, h2, h3, h4, section, div[id]');
+      const targetNormalized = normalizeText(decodedHash);
+      
+      for (const h of headings) {
+        // Match cached data-anchor-text
+        const anchorText = h.getAttribute('data-anchor-text');
+        if (anchorText && normalizeText(anchorText) === targetNormalized) {
+          element = h;
+          break;
+        }
+        // Match exact text content
+        if (normalizeText(h.textContent) === targetNormalized) {
+          element = h;
+          break;
+        }
+        // Match subtitle if parent has it
+        const subtitle = h.querySelector('.section-subtitle');
+        if (subtitle && normalizeText(subtitle.textContent) === targetNormalized) {
+          element = h;
+          break;
+        }
+      }
+    }
+
+    // 4. Scroll smoothly to target with header offset
+    if (element) {
+      const headerOffset = window.innerWidth <= 768 ? 95 : 115;
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Check on load with short delay to allow layout calculation
+  setTimeout(scrollToHash, 250);
+
+  // Check on hashchange
+  window.addEventListener('hashchange', scrollToHash);
 });
+
