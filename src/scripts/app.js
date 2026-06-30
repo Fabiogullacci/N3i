@@ -512,8 +512,8 @@ ${message}`;
       const titleText = parentSection && parentSection.id ? `Sección ${text}` : text;
       const isEnglish = document.documentElement.lang === 'en';
       const msg = isEnglish
-        ? `Check out this section from N3i Engineering & Maintenance: ${titleText} ➔ ${url}`
-        : `Mirá esta sección de N3i Engineering & Maintenance: ${titleText} ➔ ${url}`;
+        ? `Check out this section from N3i Engineering & Maintenance:\n*${titleText}*\n\n${url}`
+        : `Mirá esta sección de N3i Engineering & Maintenance:\n*${titleText}*\n\n${url}`;
       
       const wpUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
       window.open(wpUrl, '_blank', 'noopener,noreferrer');
