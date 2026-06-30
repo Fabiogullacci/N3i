@@ -1,6 +1,21 @@
 {
   "obras": [
     {
+      "id": "obra_1782788568693",
+      "title": "Quincho Garaje (Diseño y Proyecto)",
+      "category": "Construcción y Mantenimiento Integral",
+      "location": "Florida 534 (8000 Bahia Blanca)",
+      "description": "Construcción de quincho-garaje de grandes dimensiones en mampostería de ladrillo hueco, con ejecución de fogón de 4×1 m con pulmón de tiro en obra de elevación, montado sobre andamios tubulares para trabajo en altura durante el levantamiento de hiladas; el proyecto fue desarrollado previamente mediante render de layout en 3D que definió la distribución funcional del espacio combinando zona de estar, mesa de comedor con bancos, sector de parrilla/cocina integrada, taller con paneles de herramientas y cochera, logrando integrar en una misma nave múltiples funciones del living social de la vivienda con una propuesta de diseño moderna y de uso intensivo.",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1782788568105_img_1.webp",
+        "/assets/img/obra_1782788568105_img_2.webp",
+        "/assets/img/obra_1782788568105_img_3.webp",
+        "/assets/img/obra_1782788568105_img_4.webp"
+      ],
+      "date": "2026-06-30T03:02:48.693Z"
+    },
+    {
       "id": "obra_1781924328061",
       "title": "Diseño de Puerta Arco 1/2 Punto",
       "category": "Herrería y Estructuras Metálicas",
