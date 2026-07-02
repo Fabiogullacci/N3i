@@ -1,6 +1,21 @@
 {
   "obras": [
     {
+      "id": "obra_1782993967376",
+      "title": "Construcción en seco de oficinas y espacios de trabajo.",
+      "category": "Construcción en Seco y Terminaciones",
+      "location": "Grupo Dietrich Camiones (TREJO Hnos.) (8000 Bahia Blanca)",
+      "description": "En instalaciones de Volkswagen Camiones, Bahía Blanca. El trabajo consistió en la tabiquería interior completa con sistema de steel frame con perfiles galvanizados, montantes y soleras, conformando la distribución de sectores administrativos y operativos dentro de la nave industrial existente. Se fabricaron e instalaron paneles y hojas de puerta en estructura metálica galvanizada, con andamiaje para trabajos en altura. La solución en construcción en seco permitió una ejecución ágil, limpia y de alta precisión dimensional.",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1782993966119_img_1.webp",
+        "/assets/img/obra_1782993966119_img_2.webp",
+        "/assets/img/obra_1782993966119_img_3.webp",
+        "/assets/img/obra_1782993966119_img_4.webp"
+      ],
+      "date": "2026-07-02T12:06:07.376Z"
+    },
+    {
       "id": "obra_1782788568693",
       "title": "Quincho Garaje (Diseño y Proyecto)",
       "category": "Construcción y Mantenimiento Integral",
