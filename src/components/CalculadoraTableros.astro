@@ -1,0 +1,1168 @@
+---
+// src/components/CalculadoraTableros.astro
+// Calculadora de Protecciones y Diseño de Tableros Eléctricos - Theme Amber/Yellow (#FF9100)
+---
+<section class="section section-alt" id="calc-tableros">
+  <div class="container">
+    <div class="section-header reveal" style="margin: 0 auto 50px auto; text-align: center;">
+      <span class="section-subtitle" style="color: #FF9100;">Ingeniería Electromecánica</span>
+      <h2 class="section-title">Calculadora de Protecciones y Diseño de Tableros</h2>
+      <p class="section-desc">
+        Diseñe y calcule tableros eléctricos completos (General y Seccionales). Determine la cantidad de circuitos, dimensione interruptores termomagnéticos (térmicas), diferenciales (disyuntores), secciones de cables, borneras repartidoras y balanceo de fases según la reglamentación de la AEA.
+      </p>
+    </div>
+
+    <div class="calculator-grid" style="display: grid; grid-template-columns: 1fr; gap: 30px; align-items: start;">
+      <!-- SECCIÓN 1: FORMULARIO DE ENTRADA -->
+      <div class="card reveal" style="border-top: 4px solid #FF9100; padding: 25px;">
+        <h3 style="color: #FF9100; border-bottom: 1px solid rgba(255, 145, 0, 0.15); padding-bottom: 10px; margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 8px;">
+          <span>⚡</span> Parámetros del Suministro y Carga
+        </h3>
+
+        <div class="form-group-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px;">
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Tipo de Red / Suministro</label>
+            <select id="tab-red" class="calc-select" style="border-color: #FF9100; width: 100%; padding: 10px; border-radius: 6px;">
+              <option value="monofasica" selected>Monofásico (220V)</option>
+              <option value="trifasica">Trifásico (380V)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Marca de Protecciones</label>
+            <select id="tab-marca" class="calc-select" style="width: 100%; padding: 10px; border-radius: 6px;">
+              <option value="schneider" selected>Schneider Electric (Acti9 / Easy9)</option>
+              <option value="siemens">Siemens (Sentron 5SY / 5SL)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Factor de Simultaneidad (Fs)</label>
+            <input type="number" id="tab-simultaneidad" class="calc-input" value="0.8" min="0.4" max="1.0" step="0.05" style="width: 100%; padding: 10px; border-radius: 6px;" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Factor para estimar el consumo simultáneo real de la obra.</small>
+          </div>
+        </div>
+
+        <!-- CATEGORÍA: USOS GENERALES -->
+        <h4 style="color: var(--text-primary); margin-top: 20px; margin-bottom: 12px; font-size: 1.05rem; border-left: 3px solid #FF9100; padding-left: 8px;">1. Circuitos de Uso General (TUG / IUG)</h4>
+        <div class="form-group-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px;">
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Cantidad de Bocas de Tomacorriente 10A (TUG)</label>
+            <input type="number" id="tab-bocas-tug" class="calc-input" value="12" min="0" step="1" style="width: 100%;" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Máx 15 bocas por circuito. Carga estimada: 2200VA c/u.</small>
+          </div>
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Cantidad de Luminarias LED Estándar (IUG)</label>
+            <input type="number" id="tab-bocas-iug" class="calc-input" value="15" min="0" step="1" style="width: 100%;" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Máx 15 bocas por circuito. Carga estimada: 1500VA c/u.</small>
+          </div>
+        </div>
+
+        <!-- CATEGORÍA: USOS ESPECIALES -->
+        <h4 style="color: var(--text-primary); margin-top: 20px; margin-bottom: 12px; font-size: 1.05rem; border-left: 3px solid #FF9100; padding-left: 8px;">2. Circuitos de Uso Especial (TUE / IUE)</h4>
+        <div class="form-group-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px;">
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Tomacorrientes 20A / Cargas Especiales (TUE)</label>
+            <input type="number" id="tab-bocas-tue" class="calc-input" value="3" min="0" step="1" style="width: 100%;" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Para hornos, bombas pesadas, etc. Carga: 3300VA por circuito (máx 12 tomas).</small>
+          </div>
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Luminarias Proyectores / Exterior (IUE)</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="number" id="tab-bocas-iue" class="calc-input" value="0" min="0" step="1" placeholder="Cant." style="flex: 1;" />
+              <input type="number" id="tab-w-iue" class="calc-input" value="150" min="20" step="50" placeholder="Watts c/u" style="flex: 1;" />
+            </div>
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Proyectores LED de patios, galpones, reflectores.</small>
+          </div>
+        </div>
+
+        <!-- CATEGORÍA: MOTORES Y SALA DE MÁQUINAS -->
+        <h4 style="color: var(--text-primary); margin-top: 20px; margin-bottom: 12px; font-size: 1.05rem; border-left: 3px solid #FF9100; padding-left: 8px;">3. Fuerza Motriz y Elevación</h4>
+        <div class="form-group-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px;">
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Motores Monofásicos (Bombas de Agua, Compresores)</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="number" id="tab-motores-mono" class="calc-input" value="1" min="0" step="1" placeholder="Cant." style="flex: 1;" />
+              <select id="tab-hp-mono" class="calc-select" style="flex: 1.5;">
+                <option value="0.5">0.5 HP (373W)</option>
+                <option value="0.75">0.75 HP (560W)</option>
+                <option value="1" selected>1.0 HP (746W)</option>
+                <option value="1.5">1.5 HP (1119W)</option>
+                <option value="2">2.0 HP (1492W)</option>
+                <option value="3">3.0 HP (2238W)</option>
+              </select>
+            </div>
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Se calcula arranque directo (curva D) y circuito exclusivo.</small>
+          </div>
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Motores Trifásicos (Solo si red es Trifásica)</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="number" id="tab-motores-tri" class="calc-input" value="0" min="0" step="1" placeholder="Cant." style="flex: 1;" />
+              <select id="tab-hp-tri" class="calc-select" style="flex: 1.5;">
+                <option value="1">1.0 HP (746W)</option>
+                <option value="2" selected>2.0 HP (1492W)</option>
+                <option value="3">3.0 HP (2238W)</option>
+                <option value="5">5.0 HP (3730W)</option>
+                <option value="7.5">7.5 HP (5595W)</option>
+                <option value="10">10.0 HP (7460W)</option>
+              </select>
+            </div>
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Desactivado en red monofásica. Curva D termomagnética.</small>
+          </div>
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Ascensores / Montacargas (Salas de Máquinas)</label>
+            <input type="number" id="tab-ascensores" class="calc-input" value="0" min="0" step="1" style="width: 100%;" />
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Se asumen equipos estándar trifásicos de 7.5 HP cada uno.</small>
+          </div>
+        </div>
+
+        <!-- CATEGORÍA: AIRES ACONDICIONADOS -->
+        <h4 style="color: var(--text-primary); margin-top: 20px; margin-bottom: 12px; font-size: 1.05rem; border-left: 3px solid #FF9100; padding-left: 8px;">4. Climatización de Gran Porte (Rooftop, Central, VRV)</h4>
+        <div class="form-group-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 10px;">
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Cantidad de Unidades de AC</label>
+            <input type="number" id="tab-ac-cant" class="calc-input" value="1" min="0" step="1" style="width: 100%;" />
+          </div>
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 6px;">Capacidad por Unidad (Frigorías)</label>
+            <select id="tab-ac-frigorias" class="calc-select" style="width: 100%; padding: 10px; border-radius: 6px;">
+              <option value="3000">3000 Frigorías (Consumo ~1.1 kW)</option>
+              <option value="4500">4500 Frigorías (Consumo ~1.6 kW)</option>
+              <option value="6000">6000 Frigorías (Consumo ~2.2 kW)</option>
+              <option value="9000" selected>9000 Frigorías (Consumo ~3.3 kW) - Trifásico opcional</option>
+              <option value="15000">15000 Frigorías (Consumo ~5.5 kW) - Trifásico recomendado</option>
+              <option value="20000">20000 Frigorías (Consumo ~7.3 kW) - Trifásico requerido</option>
+            </select>
+            <small style="color: var(--text-muted); font-size: 0.72rem; display: block; margin-top: 4px;">Calculado a base de COP promedio 3.2.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: INTERFAZ DE RESULTADOS & DIAGRAMAS -->
+      <div class="card reveal" style="border-top: 4px solid #FF9100; padding: 25px; transition-delay: 0.1s;">
+        <!-- PESTAÑAS DE VISUALIZACIÓN -->
+        <div class="tab-buttons" style="display: flex; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; overflow-x: auto; white-space: nowrap;">
+          <button type="button" class="tab-btn active" data-tab="tab-riel-din" style="background: rgba(255, 145, 0, 0.1); color: #FF9100; border: 1px solid #FF9100; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            🎛️ Esquema de Riel DIN
+          </button>
+          <button type="button" class="tab-btn" data-tab="tab-planilla" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            📋 Planilla de Circuitos
+          </button>
+          <button type="button" class="tab-btn" id="btn-tab-balanceo" data-tab="tab-balanceo" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: none;">
+            ⚖️ Balanceo de Fases
+          </button>
+          <button type="button" class="tab-btn" data-tab="tab-consejos" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            💡 Optimización y Consejos
+          </button>
+        </div>
+
+        <!-- CONTENIDO PESTAÑA 1: RIEL DIN VISUAL -->
+        <div id="tab-riel-din" class="tab-content">
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 20px;">
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
+              Representación esquemática del <strong>Riel DIN</strong> del Tablero General. Las protecciones se montan normalizadas en gabinetes modulares.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; font-size: 0.85rem;">
+              <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 15px; height: 15px; background: #d32f2f; border-radius: 3px; display: inline-block;"></span> Termomagnética (IGA/Térmica)</span>
+              <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 15px; height: 15px; background: #1976d2; border-radius: 3px; display: inline-block;"></span> Diferencial (Disyuntor RCD)</span>
+              <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 15px; height: 15px; background: #388e3c; border-radius: 3px; display: inline-block;"></span> Protector de Sobretensión (DPS)</span>
+            </div>
+          </div>
+
+          <!-- EL RIEL DIN -->
+          <div style="position: relative; padding: 25px 15px; background: linear-gradient(180deg, #333 0%, #1a1a1a 100%); border-radius: 12px; border: 4px solid #444; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); margin-bottom: 20px; overflow-x: auto;">
+            <!-- El riel metálico interno -->
+            <div style="position: absolute; left: 0; right: 0; top: 50%; height: 35px; transform: translateY(-50%); background: linear-gradient(180deg, #777 0%, #999 40%, #555 70%, #888 100%); border-top: 1px solid #aaa; border-bottom: 1px solid #333; z-index: 1;"></div>
+            
+            <!-- Contenedor de módulos de interruptores -->
+            <div id="riel-din-contenedor" style="position: relative; display: flex; gap: 6px; z-index: 2; align-items: flex-end; min-width: 600px;">
+              <!-- Cargado dinámicamente por JS -->
+            </div>
+          </div>
+
+          <div class="result-summary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px;">
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center;">
+              <span style="font-size: 0.78rem; color: var(--text-muted); display: block;">Módulos DIN Ocupados:</span>
+              <strong id="tab-res-modulos" style="font-size: 1.4rem; color: #FF9100;">0</strong>
+              <small style="color: var(--text-muted); font-size: 0.7rem; display: block; margin-top: 2px;">1 módulo = 18 mm.</small>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center;">
+              <span style="font-size: 0.78rem; color: var(--text-muted); display: block;">Gabinete Recomendado:</span>
+              <strong id="tab-res-gabinete" style="font-size: 1.4rem; color: var(--text-primary);">0 Bocas</strong>
+              <small id="tab-res-reserva" style="color: #8CC63F; font-size: 0.7rem; display: block; margin-top: 2px;">+20% reserva libre.</small>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center;">
+              <span style="font-size: 0.78rem; color: var(--text-muted); display: block;">Demanda Simultánea (DMPS):</span>
+              <strong id="tab-res-dmps" style="font-size: 1.4rem; color: var(--text-primary);">0.0 kW</strong>
+              <small id="tab-res-amperes" style="color: var(--text-muted); font-size: 0.7rem; display: block; margin-top: 2px;">0.0 A por fase.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTENIDO PESTAÑA 2: PLANILLA DE CIRCUITOS -->
+        <div id="tab-planilla" class="tab-content" style="display: none;">
+          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.25);">
+            <table style="width: 100%; border-collapse: collapse; min-width: 800px; text-align: left; font-size: 0.85rem; color: var(--text-primary);">
+              <thead>
+                <tr style="background: rgba(255, 145, 0, 0.08); border-bottom: 1px solid rgba(255, 145, 0, 0.25);">
+                  <th style="padding: 12px 10px; color: #FF9100; font-weight: 700;">Nº Circuito</th>
+                  <th style="padding: 12px 10px; color: #FF9100; font-weight: 700;">Tipo/Destino</th>
+                  <th style="padding: 12px 10px; color: #FF9100; font-weight: 700; text-align: center;">Bocas / Carga</th>
+                  <th style="padding: 12px 10px; color: #FF9100; font-weight: 700; text-align: center;">Potencia (VA)</th>
+                  <th style="padding: 12px 10px; color: #FF9100; font-weight: 700; text-align: center;">Corriente Ib (A)</th>
+                  <th style="padding: 12px 10px; color: #FF9100; font-weight: 700; text-align: center;">Cable (mm²)</th>
+                  <th style="padding: 12px 10px; color: #FF9100; font-weight: 700; text-align: center;">Protección (In)</th>
+                  <th style="padding: 12px 10px; color: #FF9100; font-weight: 700; text-align: center;">Fase</th>
+                </tr>
+              </thead>
+              <tbody id="tab-planilla-tbody">
+                <!-- Rellenado dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- CONTENIDO PESTAÑA 3: BALANCEO DE FASES (TRIFÁSICA) -->
+        <div id="tab-balanceo" class="tab-content" style="display: none;">
+          <h4 style="color: var(--text-primary); margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+            <span>⚖️</span> Diagnóstico del Balanceo de Carga Trifásica
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">
+            En suministros trifásicos, es fundamental que la carga total en Watts y Amperes esté equilibrada uniformemente entre las tres fases (R, S y T) para evitar sobrecargas en el conductor neutro, caídas de tensión desparejas y optimizar el rendimiento de la instalación.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px;">
+            <!-- FASE R -->
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-top: 3px solid #ff4444; padding: 15px; border-radius: 8px;">
+              <h5 style="color: #ff4444; margin: 0 0 10px 0; font-size: 1rem; font-weight: 700;">FASE R (L1)</h5>
+              <p style="margin: 0 0 6px 0; color: var(--text-secondary); font-size: 0.82rem;">Potencia: <strong id="balance-w-r" style="color: var(--text-primary);">0 W</strong></p>
+              <p style="margin: 0; color: var(--text-secondary); font-size: 0.82rem;">Corriente: <strong id="balance-a-r" style="color: var(--text-primary);">0.0 A</strong></p>
+              <!-- Bar chart progress -->
+              <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; margin-top: 12px; overflow: hidden;">
+                <div id="balance-bar-r" style="height: 100%; width: 0%; background: #ff4444; transition: width 0.4s;"></div>
+              </div>
+            </div>
+            <!-- FASE S -->
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-top: 3px solid #ffcc00; padding: 15px; border-radius: 8px;">
+              <h5 style="color: #ffcc00; margin: 0 0 10px 0; font-size: 1rem; font-weight: 700;">FASE S (L2)</h5>
+              <p style="margin: 0 0 6px 0; color: var(--text-secondary); font-size: 0.82rem;">Potencia: <strong id="balance-w-s" style="color: var(--text-primary);">0 W</strong></p>
+              <p style="margin: 0; color: var(--text-secondary); font-size: 0.82rem;">Corriente: <strong id="balance-a-s" style="color: var(--text-primary);">0.0 A</strong></p>
+              <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; margin-top: 12px; overflow: hidden;">
+                <div id="balance-bar-s" style="height: 100%; width: 0%; background: #ffcc00; transition: width 0.4s;"></div>
+              </div>
+            </div>
+            <!-- FASE T -->
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-top: 3px solid #33b5e5; padding: 15px; border-radius: 8px;">
+              <h5 style="color: #33b5e5; margin: 0 0 10px 0; font-size: 1rem; font-weight: 700;">FASE T (L3)</h5>
+              <p style="margin: 0 0 6px 0; color: var(--text-secondary); font-size: 0.82rem;">Potencia: <strong id="balance-w-t" style="color: var(--text-primary);">0 W</strong></p>
+              <p style="margin: 0; color: var(--text-secondary); font-size: 0.82rem;">Corriente: <strong id="balance-a-t" style="color: var(--text-primary);">0.0 A</strong></p>
+              <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; margin-top: 12px; overflow: hidden;">
+                <div id="balance-bar-t" style="height: 100%; width: 0%; background: #33b5e5; transition: width 0.4s;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="balanceo-diagnostic-alert" style="padding: 12px 15px; border-radius: 8px; font-size: 0.85rem; line-height: 1.5; border-left: 4px solid #8CC63F; background: rgba(140, 198, 99, 0.08); color: var(--text-primary);">
+            <!-- Rellenado dinámicamente -->
+          </div>
+        </div>
+
+        <!-- CONTENIDO PESTAÑA 4: RECOMENDACIONES Y CONSEJOS -->
+        <div id="tab-consejos" class="tab-content" style="display: none;">
+          <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px;">
+              <h5 style="color: #FF9100; font-size: 0.95rem; margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px;">
+                <span>🔗</span> ¿Cuándo conviene subdividir en varios tableros (TS)?
+              </h5>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
+                Si la obra posee sectores alejados a más de <strong>15-20 metros</strong> (patios, galpones, salas de máquinas de ascensores, plantas superiores) o cargas concentradas de gran consumo, se recomienda colocar un <strong>Tablero Seccional (TS)</strong> secundario en dicho sector. Esto evita tiradas largas de muchos cables finos y facilita la operación y el mantenimiento de las protecciones.
+              </p>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px;">
+              <h5 style="color: #FF9100; font-size: 0.95rem; margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px;">
+                <span>🔌</span> Borneras Repartidoras (Bloques de Distribución)
+              </h5>
+              <p id="tab-res-borneras" style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
+                Cargando recomendaciones...
+              </p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px;">
+              <h5 style="color: #FF9100; font-size: 0.95rem; margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px;">
+                <span>🛡️</span> Coordinación de Protecciones y Descarga a Tierra
+              </h5>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
+                Asegure siempre que la corriente nominal de la térmica proteja al cable ($I_n \le I_z$). Toda la instalación debe contar con conductor de puesta a tierra verde-amarillo (PE) conectado a una jabalina con resistencia inferior a <strong>10 Ohms</strong>. El interruptor diferencial debe probarse mensualmente mediante su botón de prueba (T).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCIONES -->
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 25px;">
+          <button type="button" id="tab-btn-print" class="btn btn-primary" style="width: 100%; justify-content: center; background: #FF9100; color: #fff; box-shadow: 0 4px 15px rgba(255, 145, 0, 0.3); font-weight: 700; border: none; padding: 12px; border-radius: 8px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <span>🖨️</span> Generar Memoria y Exportar PDF / Imprimir
+          </button>
+          <small style="color: var(--text-muted); font-size: 0.72rem; text-align: center; display: block;">
+            * Nota: En el menú de impresión, elija "Guardar como PDF" para generar un archivo descargable con los gráficos del tablero.
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISEÑO DE MEMORIA TÉCNICA DE IMPRESIÓN (PDF) -->
+<div id="print-area-tableros" class="print-only-tableros">
+  <div class="print-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #FF9100; padding-bottom: 15px; margin-bottom: 25px;">
+    <div>
+      <h1 style="color: #FF9100; margin: 0; font-size: 1.7rem; font-weight: 700;">Memoria Técnica y Diseño de Tablero Eléctrico</h1>
+      <p style="margin: 3px 0 0 0; font-size: 0.9rem; color: #555;">N3i Ingeniería Eléctrica y Electromecánica</p>
+    </div>
+    <div style="text-align: right;">
+      <p style="margin: 0; font-size: 0.85rem;"><strong>Fecha de Emisión:</strong> <span id="print-date">-</span></p>
+      <p style="margin: 2px 0 0 0; font-size: 0.85rem;">Normativa: <strong>AEA 90364-7-771</strong></p>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 6px;">
+      <h3 style="margin-top: 0; color: #FF9100; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 1.05rem;">Datos del Suministro</h3>
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+        <tr><td style="padding: 4px 0; font-weight: 600;">Suministro:</td><td id="print-suministro">-</td></tr>
+        <tr><td style="padding: 4px 0; font-weight: 600;">Marca Recomendada:</td><td id="print-marca">-</td></tr>
+        <tr><td style="padding: 4px 0; font-weight: 600;">Factor de Simultaneidad:</td><td id="print-fs">-</td></tr>
+        <tr><td style="padding: 4px 0; font-weight: 600;">Demanda Máx (DMPS):</td><td id="print-dmps">-</td></tr>
+      </table>
+    </div>
+    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 6px;">
+      <h3 style="margin-top: 0; color: #FF9100; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 1.05rem;">Estructura del Tablero</h3>
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+        <tr><td style="padding: 4px 0; font-weight: 600;">Interruptor General (IGA):</td><td id="print-iga">-</td></tr>
+        <tr><td style="padding: 4px 0; font-weight: 600;">Borneras Repartidoras:</td><td id="print-borneras">-</td></tr>
+        <tr><td style="padding: 4px 0; font-weight: 600;">Módulos DIN Totales:</td><td id="print-modulos">-</td></tr>
+        <tr><td style="padding: 4px 0; font-weight: 600;">Gabinete Recomendado:</td><td id="print-gabinete">-</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- DIAGRAMA VISUAL DEL RIEL DIN EN IMPRESIÓN -->
+  <div style="margin-bottom: 30px;">
+    <h3 style="color: #FF9100; border-bottom: 1.5px solid #FF9100; padding-bottom: 5px; font-size: 1.1rem; margin-bottom: 15px;">Esquema de Montaje en Riel DIN (Gabinete General)</h3>
+    <div style="position: relative; padding: 20px 10px; background: #eaeaea; border-radius: 8px; border: 2px solid #bbb; box-shadow: inset 0 0 10px rgba(0,0,0,0.15); overflow-x: hidden;">
+      <div style="position: absolute; left: 0; right: 0; top: 50%; height: 28px; transform: translateY(-50%); background: #ddd; border-top: 1px solid #ccc; border-bottom: 1px solid #bbb; z-index: 1;"></div>
+      <div id="print-riel-din-contenedor" style="position: relative; display: flex; gap: 5px; z-index: 2; align-items: flex-end; justify-content: flex-start;">
+        <!-- Copia del riel DIN dinámico en estilos de impresión -->
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANILLA DE CIRCUITOS EN IMPRESIÓN -->
+  <div style="margin-bottom: 30px;">
+    <h3 style="color: #FF9100; border-bottom: 1.5px solid #FF9100; padding-bottom: 5px; font-size: 1.1rem; margin-bottom: 15px;">Planilla Detallada de Circuitos y Protecciones</h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+      <thead>
+        <tr style="background: #f2f2f2; border-bottom: 2px solid #ddd;">
+          <th style="padding: 8px; border: 1px solid #ddd;">Nº Circuito</th>
+          <th style="padding: 8px; border: 1px solid #ddd;">Tipo / Destino</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Carga / Bocas</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Potencia (VA)</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Corriente Ib (A)</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Cable (mm²)</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Protección In (Curva)</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Fase</th>
+        </tr>
+      </thead>
+      <tbody id="print-planilla-tbody">
+        <!-- Rellenado dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- BALANCEO DE FASES (SI ES TRIFÁSICO) -->
+  <div id="print-section-balanceo" style="margin-bottom: 30px; display: none;">
+    <h3 style="color: #FF9100; border-bottom: 1.5px solid #FF9100; padding-bottom: 5px; font-size: 1.1rem; margin-bottom: 15px;">Diagnóstico de Balanceo de Fases</h3>
+    <div style="display: flex; gap: 30px; align-items: center; border: 1px solid #ddd; padding: 15px; border-radius: 6px;">
+      <div style="flex: 1;">
+        <p style="margin: 0 0 6px 0; font-size: 0.85rem;"><strong>Fase R:</strong> <span id="print-balance-r">-</span> W / <span id="print-balance-a-r">-</span> A</p>
+        <p style="margin: 0 0 6px 0; font-size: 0.85rem;"><strong>Fase S:</strong> <span id="print-balance-s">-</span> W / <span id="print-balance-a-s">-</span> A</p>
+        <p style="margin: 0; font-size: 0.85rem;"><strong>Fase T:</strong> <span id="print-balance-t">-</span> W / <span id="print-balance-a-t">-</span> A</p>
+      </div>
+      <div style="flex: 1.5; border-left: 1px solid #eee; padding-left: 20px;">
+        <p style="margin: 0; font-size: 0.9rem;" id="print-balance-text">Cargando diagnóstico de balanceo...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTIMIZACIÓN Y NOTAS TÉCNICAS -->
+  <div>
+    <h3 style="color: #FF9100; border-bottom: 1.5px solid #FF9100; padding-bottom: 5px; font-size: 1.1rem; margin-bottom: 10px;">Recomendaciones de Optimización de Obra</h3>
+    <div id="print-consejos-area" style="font-size: 0.85rem; line-height: 1.5; color: #333;">
+      <!-- Rellenado dinámicamente -->
+    </div>
+    <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.72rem; color: #777; text-align: center;">
+      <p>Calculado bajo las directivas de la Asociación Electrotécnica Argentina (AEA 90364). Las secciones de conductor corresponden a conductores de cobre con aislación de PVC en canalización embutida a temperatura ambiente de 30°C.</p>
+      <p style="margin-top: 5px; font-weight: 600;">N3i Ingeniería & Mantenimiento - Bahía Blanca - www.n3i.com.ar</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS & LOGIC -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inputs
+    const iRed = document.getElementById('tab-red') as HTMLSelectElement;
+    const iMarca = document.getElementById('tab-marca') as HTMLSelectElement;
+    const iSimultaneidad = document.getElementById('tab-simultaneidad') as HTMLInputElement;
+    const iBocasTug = document.getElementById('tab-bocas-tug') as HTMLInputElement;
+    const iBocasIug = document.getElementById('tab-bocas-iug') as HTMLInputElement;
+    const iBocasTue = document.getElementById('tab-bocas-tue') as HTMLInputElement;
+    const iBocasIue = document.getElementById('tab-bocas-iue') as HTMLInputElement;
+    const iWIue = document.getElementById('tab-w-iue') as HTMLInputElement;
+    const iMotoresMono = document.getElementById('tab-motores-mono') as HTMLInputElement;
+    const iHpMono = document.getElementById('tab-hp-mono') as HTMLSelectElement;
+    const iMotoresTri = document.getElementById('tab-motores-tri') as HTMLInputElement;
+    const iHpTri = document.getElementById('tab-hp-tri') as HTMLSelectElement;
+    const iAscensores = document.getElementById('tab-ascensores') as HTMLInputElement;
+    const iAcCant = document.getElementById('tab-ac-cant') as HTMLInputElement;
+    const iAcFrigorias = document.getElementById('tab-ac-frigorias') as HTMLSelectElement;
+
+    // Tabs
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const btnTabBalanceo = document.getElementById('btn-tab-balanceo');
+
+    // Tab buttons event
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabId = btn.getAttribute('data-tab');
+        
+        tabBtns.forEach(b => {
+          b.classList.remove('active');
+          (b as HTMLElement).style.background = 'transparent';
+          (b as HTMLElement).style.color = 'var(--text-secondary)';
+          (b as HTMLElement).style.borderColor = 'var(--border-color)';
+        });
+        
+        btn.classList.add('active');
+        (btn as HTMLElement).style.background = 'rgba(255, 145, 0, 0.1)';
+        (btn as HTMLElement).style.color = '#FF9100';
+        (btn as HTMLElement).style.borderColor = '#FF9100';
+
+        tabContents.forEach(content => {
+          if (content.id === tabId) {
+            (content as HTMLElement).style.display = 'block';
+          } else {
+            (content as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Toggle trifasico inputs depending on grid selection
+    function handleRedChange() {
+      const red = iRed.value;
+      if (red === 'monofasica') {
+        if (iMotoresTri) iMotoresTri.disabled = true;
+        if (iHpTri) iHpTri.disabled = true;
+        if (iAscensores) iAscensores.disabled = true;
+        if (btnTabBalanceo) btnTabBalanceo.style.display = 'none';
+        
+        // Reset inputs to avoid invalid trifasico items
+        if (iMotoresTri) iMotoresTri.value = '0';
+        if (iAscensores) iAscensores.value = '0';
+      } else {
+        if (iMotoresTri) iMotoresTri.disabled = false;
+        if (iHpTri) iHpTri.disabled = false;
+        if (iAscensores) iAscensores.disabled = false;
+        if (btnTabBalanceo) btnTabBalanceo.style.display = 'block';
+      }
+      calculateTablero();
+    }
+
+    iRed.addEventListener('change', handleRedChange);
+
+    // Main calculation
+    function calculateTablero() {
+      const isTrifasica = iRed.value === 'trifasica';
+      const marca = iMarca.value;
+      const fs = parseFloat(iSimultaneidad.value) || 0.8;
+      
+      const bocasTug = parseInt(iBocasTug.value) || 0;
+      const bocasIug = parseInt(iBocasIug.value) || 0;
+      const bocasTue = parseInt(iBocasTue.value) || 0;
+      const bocasIue = parseInt(iBocasIue.value) || 0;
+      const wIue = parseFloat(iWIue.value) || 150;
+      
+      const motoresMono = parseInt(iMotoresMono.value) || 0;
+      const hpMono = parseFloat(iHpMono.value) || 1.0;
+      const motoresTri = isTrifasica ? (parseInt(iMotoresTri.value) || 0) : 0;
+      const hpTri = parseFloat(iHpTri.value) || 2.0;
+      const ascensores = isTrifasica ? (parseInt(iAscensores.value) || 0) : 0;
+      
+      const acCant = parseInt(iAcCant.value) || 0;
+      const acFrigorias = parseInt(iAcFrigorias.value) || 9000;
+
+      // Estructura para almacenar circuitos
+      let circuitos: any[] = [];
+      let nextCircNum = 1;
+
+      // 1. GENERAR CIRCUITOS IUG (Iluminación General)
+      if (bocasIug > 0) {
+        const nCircIug = Math.ceil(bocasIug / 15);
+        const bocasPerCirc = Math.ceil(bocasIug / nCircIug);
+        for (let i = 0; i < nCircIug; i++) {
+          circuitos.push({
+            id: nextCircNum++,
+            tipo: 'IUG',
+            desc: `Iluminación Uso General (Circuito ${i+1})`,
+            bocas: bocasPerCirc,
+            potenciaVA: 1500, // Estándar AEA para IUG
+            currentIb: 1500 / 220, // 6.8 A
+            cableSec: 1.5,
+            breakerIn: 10,
+            poles: 2,
+            curva: 'C',
+            fase: 'R' // Se asigna luego
+          });
+        }
+      }
+
+      // 2. GENERAR CIRCUITOS TUG (Tomas General)
+      if (bocasTug > 0) {
+        const nCircTug = Math.ceil(bocasTug / 15);
+        const bocasPerCirc = Math.ceil(bocasTug / nCircTug);
+        for (let i = 0; i < nCircTug; i++) {
+          circuitos.push({
+            id: nextCircNum++,
+            tipo: 'TUG',
+            desc: `Tomacorrientes Uso General (Circuito ${i+1})`,
+            bocas: bocasPerCirc,
+            potenciaVA: 2200, // Estándar AEA para TUG
+            currentIb: 2200 / 220, // 10 A
+            cableSec: 2.5,
+            breakerIn: 16,
+            poles: 2,
+            curva: 'C',
+            fase: 'R'
+          });
+        }
+      }
+
+      // 3. GENERAR CIRCUITOS IUE (Iluminación Especial)
+      if (bocasIue > 0) {
+        const nCircIue = Math.ceil(bocasIue / 12);
+        const bocasPerCirc = Math.ceil(bocasIue / nCircIue);
+        const totalW = bocasIue * wIue;
+        const wPerCirc = totalW / nCircIue;
+        for (let i = 0; i < nCircIue; i++) {
+          circuitos.push({
+            id: nextCircNum++,
+            tipo: 'IUE',
+            desc: `Iluminación Especial Proyectores (${bocasPerCirc} bocas x ${wIue}W)`,
+            bocas: bocasPerCirc,
+            potenciaVA: wPerCirc / 0.9, // VA
+            currentIb: (wPerCirc / 0.9) / 220,
+            cableSec: 2.5,
+            breakerIn: 16,
+            poles: 2,
+            curva: 'C',
+            fase: 'R'
+          });
+        }
+      }
+
+      // 4. GENERAR CIRCUITOS TUE (Tomas Especial 20A)
+      if (bocasTue > 0) {
+        const nCircTue = Math.ceil(bocasTue / 12);
+        const bocasPerCirc = Math.ceil(bocasTue / nCircTue);
+        for (let i = 0; i < nCircTue; i++) {
+          circuitos.push({
+            id: nextCircNum++,
+            tipo: 'TUE',
+            desc: `Tomacorrientes Uso Especial (Tomas 20A) (Circuito ${i+1})`,
+            bocas: bocasPerCirc,
+            potenciaVA: 3300, // Estándar AEA para TUE
+            currentIb: 3300 / 220, // 15 A
+            cableSec: 4.0, // Recomendamos 4.0 mm2 para TUE para soportar disipación térmica y térmica de 20A
+            breakerIn: 20,
+            poles: 2,
+            curva: 'C',
+            fase: 'R'
+          });
+        }
+      }
+
+      // 5. MOTORES MONOFÁSICOS (Circuitos dedicados APM / Alimentación Carga Única)
+      if (motoresMono > 0) {
+        const wActiva = hpMono * 746;
+        // Ib = W / (V * eta * cosphi)
+        const currentNom = wActiva / (220 * 0.8 * 0.8);
+        for (let i = 0; i < motoresMono; i++) {
+          circuitos.push({
+            id: nextCircNum++,
+            tipo: 'FM-MONO',
+            desc: `Motor Monofásico Bomba/Compresor ${hpMono} HP`,
+            bocas: 1,
+            potenciaVA: wActiva / 0.8,
+            currentIb: currentNom,
+            cableSec: 2.5,
+            breakerIn: currentNom > 12 ? 20 : 16,
+            poles: 2,
+            curva: 'D', // Curva de arranque para motores
+            fase: 'R'
+          });
+        }
+      }
+
+      // 6. MOTORES TRIFÁSICOS (Red trifásica requerida)
+      if (motoresTri > 0 && isTrifasica) {
+        const wActiva = hpTri * 746;
+        // Ib = W / (sqrt(3) * V_line * eta * cosphi)
+        const currentNom = wActiva / (Math.sqrt(3) * 380 * 0.85 * 0.8);
+        for (let i = 0; i < motoresTri; i++) {
+          circuitos.push({
+            id: nextCircNum++,
+            tipo: 'FM-TRI',
+            desc: `Motor Trifásico Fuerza Motriz ${hpTri} HP`,
+            bocas: 1,
+            potenciaVA: wActiva / 0.85,
+            currentIb: currentNom,
+            cableSec: 2.5,
+            breakerIn: currentNom > 12 ? 20 : (currentNom > 8 ? 16 : 10),
+            poles: 4, // Trifásico + Neutro
+            curva: 'D',
+            fase: 'RST' // Trifásico
+          });
+        }
+      }
+
+      // 7. ASCENSORES (Trifásico de 7.5 HP)
+      if (ascensores > 0 && isTrifasica) {
+        const wActiva = 7.5 * 746; // 5595 W
+        const currentNom = wActiva / (Math.sqrt(3) * 380 * 0.85 * 0.8); // 12.5 A
+        for (let i = 0; i < ascensores; i++) {
+          circuitos.push({
+            id: nextCircNum++,
+            tipo: 'ASCENSOR',
+            desc: `Ascensor Trifásico Sala de Máquinas 7.5 HP`,
+            bocas: 1,
+            potenciaVA: wActiva / 0.85,
+            currentIb: currentNom,
+            cableSec: 4.0, // Sección recomendada
+            breakerIn: 20,
+            poles: 4,
+            curva: 'D',
+            fase: 'RST'
+          });
+        }
+      }
+
+      // 8. AIRES ACONDICIONADOS
+      if (acCant > 0) {
+        // Frigorías unitarias
+        const capTermicaW = acFrigorias * 1.163;
+        const potElectricaW = capTermicaW / 3.2; // COP 3.2
+        const potElectricaVA = potElectricaW / 0.9; // cosphi 0.9
+
+        // Decidir si es Monofásico o Trifásico
+        // Si la red es Trifásica y el AC es grande (>= 9000 frig), se calcula trifásico
+        const acIsTrifasico = isTrifasica && acFrigorias >= 9000;
+
+        let currentNom = 0;
+        if (acIsTrifasico) {
+          currentNom = potElectricaW / (Math.sqrt(3) * 380 * 0.9);
+        } else {
+          currentNom = potElectricaW / (220 * 0.9);
+        }
+
+        for (let i = 0; i < acCant; i++) {
+          let cable = 2.5;
+          let breaker = 16;
+          if (!acIsTrifasico && currentNom > 13) {
+            cable = 4.0;
+            breaker = 20;
+          }
+
+          circuitos.push({
+            id: nextCircNum++,
+            tipo: 'AC',
+            desc: `Equipo AC ${acFrigorias} Frigorías (${acIsTrifasico ? 'Trifásico' : 'Monofásico'})`,
+            bocas: 1,
+            potenciaVA: potElectricaVA,
+            currentIb: currentNom,
+            cableSec: cable,
+            breakerIn: breaker,
+            poles: acIsTrifasico ? 4 : 2,
+            curva: 'C',
+            fase: acIsTrifasico ? 'RST' : 'R'
+          });
+        }
+      }
+
+      // BALANCEO DE FASES GREEDY (Solo si es trifásica)
+      let powerR = 0, currentR = 0;
+      let powerS = 0, currentS = 0;
+      let powerT = 0, currentT = 0;
+
+      // Primero agregamos trifásicos a todas las fases por igual
+      circuitos.forEach(c => {
+        if (c.fase === 'RST') {
+          // Las cargas trifásicas consumen balanceado en las 3 fases
+          // La corriente Ib especificada es la de línea (por fase)
+          powerR += c.potenciaVA / 3;
+          currentR += c.currentIb;
+          powerS += c.potenciaVA / 3;
+          currentS += c.currentIb;
+          powerT += c.potenciaVA / 3;
+          currentT += c.currentIb;
+        }
+      });
+
+      // Distribuir circuitos monofásicos dinámicamente para lograr el balance
+      if (isTrifasica) {
+        // Ordenar monofásicos por corriente nominal (mayor a menor)
+        const monofasicos = circuitos.filter(c => c.fase !== 'RST');
+        monofasicos.sort((a, b) => b.currentIb - a.currentIb);
+
+        monofasicos.forEach(c => {
+          // Buscar fase con menor corriente acumulada en este momento
+          if (currentR <= currentS && currentR <= currentT) {
+            c.fase = 'R';
+            powerR += c.potenciaVA;
+            currentR += c.currentIb;
+          } else if (currentS <= currentR && currentS <= currentT) {
+            c.fase = 'S';
+            powerS += c.potenciaVA;
+            currentS += c.currentIb;
+          } else {
+            c.fase = 'T';
+            powerT += c.potenciaVA;
+            currentT += c.currentIb;
+          }
+        });
+      } else {
+        // Monofásica: todo a fase R (única)
+        circuitos.forEach(c => {
+          c.fase = 'R';
+          powerR += c.potenciaVA;
+          currentR += c.currentIb;
+        });
+        powerS = currentS = powerT = currentT = 0;
+      }
+
+      // CALCULAR DEMANDA MÁXIMA DE POTENCIA SIMULTÁNEA (DMPS)
+      let dmpsVA = 0;
+      let maxFaseCurrent = 0;
+      
+      if (isTrifasica) {
+        const totalVA = powerR + powerS + powerT;
+        dmpsVA = totalVA * fs;
+        maxFaseCurrent = Math.max(currentR, currentS, currentT) * fs;
+      } else {
+        dmpsVA = powerR * fs;
+        maxFaseCurrent = currentR * fs;
+      }
+
+      // CALCULAR INTERRUPTOR GENERAL AUTOMÁTICO (IGA)
+      let igaIn = 16;
+      const standardBreakers = [16, 20, 25, 32, 40, 50, 63, 80, 100];
+      for (let i = 0; i < standardBreakers.length; i++) {
+        if (standardBreakers[i] >= maxFaseCurrent) {
+          igaIn = standardBreakers[i];
+          break;
+        }
+        if (i === standardBreakers.length - 1) {
+          igaIn = 100; // Máximo estándar
+        }
+      }
+
+      // RENDERIZAR TABLA DE CIRCUITOS
+      const tbody = document.getElementById('tab-planilla-tbody');
+      const printTbody = document.getElementById('print-planilla-tbody');
+      let tbodyHtml = '';
+
+      circuitos.forEach(c => {
+        tbodyHtml += `
+          <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 10px; font-weight: bold;">C${c.id}</td>
+            <td style="padding: 10px;">${c.desc}</td>
+            <td style="padding: 10px; text-align: center;">${c.bocas} bocas</td>
+            <td style="padding: 10px; text-align: center;">${Math.round(c.potenciaVA)} VA</td>
+            <td style="padding: 10px; text-align: center;">${c.currentIb.toFixed(1)} A</td>
+            <td style="padding: 10px; text-align: center;">${c.cableSec.toFixed(1)} mm²</td>
+            <td style="padding: 10px; text-align: center; font-weight: 600;">${c.breakerIn}A (Curva ${c.curva})</td>
+            <td style="padding: 10px; text-align: center; font-weight: bold; color: ${c.fase === 'R' ? '#ff4444' : (c.fase === 'S' ? '#ffcc00' : (c.fase === 'T' ? '#33b5e5' : '#8CC63F'))};">${c.fase}</td>
+          </tr>
+        `;
+      });
+
+      if (tbody) tbody.innerHTML = tbodyHtml;
+      if (printTbody) printTbody.innerHTML = tbodyHtml;
+
+      // RENDERIZAR RIEL DIN VISUAL
+      const rielCont = document.getElementById('riel-din-contenedor');
+      const printRielCont = document.getElementById('print-riel-din-contenedor');
+      
+      let rielHtml = '';
+
+      // 1. AGREGAR IGA (Interruptor General Automático)
+      const igaPoles = isTrifasica ? 4 : 2;
+      rielHtml += createDINModule(`IGA (${igaPoles}P)`, `${igaIn}A`, 'iga', igaPoles, marca);
+
+      // 2. AGREGAR PROTECTOR DE SOBRETENSIÓN (DPS)
+      rielHtml += createDINModule(`DPS Class II`, `L+N`, 'dps', igaPoles, marca);
+
+      // 3. SEPARADORES O DISYUNTORES DE GRUPO (RCD)
+      // Agrupamos circuitos de forma lógica para evitar cortes totales:
+      let modulosOcupados = igaPoles + igaPoles; // IGA + DPS
+
+      if (!isTrifasica) {
+        // Red Monofásica: Agrupamos de a 4 circuitos máximo por disyuntor de 40A
+        const totalCircs = circuitos.length;
+        const nDisy = Math.ceil(totalCircs / 4);
+        
+        for (let d = 0; d < nDisy; d++) {
+          const rcdIn = igaIn >= 40 ? 40 : 25;
+          rielHtml += createDINModule(`ID ${d+1}`, `${rcdIn}A 30mA`, 'rcd', 2, marca);
+          modulosOcupados += 2;
+
+          // Circuitos del grupo
+          const circsGrupo = circuitos.slice(d*4, (d+1)*4);
+          circsGrupo.forEach(c => {
+            rielHtml += createDINModule(`C${c.id}`, `${c.breakerIn}A`, 'breaker', 2, marca, c.tipo);
+            modulosOcupados += 2;
+          });
+        }
+      } else {
+        // Red Trifásica:
+        const trifasicos = circuitos.filter(c => c.fase === 'RST');
+        const monofasicos = circuitos.filter(c => c.fase !== 'RST');
+
+        if (trifasicos.length > 0) {
+          rielHtml += createDINModule(`ID Trif.`, `40A 30mA`, 'rcd', 4, marca);
+          modulosOcupados += 4;
+          trifasicos.forEach(c => {
+            rielHtml += createDINModule(`C${c.id} RST`, `${c.breakerIn}A`, 'breaker', 4, marca, c.tipo);
+            modulosOcupados += 4;
+          });
+        }
+
+        // Cargas monofásicas: Las agrupamos por fases (R, S, T)
+        const circsR = monofasicos.filter(c => c.fase === 'R');
+        const circsS = monofasicos.filter(c => c.fase === 'S');
+        const circsT = monofasicos.filter(c => c.fase === 'T');
+
+        if (circsR.length > 0) {
+          rielHtml += createDINModule(`ID Fase R`, `25A 30mA`, 'rcd', 2, marca);
+          modulosOcupados += 2;
+          circsR.forEach(c => {
+            rielHtml += createDINModule(`C${c.id} R`, `${c.breakerIn}A`, 'breaker', 2, marca, c.tipo);
+            modulosOcupados += 2;
+          });
+        }
+        if (circsS.length > 0) {
+          rielHtml += createDINModule(`ID Fase S`, `25A 30mA`, 'rcd', 2, marca);
+          modulosOcupados += 2;
+          circsS.forEach(c => {
+            rielHtml += createDINModule(`C${c.id} S`, `${c.breakerIn}A`, 'breaker', 2, marca, c.tipo);
+            modulosOcupados += 2;
+          });
+        }
+        if (circsT.length > 0) {
+          rielHtml += createDINModule(`ID Fase T`, `25A 30mA`, 'rcd', 2, marca);
+          modulosOcupados += 2;
+          circsT.forEach(c => {
+            rielHtml += createDINModule(`C${c.id} T`, `${c.breakerIn}A`, 'breaker', 2, marca, c.tipo);
+            modulosOcupados += 2;
+          });
+        }
+      }
+
+      if (rielCont) rielCont.innerHTML = rielHtml;
+      if (printRielCont) printRielCont.innerHTML = rielHtml;
+
+      // ACTUALIZAR MÓDULOS Y GABINETE
+      const rModulos = document.getElementById('tab-res-modulos');
+      const rGabinete = document.getElementById('tab-res-gabinete');
+      const rReserva = document.getElementById('tab-res-reserva');
+      const rDmps = document.getElementById('tab-res-dmps');
+      const rAmperes = document.getElementById('tab-res-amperes');
+
+      if (rModulos) rModulos.textContent = modulosOcupados.toString();
+
+      const gabinetesComerciales = [12, 18, 24, 36, 48, 54, 72];
+      let suggestedGab = 72;
+      let reservaPerc = 0;
+      
+      for (let g = 0; g < gabinetesComerciales.length; g++) {
+        if (gabinetesComerciales[g] >= modulosOcupados * 1.2) {
+          suggestedGab = gabinetesComerciales[g];
+          reservaPerc = Math.round(((suggestedGab - modulosOcupados) / suggestedGab) * 100);
+          break;
+        }
+      }
+
+      if (rGabinete) rGabinete.textContent = `${suggestedGab} Módulos`;
+      if (rReserva) rReserva.textContent = `Reserve espacio libre: ${reservaPerc}% (${suggestedGab - modulosOcupados} bocas libres).`;
+
+      const activePowerKw = (dmpsVA * 0.9) / 1000;
+      if (rDmps) rDmps.textContent = `${activePowerKw.toFixed(1)} kW`;
+      if (rAmperes) rAmperes.textContent = `${maxFaseCurrent.toFixed(1)} A máx / fase`;
+
+      // ACTUALIZAR DIAGNÓSTICO DE BALANCEO (Solo trifásico)
+      const balWR = document.getElementById('balance-w-r');
+      const balAS = document.getElementById('balance-a-r');
+      const balWS = document.getElementById('balance-w-s');
+      const balASS = document.getElementById('balance-a-s');
+      const balWT = document.getElementById('balance-w-t');
+      const balAST = document.getElementById('balance-a-t');
+
+      const barR = document.getElementById('balance-bar-r');
+      const barS = document.getElementById('balance-bar-s');
+      const barT = document.getElementById('balance-bar-t');
+
+      if (isTrifasica) {
+        if (balWR) balWR.textContent = `${Math.round(powerR * 0.9)} W`;
+        if (balAS) balAS.textContent = `${currentR.toFixed(1)} A`;
+        if (balWS) balWS.textContent = `${Math.round(powerS * 0.9)} W`;
+        if (balASS) balASS.textContent = `${currentS.toFixed(1)} A`;
+        if (balWT) balWT.textContent = `${Math.round(powerT * 0.9)} W`;
+        if (balAST) balAST.textContent = `${currentT.toFixed(1)} A`;
+
+        const maxCurrentVal = Math.max(currentR, currentS, currentT, 1);
+        if (barR) barR.style.width = `${(currentR / maxCurrentVal) * 100}%`;
+        if (barS) barS.style.width = `${(currentS / maxCurrentVal) * 100}%`;
+        if (barT) barT.style.width = `${(currentT / maxCurrentVal) * 100}%`;
+
+        const promCurrent = (currentR + currentS + currentT) / 3;
+        const maxDiff = Math.max(Math.abs(currentR - promCurrent), Math.abs(currentS - promCurrent), Math.abs(currentT - promCurrent));
+        const desbalanceo = promCurrent > 0 ? (maxDiff / promCurrent) * 100 : 0;
+
+        const diagAlert = document.getElementById('balanceo-diagnostic-alert');
+        if (diagAlert) {
+          if (desbalanceo <= 10) {
+            diagAlert.style.borderLeft = '4px solid #8CC63F';
+            diagAlert.style.background = 'rgba(140, 198, 99, 0.08)';
+            diagAlert.innerHTML = `✅ <strong>Balanceo Óptimo:</strong> El desequilibrio entre fases es del <strong>${desbalanceo.toFixed(1)}%</strong> (Reglamentario < 15%). La distribución de cargas monofásicas es excelente, lo que previene el calentamiento del neutro y optimiza la facturación.`;
+          } else if (desbalanceo <= 16) {
+            diagAlert.style.borderLeft = '4px solid #ff9800';
+            diagAlert.style.background = 'rgba(255, 152, 0, 0.08)';
+            diagAlert.innerHTML = `⚠️ <strong>Balanceo Aceptable:</strong> El desequilibrio es del <strong>${desbalanceo.toFixed(1)}%</strong>. Cumple con los límites, pero si añade nuevos consumos intente cargarlos en la fase con menor consumo en el tablero.`;
+          } else {
+            diagAlert.style.borderLeft = '4px solid #c65353';
+            diagAlert.style.background = 'rgba(198, 83, 83, 0.08)';
+            diagAlert.innerHTML = `🚨 <strong>Desbalanceo Excesivo:</strong> El desequilibrio entre fases es del <strong>${desbalanceo.toFixed(1)}%</strong>. Esto supera el 16% sugerido y puede generar caídas de tensión en el neutro y disparos intempestivos. Recomendamos reasignar manualmente circuitos monofásicos de tomas especiales (TUE) en otras fases.`;
+          }
+        }
+      }
+
+      // BORNERAS REPARTIDORAS E INFORME DE OPTIMIZACIÓN
+      const rBorneras = document.getElementById('tab-res-borneras');
+      let bornerasTexto = '';
+      let bornerasNombre = 'No requiere';
+
+      if (circuitos.length > 5) {
+        if (isTrifasica) {
+          bornerasNombre = `Bornera Tetrapolar (4 Polos) de ${igaIn >= 63 ? 125 : 100}A`;
+          bornerasTexto = `Dado que posee <strong>${circuitos.length} circuitos</strong> en un suministro trifásico, es **imprescindible** instalar una **Bornera Tetrapolar de Distribución DIN (4 Polos) de ${igaIn >= 63 ? '125A' : '100A'}** con al menos 7 conexiones por barra. Esto permite distribuir de manera ordenada y segura las salidas de la térmica general (IGA) hacia las fases R, S, T y Neutro de los disyuntores secundarios.`;
+        } else {
+          bornerasNombre = `Bornera Bipolar (2 Polos) de ${igaIn >= 40 ? 100 : 80}A`;
+          bornerasTexto = `Para organizar el cableado interno de este tablero monofásico de **${circuitos.length} circuitos**, se aconseja instalar una **Bornera Bipolar DIN (2 Polos) de ${igaIn >= 40 ? '100A' : '80A'}** con 6 a 8 tornillos por barra. Evitará guirnaldas o empalmes "tipo peine" poco seguros en los bornes de las térmicas.`;
+        }
+      } else {
+        bornerasTexto = `Con pocos circuitos (**${circuitos.length}**), puede distribuir el puenteado mediante puentes de conexión tipo peine aislados (barras colectoras) homologados. No es estrictamente necesaria una bornera repartidora, aunque mejora la prolijidad.`;
+      }
+
+      if (rBorneras) rBorneras.innerHTML = bornerasTexto;
+
+      // ACTUALIZAR VARIABLES DE IMPRESIÓN
+      const pSuministro = document.getElementById('print-suministro');
+      const pMarca = document.getElementById('print-marca');
+      const pFs = document.getElementById('print-fs');
+      const pDmps = document.getElementById('print-dmps');
+      const pIga = document.getElementById('print-iga');
+      const pBorneras = document.getElementById('print-borneras');
+      const pModulos = document.getElementById('print-modulos');
+      const pGabinete = document.getElementById('print-gabinete');
+
+      if (pSuministro) pSuministro.textContent = isTrifasica ? 'Trifásico (380V / 220V)' : 'Monofásico (220V)';
+      if (pMarca) pMarca.textContent = marca === 'schneider' ? 'Schneider Electric (Acti9 / Easy9)' : 'Siemens (Sentron 5SY / 5SL)';
+      if (pFs) pFs.textContent = fs.toString();
+      if (pDmps) pDmps.textContent = `${activePowerKw.toFixed(1)} kW (${Math.round(dmpsVA)} VA)`;
+      if (pIga) pIga.textContent = `${igaPoles}P x ${igaIn}A (Curva C, Poder de corte: ${marca==='schneider'?'4.5kA / 6kA':'6kA'})`;
+      if (pBorneras) pBorneras.textContent = bornerasNombre;
+      if (pModulos) pModulos.textContent = `${modulosOcupados} módulos DIN`;
+      if (pGabinete) pGabinete.textContent = `${suggestedGab} Módulos DIN (+${reservaPerc}% reserva)`;
+
+      // Balanceo de fases en impresión
+      const printSecBalanceo = document.getElementById('print-section-balanceo');
+      if (printSecBalanceo) {
+        if (isTrifasica) {
+          printSecBalanceo.style.display = 'block';
+          const pBR = document.getElementById('print-balance-r');
+          const pBAR = document.getElementById('print-balance-a-r');
+          const pBS = document.getElementById('print-balance-s');
+          const pBAS = document.getElementById('print-balance-a-s');
+          const pBT = document.getElementById('print-balance-t');
+          const pBAT = document.getElementById('print-balance-a-t');
+          const pBText = document.getElementById('print-balance-text');
+
+          if (pBR) pBR.textContent = `${Math.round(powerR * 0.9)}`;
+          if (pBAR) pBAR.textContent = currentR.toFixed(1);
+          if (pBS) pBS.textContent = `${Math.round(powerS * 0.9)}`;
+          if (pBAS) pBAS.textContent = currentS.toFixed(1);
+          if (pBT) pBT.textContent = `${Math.round(powerT * 0.9)}`;
+          if (pBAT) pBAT.textContent = currentT.toFixed(1);
+
+          const promCurrent = (currentR + currentS + currentT) / 3;
+          const maxDiff = Math.max(Math.abs(currentR - promCurrent), Math.abs(currentS - promCurrent), Math.abs(currentT - promCurrent));
+          const desbalanceo = promCurrent > 0 ? (maxDiff / promCurrent) * 100 : 0;
+
+          if (pBText) {
+            pBText.innerHTML = `<strong>Resultado:</strong> Desequilibrio de fases calculado en <strong>${desbalanceo.toFixed(1)}%</strong>. ` + 
+              (desbalanceo <= 15 ? 'La instalación cumple las especificaciones de distribución simétrica.' : 'Exceso de corriente reactiva o desequilibrio. Se recomienda reconfigurar la asignación de circuitos en obra.');
+          }
+        } else {
+          printSecBalanceo.style.display = 'none';
+        }
+      }
+
+      // Consejos en impresión
+      const pConsejosArea = document.getElementById('print-consejos-area');
+      if (pConsejosArea) {
+        pConsejosArea.innerHTML = `
+          <ul>
+            <li style="margin-bottom: 5px;"><strong>Borneras:</strong> ${bornerasTexto}</li>
+            <li style="margin-bottom: 5px;"><strong>Sectores y Subtableros:</strong> ${
+              circuitos.length > 8 ? 
+              'Se sugiere considerar un Tablero Seccional en caso de distancias superiores a 15m para independizar áreas de trabajo (ej: climatización o iluminación exterior).' : 
+              'El tablero único general es adecuado para la magnitud de circuitos calculados.'
+            }</li>
+            <li style="margin-bottom: 5px;"><strong>Cable unifilar de entrada al tablero:</strong> El cable de alimentación general (de acometida a IGA) debe ser de sección mínima <strong>${
+              igaIn <= 25 ? '6.0' : (igaIn <= 40 ? '10.0' : '16.0')
+            } mm²</strong> de cobre para soportar la intensidad Ib calculada.</li>
+          </ul>
+        `;
+      }
+    }
+
+    // Helper to generate realistic DIN rail modules
+    function createDINModule(label: string, rating: string, type: string, poles: number, brand: string, circuitType = '') {
+      let color = '#777';
+      let toggleHtml = '';
+
+      if (type === 'iga') {
+        color = '#d32f2f'; // Red for IGA
+      } else if (type === 'dps') {
+        color = '#388e3c'; // Green for surge protection
+      } else if (type === 'rcd') {
+        color = '#1976d2'; // Blue for disyuntor
+      } else {
+        // Breakers by type of circuit
+        if (circuitType === 'IUG' || circuitType === 'IUE') color = '#555';
+        else if (circuitType === 'TUG' || circuitType === 'TUE') color = '#6d4c41';
+        else color = '#f57c00'; // Motors / AC
+      }
+
+      for (let p = 0; p < poles; p++) {
+        toggleHtml += `
+          <div style="width: 8px; height: 22px; background: #222; border-radius: 2px; position: relative; margin: 4px auto 0 auto; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 4px; height: 12px; background: #ff5722; border-radius: 1px; transform: translateY(-3px);"></div>
+          </div>
+        `;
+      }
+
+      let testButtonHtml = '';
+      if (type === 'rcd') {
+        testButtonHtml = `<div style="width: 10px; height: 10px; background: #eee; border: 1px solid #777; border-radius: 2px; color: #333; font-size: 6px; font-weight: 900; line-height: 8px; text-align: center; margin: 2px auto 0 auto; cursor: pointer; user-select: none;">T</div>`;
+      }
+
+      const widthVal = poles * 22;
+
+      return `
+        <div style="width: ${widthVal}px; background: #fff; border: 1px solid #bbb; border-radius: 4px; padding: 4px 2px; text-align: center; font-family: 'Montserrat', sans-serif; font-size: 7px; color: #111; box-shadow: 0 4px 6px rgba(0,0,0,0.3); flex-shrink: 0; min-height: 80px; display: flex; flex-direction: column; justify-content: space-between;">
+          <div style="font-weight: 700; color: ${color}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 7.5px;">${label}</div>
+          <div style="font-size: 6px; color: #888; font-weight: 600;">${brand === 'schneider' ? 'Schneider' : 'Siemens'}</div>
+          
+          <div style="display: flex; justify-content: center; gap: 2px; margin: 2px 0;">
+            ${toggleHtml}
+          </div>
+
+          ${testButtonHtml}
+          
+          <div style="font-size: 8px; font-weight: 800; background: #111; color: #fff; border-radius: 2px; padding: 1px 0; margin-top: auto; font-family: monospace;">${rating}</div>
+        </div>
+      `;
+    }
+
+    // Attach recalculation events
+    const allInputs = [
+      iRed, iMarca, iSimultaneidad, iBocasTug, iBocasIug, iBocasTue, 
+      iBocasIue, iWIue, iMotoresMono, iHpMono, iMotoresTri, iHpTri, 
+      iAscensores, iAcCant, iAcFrigorias
+    ];
+
+    allInputs.forEach(input => {
+      if (input) {
+        if (input.tagName === 'SELECT') {
+          input.addEventListener('change', calculateTablero);
+        } else {
+          input.addEventListener('input', calculateTablero);
+        }
+      }
+    });
+
+    // Print event handler
+    const btnPrint = document.getElementById('tab-btn-print');
+    if (btnPrint) {
+      btnPrint.addEventListener('click', () => {
+        const pDate = document.getElementById('print-date');
+        if (pDate) {
+          const today = new Date();
+          pDate.textContent = today.toLocaleDateString('es-AR') + ' ' + today.toLocaleTimeString('es-AR');
+        }
+
+        // Apply class and launch print
+        document.body.classList.add('printing-tableros');
+        window.print();
+        window.addEventListener('afterprint', () => document.body.classList.remove('printing-tableros'), { once: true });
+      });
+    }
+
+    // Initialize layout
+    handleRedChange();
+  });
+</script>
+
+<style is:global>
+  /* PESTAÑAS Y DISEÑO */
+  .tab-btn:hover {
+    border-color: #FF9100 !important;
+    color: #FF9100 !important;
+  }
+  
+  /* Estilos de Impresión */
+  .print-only-tableros { display: none; }
+  
+  @media print {
+    body.printing-tableros .header, 
+    body.printing-tableros .footer, 
+    body.printing-tableros .section-header, 
+    body.printing-tableros .calculator-grid, 
+    body.printing-tableros .section { 
+      display: none !important; 
+    }
+    body.printing-tableros .print-only-tableros {
+      display: block !important;
+      font-family: Arial, sans-serif;
+      color: #000 !important;
+      background: #fff !important;
+      padding: 10px;
+    }
+    
+    body.printing-tableros #print-riel-din-contenedor div {
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+  }
+</style>
