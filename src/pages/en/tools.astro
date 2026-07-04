@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import IndiceHerramientasEn from '../../components/IndiceHerramientasEn.astro';
 import CalculadoraFrigoriasEn from '../../components/CalculadoraFrigoriasEn.astro';
 import CalculadoraHidricaEn from '../../components/CalculadoraHidricaEn.astro';
 import CalculadoraIluminacionEn from '../../components/CalculadoraIluminacionEn.astro';
@@ -28,8 +29,10 @@ import CalculadoraMantenimientoEn from '../../components/CalculadoraMantenimient
   
   <div style="padding-top: 120px;">
     <!-- Container to give proper padding to the first section on this page -->
-    <CalculadoraConsumoElectricoEn />
+    <IndiceHerramientasEn />
   </div>
+
+  <CalculadoraConsumoElectricoEn />
 
   <CalculadoraConsumoGasEn />
   <CalculadoraIluminacionEn />

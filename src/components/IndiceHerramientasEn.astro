@@ -1,0 +1,275 @@
+---
+// src/components/IndiceHerramientasEn.astro
+// Interactive Engineering Tools Index/Directory - Theme Lime Green (#8CC63F)
+---
+<div class="card reveal" style="border-top: 4px solid var(--accent); padding: 30px; margin-bottom: 40px; background: rgba(25, 28, 30, 0.85); backdrop-filter: blur(10px);">
+  <div style="text-align: center; margin-bottom: 25px;">
+    <h3 style="color: var(--accent); font-family: var(--font-title); font-size: 1.5rem; margin-bottom: 10px; font-weight: 700;">
+      🔍 Calculators & Engineering Directory
+    </h3>
+    <p style="font-size: 0.9rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+      Search or filter by category to find the calculator or test you need. Click to scroll directly to the calculation.
+    </p>
+  </div>
+
+  <!-- Filter & Search Bar -->
+  <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <!-- Search Input -->
+    <div style="position: relative; width: 100%;">
+      <input 
+        type="text" 
+        id="idx-search-en" 
+        placeholder="Type keywords (e.g. cable, breaker, drywall, air...)" 
+        style="width: 100%; padding: 12px 16px 12px 45px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;"
+      />
+      <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; color: var(--text-muted); pointer-events: none;">🔍</span>
+    </div>
+
+    <!-- Category Buttons -->
+    <div class="idx-cats" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+      <button type="button" class="idx-cat-btn-en active" data-cat="all" style="background: var(--accent); color: var(--text-dark); border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.3s;">
+        All
+      </button>
+      <button type="button" class="idx-cat-btn-en" data-cat="electricity" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        ⚡ Electricity & Solar
+      </button>
+      <button type="button" class="idx-cat-btn-en" data-cat="climate" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        🌡️ HVAC & Insulation
+      </button>
+      <button type="button" class="idx-cat-btn-en" data-cat="construction" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        🏗️ Construction & Materials
+      </button>
+      <button type="button" class="idx-cat-btn-en" data-cat="security" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        🛡️ Security & Fluids
+      </button>
+    </div>
+  </div>
+
+  <!-- Shortcut Grid -->
+  <div id="idx-grid-en" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px;">
+    <!-- ELECTRICITY -->
+    <div class="idx-item-en card" data-cat="electricity" data-keywords="electrical consumption power appliances amperes panel current">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🔌</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Electrical Consumption</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Estimate total power consumption of your home appliances in Amperes.</p>
+      <a href="#calc-consumo-electrico" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="electricity" data-keywords="cable sizing drop voltage copper aluminum loss aea codes">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">⚡</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Cable Sizing</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Size copper or aluminum conductors and limit voltage drop under standard codes.</p>
+      <a href="#calc-cable" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="electricity" data-keywords="panel sizing protection design MCB RCD circuit breaker din rail load balancing phases schneider siemens">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🎛️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700; display: flex; align-items: center; gap: 5px;">Panel & Protection Design <span style="font-size: 0.6rem; background: var(--accent); color: var(--text-dark); padding: 1px 4px; border-radius: 4px; font-weight: 800;">NEW</span></h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Sizing breakers, RCDs, distribution blocks, phase balance, and virtual DIN rail.</p>
+      <a href="#calc-tableros-en" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="electricity" data-keywords="regulatory load sheet aea 771 autocad plan municipal project">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">📊</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Regulatory Load Sheet</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Generate load sheets formatted for AutoCAD blueprints or technical memos.</p>
+      <a href="#calc-planilla-totalizadora" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="electricity" data-keywords="bill audit electricity rate hike leakage consumption utility">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🧾</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Electrical Bill Audit</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Verify the charges on your utility bill and identify power leaks or high demands.</p>
+      <a href="#calculadora-factura" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="electricity" data-keywords="solar pv panels investment return payback net metering">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">☀️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Solar PV ROI Simulator</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Determine necessary PV panel amounts and estimate payback times.</p>
+      <a href="#calc-solar" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="electricity" data-keywords="evaluation electrician test codes installer check qualification">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">📝</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Electrician Evaluation</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Knowledge test regarding codes, wiring, and general installations.</p>
+      <a href="#evaluacion-electricista" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Test ➔</a>
+    </div>
+
+    <!-- CLIMATE -->
+    <div class="idx-item-en card" data-cat="climate" data-keywords="btu frigorias thermal load cooling room heat air conditioning refrigeration">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">❄️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">AC Load Calculator</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Calculate the thermal load and BTU capacity needed for air conditioning.</p>
+      <a href="#calc-frigorias" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="climate" data-keywords="thermal transmittance u-value walls insulation loss heat savings">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🌡️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">U-Value Transmittance</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Assess transmittance metrics for wall assemblies to estimate energy savings.</p>
+      <a href="#calc-uvalue" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="climate" data-keywords="refrigeration test hvac split installer cooling air check">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">📋</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">HVAC Tech Evaluation</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Knowledge test for AC installation and refrigeration technicians.</p>
+      <a href="#evaluacion-refrigeracion" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Test ➔</a>
+    </div>
+
+    <!-- CONSTRUCTION -->
+    <div class="idx-item-en card" data-cat="construction" data-keywords="drywall plasterboard Soleras profiles stud compound ceiling materials">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🏗️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Drywall Sizing</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Calculate studs, channels, sheets, and joint compounds for drywall partitions.</p>
+      <a href="#calc-durlock" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="construction" data-keywords="paint liters hands roller latex walls ceiling size cans">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🎨</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Paint Calculator</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Estimate latex paint volume and paint cans required for wall surfaces.</p>
+      <a href="#calc-pintura" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="construction" data-keywords="lighting design lux luxes fixtures led office warehouse standard codes">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">💡</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Lux Lighting Sizing</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Determine recommended LED lighting density for safety and productivity.</p>
+      <a href="#calc-lighting" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="construction" data-keywords="gas heater regulator boiler pipes heating flow">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🔥</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Gas Consumption</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Estimate monthly gas demand and size regulators according to codes.</p>
+      <a href="#calc-consumo-gas" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="construction" data-keywords="sanitary plumbing test gas plumbing qualification inspector">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🚿</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Sanitary & Gas Tech Test</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Knowledge assessment for licensed gas fitters and sanitary installers.</p>
+      <a href="#evaluacion-gas-plomeria" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Test ➔</a>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="idx-item-en card" data-cat="security" data-keywords="water tank cistern pumps elevated lifting flow rate">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">💧</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Water Tank & Pump</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Determine water storage volumes and sizing for lift pump horsepower.</p>
+      <a href="#calc-water" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="security" data-keywords="fire alarm intrusion sensors detection smoke warehouse movement">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🚨</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Fire & Intrusion</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Size required smoke detectors and movement sensors for layouts.</p>
+      <a href="#calc-incendio-intrusion" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="security" data-keywords="cctv storage recording capacity hard drive sd cameras security">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">📹</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">CCTV Storage Sizing</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Calculate Hard Drive size needed based on camera count and video resolutions.</p>
+      <a href="#calc-cctv" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="security" data-keywords="network installer test cctv alarms cameras check technology">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🛡️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Network & CCTV Test</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Evaluation test for LAN cabling, electronics alarms, and CCTV installers.</p>
+      <a href="#evaluacion-redes-seguridad" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Test ➔</a>
+    </div>
+
+    <div class="idx-item-en card" data-cat="security" data-keywords="maintenance planning preventive tasks schedule machinery lifetime">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🔧</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Preventive Maintenance</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Generate preventive maintenance task schedules to prolong equipment lifetime.</p>
+      <a href="#calc-mantenimiento" class="idx-link-en" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Go to Calculator ➔</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('idx-search-en') as HTMLInputElement;
+    const catButtons = document.querySelectorAll('.idx-cat-btn-en');
+    const idxCards = document.querySelectorAll('.idx-item-en');
+    const idxLinks = document.querySelectorAll('.idx-link-en');
+
+    let currentCat = 'all';
+    let searchQuery = '';
+
+    idxLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        if (!targetId) return;
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          const headerOffset = 90;
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+
+          targetElement.classList.add('highlight-target');
+          setTimeout(() => {
+            targetElement.classList.remove('highlight-target');
+          }, 2000);
+        }
+      });
+    });
+
+    function filterCards() {
+      idxCards.forEach(card => {
+        const cat = card.getAttribute('data-cat') || '';
+        const keywords = card.getAttribute('data-keywords') || '';
+        const title = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        
+        const matchesCat = currentCat === 'all' || cat === currentCat;
+        const matchesSearch = searchQuery === '' || 
+          title.includes(searchQuery) || 
+          keywords.includes(searchQuery);
+
+        if (matchesCat && matchesSearch) {
+          (card as HTMLElement).style.display = 'block';
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        searchQuery = searchInput.value.trim().toLowerCase();
+        filterCards();
+      });
+    }
+
+    catButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        catButtons.forEach(b => {
+          b.classList.remove('active');
+          (b as HTMLElement).style.background = 'rgba(255,255,255,0.03)';
+          (b as HTMLElement).style.color = 'var(--text-secondary)';
+          (b as HTMLElement).style.borderColor = 'var(--border-color)';
+        });
+        
+        btn.classList.add('active');
+        (btn as HTMLElement).style.background = 'var(--accent)';
+        (btn as HTMLElement).style.color = 'var(--text-dark)';
+        (btn as HTMLElement).style.borderColor = 'transparent';
+
+        currentCat = btn.getAttribute('data-cat') || 'all';
+        filterCards();
+      });
+    });
+  });
+</script>

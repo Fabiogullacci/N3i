@@ -1,0 +1,295 @@
+---
+// src/components/IndiceHerramientas.astro
+// Directorio / Índice Interactivo de Herramientas de Ingeniería - Theme Lime Green (#8CC63F)
+---
+<div class="card reveal" style="border-top: 4px solid var(--accent); padding: 30px; margin-bottom: 40px; background: rgba(25, 28, 30, 0.85); backdrop-filter: blur(10px);">
+  <div style="text-align: center; margin-bottom: 25px;">
+    <h3 style="color: var(--accent); font-family: var(--font-title); font-size: 1.5rem; margin-bottom: 10px; font-weight: 700;">
+      🔍 Directorio de Calculadoras e Ingeniería
+    </h3>
+    <p style="font-size: 0.9rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+      Busque o filtre por categoría para encontrar rápidamente la calculadora o test técnico que necesita. Haga clic para ir directamente al cálculo.
+    </p>
+  </div>
+
+  <!-- Barra de Filtros y Búsqueda -->
+  <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <!-- Entrada de Búsqueda -->
+    <div style="position: relative; width: 100%;">
+      <input 
+        type="text" 
+        id="idx-search" 
+        placeholder="Escriba palabras clave (ej: cable, disyuntor, durlock, aire...)" 
+        style="width: 100%; padding: 12px 16px 12px 45px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;"
+      />
+      <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; color: var(--text-muted); pointer-events: none;">🔍</span>
+    </div>
+
+    <!-- Botones de Categorías -->
+    <div class="idx-cats" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+      <button type="button" class="idx-cat-btn active" data-cat="all" style="background: var(--accent); color: var(--text-dark); border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.3s;">
+        Todos
+      </button>
+      <button type="button" class="idx-cat-btn" data-cat="electricidad" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        ⚡ Electricidad y Solar
+      </button>
+      <button type="button" class="idx-cat-btn" data-cat="climatizacion" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        🌡️ Clima y Aislación
+      </button>
+      <button type="button" class="idx-cat-btn" data-cat="obras" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        🏗️ Obras y Materiales
+      </button>
+      <button type="button" class="idx-cat-btn" data-cat="seguridad" style="background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        🛡️ Seguridad y Fluidos
+      </button>
+    </div>
+  </div>
+
+  <!-- Rejilla de Accesos Directos -->
+  <div id="idx-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px;">
+    <!-- ELECTRICIDAD -->
+    <div class="idx-item card" data-cat="electricidad" data-keywords="consumo electrico potencia electrodomesticos amperes tablero corriente">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🔌</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Consumo Eléctrico</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Estime la potencia de sus electrodomésticos y consumo total en Amperes.</p>
+      <a href="#calc-consumo-electrico" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="electricidad" data-keywords="cables seccion tension conductores cobre aluminio perdida aea">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">⚡</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Sección de Cables</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Dimensione conductores de cobre o aluminio y limite la caída de tensión.</p>
+      <a href="#calc-cable" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="electricidad" data-keywords="tableros protecciones termomagnética termica disyuntor diferencial riel din balanceo fase schneider siemens">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🎛️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700; display: flex; align-items: center; gap: 5px;">Protecciones y Tableros <span style="font-size: 0.6rem; background: var(--accent); color: var(--text-dark); padding: 1px 4px; border-radius: 4px; font-weight: 800;">NUEVO</span></h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Diseñe tableros, calcule térmicas y disyuntores, balancee fases y genere el riel DIN.</p>
+      <a href="#calc-tableros" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="electricidad" data-keywords="planilla totalizadora de cargas aea 771 autocad plano obra municipalidad">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">📊</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Planilla Totalizadora</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Genere planillas de cargas oficiales para planos eléctricos en AutoCAD.</p>
+      <a href="#calc-planilla-totalizadora" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="electricidad" data-keywords="factura auditoria cobro edes tarifa tarifazo fuga consumo">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🧾</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Auditoría de Factura</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Analice cargos de su boleta de luz y compruebe pérdidas o fugas.</p>
+      <a href="#calculadora-factura" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="electricidad" data-keywords="solar fotovoltaico paneles inversion roi retorno energia sustentable">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">☀️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Simulador Solar PV</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Estime la cantidad de paneles solares necesarios y el retorno de inversión.</p>
+      <a href="#calc-solar" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="electricidad" data-keywords="evaluacion examen test electricista reglamento matriculado aptitud">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">📝</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Evaluación Electricistas</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Test técnico sobre la reglamentación y buenas prácticas en instalaciones.</p>
+      <a href="#evaluacion-electricista" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <!-- CLIMATIZACIÓN -->
+    <div class="idx-item card" data-cat="climatizacion" data-keywords="frigorias aire acondicionado clima calor termico ambiente btu refrigeracion">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">❄️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Cálculo de Frigorías</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Dimensione la capacidad frigorífica necesaria para climatizar un ambiente.</p>
+      <a href="#calc-frigorias" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="climatizacion" data-keywords="transmitancia termica u-value muros pared ladrillo aislacion calor perdida">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🌡️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Transmitancia U-Value</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Evalúe la transmitancia térmica de materiales y estime el ahorro en gas/luz.</p>
+      <a href="#calc-uvalue" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="climatizacion" data-keywords="evaluacion examen test refrigeracion aire instalador tecnico split">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">📋</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Evaluación Refrigeración</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Autoevaluación de conocimientos técnicos para técnicos instaladores de AC.</p>
+      <a href="#evaluacion-refrigeracion" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <!-- OBRAS Y MATERIALES -->
+    <div class="idx-item card" data-cat="obras" data-keywords="durlock placas perfiles soleras montantes masilla tabique cielorraso materiales">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🏗️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Materiales Durlock</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Calcule cantidad de placas, montantes, soleras y tornillos para tabiquería.</p>
+      <a href="#calc-durlock" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="obras" data-keywords="pintura litros manos rodillo latex pared cielorraso superficie envases">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🎨</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Cálculo de Pintura</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Calcule los litros de látex y rodillos necesarios según las medidas del muro.</p>
+      <a href="#calc-pintura" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="obras" data-keywords="iluminacion luxes luminarias luces oficina led galpon iram">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">💡</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Nivel de Luxes (Luz)</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Determine las luminarias LED necesarias para una correcta iluminación laboral.</p>
+      <a href="#calc-iluminacion" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="obras" data-keywords="gas estufa caldera termotanque regulador cañeria consumo calefactor">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🔥</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Consumo de Gas</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Estime consumos mensuales y dimensione el regulador reglamentario.</p>
+      <a href="#calc-consumo-gas" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="obras" data-keywords="evaluacion examen test gas plomeria sanitario matriculado tecnico">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🚿</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Evaluación Sanitaria/Gas</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Test técnico para gasistas matriculados e instaladores sanitarios.</p>
+      <a href="#evaluacion-gas-plomeria" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <!-- SEGURIDAD Y FLUIDOS -->
+    <div class="idx-item card" data-cat="seguridad" data-keywords="agua tanques cisterna bombas elevado elevacion caudal caudalimetro">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">💧</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Tanques y Bombas de Agua</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Calcule la cisterna de agua y la potencia necesaria de la bomba elevadora.</p>
+      <a href="#calc-hidrica" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="seguridad" data-keywords="incendio humo sensores alarma intrusion seguridad barreras movimiento">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🚨</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Incendio y Detección</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Dimensione detectores de humo y barreras perimetrales de seguridad.</p>
+      <a href="#calc-incendio-intrusion" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="seguridad" data-keywords="cctv camaras grabacion capacidad disco rigido sd megapixel camara seguridad">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">📹</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Capacidad de CCTV</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Calcule el tamaño de almacenamiento necesario para guardar grabaciones.</p>
+      <a href="#calc-cctv" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="seguridad" data-keywords="evaluacion examen test redes informatica cctv alarmas camaras seguridad">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🛡️</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Evaluación Redes/Seguridad</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Test para instaladores de redes LAN, alarmas electrónicas y CCTV.</p>
+      <a href="#evaluacion-redes-seguridad" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+
+    <div class="idx-item card" data-cat="seguridad" data-keywords="mantenimiento preventivo planificacion agenda equipos motores maquinas vida util">
+      <div style="font-size: 1.3rem; margin-bottom: 8px;">🔧</div>
+      <h4 style="font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-title); font-weight: 700;">Asesor Mantenimiento</h4>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">Genere planes de mantenimiento estructurados para prolongar la vida útil.</p>
+      <a href="#calc-mantenimiento" class="idx-link" style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">Ir al cálculo ➔</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('idx-search') as HTMLInputElement;
+    const catButtons = document.querySelectorAll('.idx-cat-btn');
+    const idxCards = document.querySelectorAll('.idx-item');
+    const idxLinks = document.querySelectorAll('.idx-link');
+
+    let currentCat = 'all';
+    let searchQuery = '';
+
+    // Smooth scroll for internal anchors
+    idxLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        if (!targetId) return;
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          // Obtener la altura del header para no solaparse
+          const headerOffset = 90;
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+
+          // Agregar clase temporal para resaltar
+          targetElement.classList.add('highlight-target');
+          setTimeout(() => {
+            targetElement.classList.remove('highlight-target');
+          }, 2000);
+        }
+      });
+    });
+
+    function filterCards() {
+      idxCards.forEach(card => {
+        const cat = card.getAttribute('data-cat') || '';
+        const keywords = card.getAttribute('data-keywords') || '';
+        const title = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        
+        const matchesCat = currentCat === 'all' || cat === currentCat;
+        const matchesSearch = searchQuery === '' || 
+          title.includes(searchQuery) || 
+          keywords.includes(searchQuery);
+
+        if (matchesCat && matchesSearch) {
+          (card as HTMLElement).style.display = 'block';
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    }
+
+    // Event listeners
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        searchQuery = searchInput.value.trim().toLowerCase();
+        filterCards();
+      });
+    }
+
+    catButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        catButtons.forEach(b => {
+          b.classList.remove('active');
+          (b as HTMLElement).style.background = 'rgba(255,255,255,0.03)';
+          (b as HTMLElement).style.color = 'var(--text-secondary)';
+          (b as HTMLElement).style.borderColor = 'var(--border-color)';
+        });
+        
+        btn.classList.add('active');
+        (btn as HTMLElement).style.background = 'var(--accent)';
+        (btn as HTMLElement).style.color = 'var(--text-dark)';
+        (btn as HTMLElement).style.borderColor = 'transparent';
+
+        currentCat = btn.getAttribute('data-cat') || 'all';
+        filterCards();
+      });
+    });
+  });
+</script>
+
+<style is:global>
+  /* Resaltar la sección saltada con un pequeño flash */
+  .highlight-target {
+    animation: flash-highlight 2s ease-out;
+  }
+
+  @keyframes flash-highlight {
+    0% {
+      box-shadow: 0 0 0 4px var(--accent);
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+</style>

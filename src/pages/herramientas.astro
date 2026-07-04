@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import IndiceHerramientas from '../components/IndiceHerramientas.astro';
 import CalculadoraFrigorias from '../components/CalculadoraFrigorias.astro';
 import CalculadoraHidrica from '../components/CalculadoraHidrica.astro';
 import CalculadoraIluminacion from '../components/CalculadoraIluminacion.astro';
@@ -31,8 +32,10 @@ import CalculadoraEvaluacionRedesSeguridad from '../components/CalculadoraEvalua
   
   <div style="padding-top: clamp(80px, 12vw, 120px);">
     <!-- Contenedor para dar el espaciado correcto al primer elemento del listado -->
-    <CalculadoraConsumoElectrico />
+    <IndiceHerramientas />
   </div>
+
+  <CalculadoraConsumoElectrico />
 
   <CalculadoraEvaluacionElectricista />
   <CalculadoraEvaluacionGasPlomeria />
