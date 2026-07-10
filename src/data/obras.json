@@ -1,6 +1,21 @@
 {
   "obras": [
     {
+      "id": "obra_1783725928929",
+      "title": "Construcción de oficina de control Cargas Transporte (Activa)",
+      "category": "Obras llave en mano",
+      "location": "Speed Business SA Alem 2700 (8000 Bahia Blanca)",
+      "description": "Construcción de oficina de control de 2×5 m mediante sistema steel frame con placas de roca de yeso en interior y exterior, emplazada dentro de nave industrial de gran porte para gestión de cargas y descargas de transporte de camiones; la estructura fue ejecutada con perfiles metálicos galvanizados, incorporando carpinterías de abrir y correr de aluminio blanco para ventilación e iluminación natural, puerta de acceso con ventilación y cerradura de seguridad, y terminación en placa lista para pintura en ambas caras; el proyecto incluyó además instalación eléctrica, A/C, red de datos y sistema de videovigilancia integrado, Sistema de Alarma DAHUA, resultando en un módulo funcional, robusto y de rápida ejecución que optimiza el control operativo del predio sin intervenir la estructura existente de la nave. (Cuadrilla TREJO Hnos, N3i)",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1783725928451_img_1.webp",
+        "/assets/img/obra_1783725928451_img_2.webp",
+        "/assets/img/obra_1783725928451_img_3.webp",
+        "/assets/img/obra_1783725928451_img_4.webp"
+      ],
+      "date": "2026-07-10T23:25:28.929Z"
+    },
+    {
       "id": "obra_1782993967376",
       "title": "Construcción en seco de oficinas y espacios de trabajo.",
       "category": "Construcción en Seco y Terminaciones",
