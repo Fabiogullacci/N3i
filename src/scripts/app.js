@@ -371,7 +371,7 @@ ${message}`;
   };
 
   // Find all main titles
-  const shareableTitles = document.querySelectorAll('h2.section-title, .hero-title');
+  const shareableTitles = document.querySelectorAll('h2.section-title');
 
   shareableTitles.forEach(title => {
     const text = title.textContent.trim();

@@ -2679,6 +2679,11 @@ section[id],
   vertical-align: middle;
   margin-left: 10px;
   line-height: 1;
+  -webkit-text-fill-color: currentColor; /* Prevents inheriting text gradient transparent fill color */
+}
+
+.heading-share-container * {
+  -webkit-text-fill-color: currentColor; /* Ensure all descendants also override text gradient transparent fill */
 }
 
 .heading-share-menu {
