@@ -1,6 +1,18 @@
 {
   "obras": [
     {
+      "id": "obra_1783879318447",
+      "title": "Instalación de Alarma de Incendio",
+      "category": "Obras llave en mano",
+      "location": "Aduana Bs.As (Zona Franca Cnel. Rosales)",
+      "description": "N3I completó la instalación de un sistema de alarma contra incendio para Aduana (Zona Franca Coronel Rosales) en dos de sus galpones. El proyecto incluyó la implementación de la central Fireclass J408, complementada con dos sensores de humo infrarrojos de alto espectro y largo alcance, ideales para la detección en grandes volúmenes y alturas. Nuestros técnicos realizaron el tendido de la infraestructura de cableado y la configuración avanzada de la central, garantizando una detección temprana y precisa. La puesta en marcha del sistema asegura la protección integral de las operaciones y bienes resguardados.\r\n\r\n#N3I #SeguridadIndustrial #SistemasContraIncendio #Fireclass #DeteccionDeIncendios #SensoresInfrarrojos #Aduana #ZonaFrancaCoronelRosales #BahiaBlanca #InstalacionesCiviles",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1783879318222_img_1.webp"
+      ],
+      "date": "2026-07-12T18:01:58.447Z"
+    },
+    {
       "id": "obra_1783876406364",
       "title": "Banco Hipotecario (BHI)",
       "category": "Obras llave en mano",
