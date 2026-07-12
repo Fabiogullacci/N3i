@@ -1,6 +1,18 @@
 {
   "obras": [
     {
+      "id": "obra_1783876406364",
+      "title": "Banco Hipotecario (BHI)",
+      "category": "Obras llave en mano",
+      "location": "Chiclana 400, (Bahia Blanca)",
+      "description": "N3I ejecutó la puesta en valor y modernización de la sucursal del Banco Hipotecario en Bahía Blanca. La intervención comprendió trabajos de obra civil con restauración de mamposterías, aplicación de pintura integral en paredes, cielorrasos y aberturas, y enchapado de puertas de madera para salas de reuniones y gerencia, logrando una estética renovada y corporativa. Paralelamente, se implementaron soluciones tecnológicas que incluyen la instalación de tótems de consulta, sistemas de gestión de turnos y pantallas LED para optimizar la atención al cliente. Asimismo, se realizó la reconstrucción de mobiliarios en el sector de cajas y área de bóveda, junto con reparaciones de solado y limpieza técnica de pisos, asegurando la funcionalidad y el mantenimiento de los estándares operativos requeridos por la entidad bancaria.\r\n\r\n#N3I #BahiaBlanca #BancoHipotecario #ObraCivil #InstalacionesComerciales #PuestaEnValor #RenovacionBancaria #Infraestructura #IngenieriaCivil #TecnologiaBancaria #MantenimientoEdilicio",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1783876406132_img_1.webp"
+      ],
+      "date": "2026-07-12T17:13:26.364Z"
+    },
+    {
       "id": "obra_1783725928929",
       "title": "Construcción de oficina de control Cargas Transporte (Activa)",
       "category": "Obras llave en mano",
