@@ -1,6 +1,18 @@
 {
   "obras": [
     {
+      "id": "obra_1784760783302",
+      "title": "DEPOSITO LOGISTICA BHI.",
+      "category": "Obras llave en mano",
+      "location": "SPEED BUSINESS SA (CREDIFIN LOGISTICA) Av.Alem 2478 BHI.",
+      "description": "Centro Logístico y Oficinas Operativas - Speed Business SA (CREDIFIN Logística)\r\n\r\nEl cliente requería la implementación de un centro operativo integral dentro de un depósito de gran envergadura, que incluyera áreas de gestión, control de cargas y sistemas de seguridad y comunicaciones robustos para optimizar sus procesos logísticos.\r\n\r\nN3I ejecutó un proyecto llave en mano que abarcó la construcción de oficinas de control y gerencias mediante el sistema Drywall, optimizando los espacios internos del depósito. Se realizó la instalación eléctrica completa, con un sistema de iluminación LED de alta eficiencia. Adicionalmente, se implementó una red de datos estructurada, un sistema de videovigilancia integral con equipamiento Hikvision y un sistema de alarmas Dahua Smart, integrando la seguridad y el monitoreo.\r\n\r\nDahua Smart (alarmas), Hikvision (videovigilancia), Luminarias LED, Equipamiento de red estructurada.\r\n\r\nLa obra fue entregada en su totalidad, completamente operativa y dentro de los plazos estipulados, proporcionando a Speed Business SA (CREDIFIN Logística) una infraestructura moderna y segura, esencial para el desarrollo eficiente de sus operaciones logísticas.\r\n\r\n#LogisticaIndustrial #InfraestructuraN3I #Drywall #Electricidad #IluminacionLED #RedesDeDatos #CCTV #Videovigilancia #AlarmasInteligentes #DahuaSmart #Hikvision #ObraLlaveEnMano #BahiaBlanca #ProyectosIndustriales #CREDIFINLogistica",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1784760782991_img_1.webp"
+      ],
+      "date": "2026-07-22T22:53:03.302Z"
+    },
+    {
       "id": "obra_1783879318447",
       "title": "Instalación de Alarma de Incendio",
       "category": "Obras llave en mano",
