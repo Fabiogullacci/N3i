@@ -1,6 +1,18 @@
 {
   "obras": [
     {
+      "id": "obra_1784898783181",
+      "title": "CENSADO DE ALARMA  DE INCENDIOS SMART y RED MESH.",
+      "category": "Redes y Datos",
+      "location": "Estación de Servicios YPF (11 de Abril y Mitre)",
+      "description": "Para la Estación de Servicio YPF, se ejecutó la instalación de un sistema de detección temprana de incendios de alta tecnología. El proyecto abarcó el despliegue de siete sensores de humo inteligentes, distribuidos estratégicamente en áreas críticas como el salón, la cocina y los depósitos. Estos dispositivos fueron configurados para operar en una red Mesh, garantizando una interconexión robusta y fiable para la monitorización continua. La intervención de N3I priorizó la prolijidad en la instalación y la integración estética de los sensores con la infraestructura existente, asegurando así una solución de seguridad efectiva y discretamente implementada. Esta mejora tecnológica eleva significativamente la capacidad de respuesta del establecimiento ante eventos de incendio, protegiendo tanto al personal como a los activos.\r\n\r\n#N3I #SeguridadIndustrial #SistemasContraIncendio #DeteccionDeIncendios #BahiaBlanca #InstalacionesComerciales #TecnologiaMesh #ProteccionActiva #ServiciosN3I #YPF",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1784898782910_img_1.webp"
+      ],
+      "date": "2026-07-24T13:13:03.181Z"
+    },
+    {
       "id": "obra_1784760783302",
       "title": "DEPOSITO LOGISTICA BHI.",
       "category": "Obras llave en mano",
