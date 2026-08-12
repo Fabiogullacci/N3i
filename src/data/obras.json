@@ -1,6 +1,18 @@
 {
   "obras": [
     {
+      "id": "obra_1786568658733",
+      "title": "SISTEMA PLUVIAL ACCESO DE CARGAS",
+      "category": "Zinguería y Reparación Estructural",
+      "location": "CREDIFIN SA (Logistica) ",
+      "description": "N3I fue encomendado por CREDIFIN S.A. para desarrollar e implementar un sistema de gestión de aguas pluviales en el acceso principal de cargas de sus instalaciones logísticas. La solución técnica implicó el diseño, la confección y el posterior montaje en altura de una visera/canaleta de chapa galvanizada, customizada para integrarse a la estructura existente y garantizar una derivación eficiente del agua de lluvia. Esta intervención mejora significativamente la operatividad del área de carga y descarga, previniendo la acumulación de agua y prolongando la vida útil de la infraestructura, bajo los más estrictos estándares de seguridad y calidad constructiva.",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1786568658439_img_1.webp"
+      ],
+      "date": "2026-08-12T21:04:18.733Z"
+    },
+    {
       "id": "obra_1784898783181",
       "title": "CENSADO DE ALARMA  DE INCENDIOS SMART y RED MESH.",
       "category": "Redes y Datos",
