@@ -6,6 +6,33 @@
 document.addEventListener('DOMContentLoaded', () => {
   
   // =========================================================================
+  // Toast Notification System (Global within DOMContentLoaded)
+  // =========================================================================
+  const showToastNotification = (message, type = 'success') => {
+    let toast = document.getElementById('toast-notification');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'toast-notification';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    if (type === 'warning') {
+      toast.classList.add('warning');
+    } else {
+      toast.classList.remove('warning');
+    }
+    
+    // Trigger animation frame
+    toast.classList.remove('show');
+    void toast.offsetWidth; // Force reflow
+    toast.classList.add('show');
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3200);
+  };
+
+  // =========================================================================
   // 1. Mobile Menu Toggle
   // =========================================================================
   const menuToggle = document.getElementById('menu-toggle');
@@ -62,31 +89,37 @@ document.addEventListener('DOMContentLoaded', () => {
   handleScroll(); // Initial run in case page starts scrolled
 
   // =========================================================================
-  // 3. Active Link Highlighting on Scroll
+  // 3. Active Link Highlighting on Scroll (Only on Home pages)
   // =========================================================================
-  const sections = document.querySelectorAll('section, header');
-  
-  const activeScrollHighlight = () => {
-    let scrollPos = window.scrollY + 200; // Offset for accuracy
-    
-    sections.forEach(section => {
-      if (section.id) {
-        const top = section.offsetTop;
-        const height = section.offsetHeight;
-        
-        if (scrollPos >= top && scrollPos < top + height) {
-          navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${section.id}`) {
-              link.classList.add('active');
-            }
-          });
-        }
-      }
-    });
-  };
+  const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+  const isHomePage = currentPath === '/' || currentPath === '/en';
 
-  window.addEventListener('scroll', activeScrollHighlight);
+  if (isHomePage) {
+    const sections = document.querySelectorAll('section, header');
+    
+    const activeScrollHighlight = () => {
+      let scrollPos = window.scrollY + 200; // Offset for accuracy
+      
+      sections.forEach(section => {
+        if (section.id) {
+          const top = section.offsetTop;
+          const height = section.offsetHeight;
+          
+          if (scrollPos >= top && scrollPos < top + height) {
+            navLinks.forEach(link => {
+              const href = link.getAttribute('href');
+              if (href === `#${section.id}` || href === `/#${section.id}` || href === `/en#${section.id}`) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+              }
+            });
+          }
+        }
+      });
+    };
+
+    window.addEventListener('scroll', activeScrollHighlight);
+  }
 
   // =========================================================================
   // 4. Interactive Portfolio Filtering (Services tabs)
@@ -198,9 +231,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Basic validation
       if (!name || !company || !phone || !service || !message || !projectType) {
-        alert(isEnglish
+        showToastNotification(isEnglish
           ? 'Please complete all required fields in the form.'
-          : 'Por favor complete todos los campos obligatorios del formulario.');
+          : 'Por favor complete todos los campos obligatorios del formulario.', 'warning');
         return;
       }
 
@@ -556,26 +589,6 @@ ${message}`;
       menu.classList.remove('active');
     });
   });
-
-  // Premium Toast Notification System
-  const showToastNotification = (message) => {
-    let toast = document.getElementById('toast-notification');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'toast-notification';
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    
-    // Trigger animation frame
-    toast.classList.remove('show');
-    void toast.offsetWidth; // Force reflow
-    toast.classList.add('show');
-
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2800);
-  };
 
   // Scroll to hash function supporting IDs and text matches
   const scrollToHash = () => {

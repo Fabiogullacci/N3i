@@ -42,9 +42,13 @@ const t = {
     link_contacto: "/en#contacto",
     link_portal: "/portal",
     link_en: "/en",
-    link_es: "/"
   }
 }[lang];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isHome = currentPath === '/' || currentPath === '/en';
+const isObras = currentPath === '/obras' || currentPath === '/en/works';
+const isHerramientas = currentPath === '/herramientas' || currentPath === '/en/tools';
 ---
 <header class="header" id="header">
   <div class="container">
@@ -77,12 +81,12 @@ const t = {
 
     <nav class="nav" id="nav">
       <ul class="nav-menu" id="nav-menu">
-        <li><a href={t.link_inicio} class="nav-link active">{t.inicio}</a></li>
+        <li><a href={t.link_inicio} class={`nav-link ${isHome ? 'active' : ''}`}>{t.inicio}</a></li>
         <li><a href={t.link_nosotros} class="nav-link">{t.nosotros}</a></li>
         <li><a href={t.link_servicios} class="nav-link">{t.servicios}</a></li>
         <li><a href={t.link_abonos} class="nav-link">{t.abonos}</a></li>
-        <li><a href={t.link_obras} class="nav-link">{t.obras}</a></li>
-        <li><a href={t.link_herramientas} class="nav-link">{t.herramientas}</a></li>
+        <li><a href={t.link_obras} class={`nav-link ${isObras ? 'active' : ''}`}>{t.obras}</a></li>
+        <li><a href={t.link_herramientas} class={`nav-link ${isHerramientas ? 'active' : ''}`}>{t.herramientas}</a></li>
         <li><a href={t.link_clientes} class="nav-link">{t.clientes}</a></li>
         <li><a href={t.link_contacto} class="nav-link">{t.contacto}</a></li>
         <li class="lang-switcher-container">

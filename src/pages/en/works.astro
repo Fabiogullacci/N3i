@@ -102,7 +102,7 @@ const obrasPorCategoria = obrasData.obras.reduce((acc, obra) => {
                       {obra.location}
                     </p>
                     <p class="work-description">
-                      {obra.description}
+                      {(obra.description || '').replace(/(?:\r?\n)*#\w[\w-]*(?:\s+#\w[\w-]*)*\s*$/g, '').trim()}
                     </p>
                   </div>
                 </div>
