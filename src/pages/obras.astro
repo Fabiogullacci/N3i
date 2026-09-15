@@ -13,11 +13,35 @@ const obrasPorCategoria = obrasData.obras.reduce((acc, obra) => {
   acc[cat].push(obra);
   return acc;
 }, {});
+
+const obrasSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://n3i.com.ar/obras/#webpage",
+  "url": "https://n3i.com.ar/obras/",
+  "name": "Portfolio de Obras y Proyectos Ejecutados | N3i",
+  "description": "Casos de éxito y proyectos de ingeniería civil, tableros eléctricos, Steel Frame y refacciones comerciales ejecutadas por N3i en Bahía Blanca.",
+  "publisher": {
+    "@type": "LocalBusiness",
+    "name": "N3i Engineering & Maintenance",
+    "url": "https://n3i.com.ar"
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": (obrasData.obras || []).slice(0, 10).map((obra, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": obra.title,
+      "description": obra.description ? obra.description.replace(/#\w+/g, '').trim() : obra.title
+    }))
+  }
+});
 ---
 <Layout 
-  title="Portfolio de Obras | N3i Engineering & Maintenance" 
-  description="Galería de obras y proyectos recientes."
+  title="Portfolio de Obras de Ingeniería y Construcción | N3i Bahía Blanca" 
+  description="Casos de éxito y obras ejecutadas por N3i en Bahía Blanca: proyectos de ingeniería civil, tableros eléctricos, Steel Frame, refacciones comerciales e infraestructura."
   image="/assets/img/obra_zelarrayan_1.jpg"
+  schemaJson={obrasSchema}
 >
   <Header />
   <!-- Obras Destacadas Section -->

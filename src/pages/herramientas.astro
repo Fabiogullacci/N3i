@@ -23,10 +23,54 @@ import CalculadoraEvaluacionElectricista from '../components/CalculadoraEvaluaci
 import CalculadoraEvaluacionGasPlomeria from '../components/CalculadoraEvaluacionGasPlomeria.astro';
 import CalculadoraEvaluacionRefrigeracion from '../components/CalculadoraEvaluacionRefrigeracion.astro';
 import CalculadoraEvaluacionRedesSeguridad from '../components/CalculadoraEvaluacionRedesSeguridad.astro';
+
+const toolsSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://n3i.com.ar/herramientas/#webapp",
+      "name": "Suite de Calculadoras de Ingeniería N3i",
+      "url": "https://n3i.com.ar/herramientas/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "description": "Suite gratuita de 19 calculadoras técnicas de ingeniería: auditoría de factura eléctrica y reactiva, cálculo de frigorías para aire acondicionado, caída de tensión y cables (norma AEA 90364), Durlock, gas y más.",
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": "N3i Engineering & Maintenance",
+        "url": "https://n3i.com.ar"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "ARS"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://n3i.com.ar/herramientas/#list",
+      "name": "Herramientas de Cálculo Técnico",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Cálculo de Frigorías para Climatización", "url": "https://n3i.com.ar/herramientas/#calc-frigorias" },
+        { "@type": "ListItem", "position": 2, "name": "Auditoría de Factura de Luz y Energía Reactiva", "url": "https://n3i.com.ar/herramientas/#calculadora-factura" },
+        { "@type": "ListItem", "position": 3, "name": "Sección de Cables y Caída de Tensión (AEA 90364)", "url": "https://n3i.com.ar/herramientas/#calc-cable" },
+        { "@type": "ListItem", "position": 4, "name": "Diseñador de Tableros Eléctricos y Riel DIN", "url": "https://n3i.com.ar/herramientas/#calc-tableros" },
+        { "@type": "ListItem", "position": 5, "name": "Planilla Totalizadora de Cargas para Planos", "url": "https://n3i.com.ar/herramientas/#calc-planilla-totalizadora" },
+        { "@type": "ListItem", "position": 6, "name": "Cálculo de Materiales Durlock y Cielorrasos", "url": "https://n3i.com.ar/herramientas/#calc-durlock" },
+        { "@type": "ListItem", "position": 7, "name": "Simulador Solar Fotovoltaico y Retorno de Inversión", "url": "https://n3i.com.ar/herramientas/#calc-solar" },
+        { "@type": "ListItem", "position": 8, "name": "Consumo de Gas y Dimensionamiento de Regulador (Camuzzi)", "url": "https://n3i.com.ar/herramientas/#calc-consumo-gas" },
+        { "@type": "ListItem", "position": 9, "name": "Cálculo Hídrico y Potencia de Bomba de Agua", "url": "https://n3i.com.ar/herramientas/#calc-hidrica" },
+        { "@type": "ListItem", "position": 10, "name": "Rendimiento y Litros de Pintura", "url": "https://n3i.com.ar/herramientas/#calc-pintura" }
+      ]
+    }
+  ]
+});
 ---
 <Layout 
-  title="Calculadoras y Herramientas de Ingeniería | N3i" 
-  description="Suite de calculadoras online gratuitas: Auditoría de factura eléctrica, cálculo de materiales (Durlock, pintura), cálculo de frigorías para aire acondicionado, iluminación, bombas de agua y más."
+  title="Calculadoras y Herramientas de Ingeniería Online | N3i" 
+  description="Suite de 19 calculadoras técnicas online gratuitas: auditoría de factura eléctrica, cálculo de frigorías, caída de tensión y cables (AEA), Durlock, gas y solar."
+  schemaJson={toolsSchema}
 >
   <Header />
   

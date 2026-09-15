@@ -1,20 +1,22 @@
 ---
 interface Props {
 	title: string;
-	description: string;
+	description?: string;
 	lang?: string;
 	image?: string;
 	schemaJson?: string;
 	canonicalUrl?: string;
+	noindex?: boolean;
 }
 
 const { 
 	title, 
-	description, 
+	description = "Empresa de mantenimiento industrial integral y obras de ingeniería en Bahía Blanca. Electricidad, climatización, gas, redes de datos, seguridad y Steel Frame.", 
 	lang = "es",
 	image = "/assets/img/logo.jpg",
 	schemaJson,
-	canonicalUrl
+	canonicalUrl,
+	noindex = false
 } = Astro.props;
 
 const siteUrl = "https://n3i.com.ar";
@@ -59,8 +61,15 @@ import CopilotoTecnico from '../components/CopilotoTecnico.astro';
 		<!-- Canonical URL -->
 		<link rel="canonical" href={canonical} />
 
-		<!-- Robots -->
-		<meta name="robots" content="index, follow" />
+		<!-- Robots & Crawlers (Googlebot, Bingbot) -->
+		{noindex ? (
+			<meta name="robots" content="noindex, follow" />
+			<meta name="googlebot" content="noindex, follow" />
+		) : (
+			<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+			<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+			<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+		)}
 
 		<!-- Geo Meta Tags — SEO Local Bahía Blanca -->
 		<meta name="geo.region" content="AR-B" />

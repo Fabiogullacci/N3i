@@ -1,4 +1,27 @@
+# Robots.txt for N3i Engineering & Maintenance (https://n3i.com.ar)
 User-agent: *
 Allow: /
+Disallow: /gracias/
+Disallow: /portal/
 
+# Reglas optimizadas para Googlebot (Máxima indexación de servicios y calculadoras)
+User-agent: Googlebot
+Allow: /
+Disallow: /gracias/
+Disallow: /portal/
+
+# Permitir indexación de fotos de obras y diagramas técnicos en Google Imágenes
+User-agent: Googlebot-Image
+Allow: /assets/
+Allow: /
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+Disallow: /gracias/
+Disallow: /portal/
+
+# Sitemaps oficiales declarados
 Sitemap: https://n3i.com.ar/sitemap-index.xml
+Sitemap: https://n3i.com.ar/sitemap-0.xml
+
