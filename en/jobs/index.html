@@ -10,7 +10,7 @@
 		        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
 		        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 		    })(window, document, "clarity", "script", "x7fgpexfxp");
-		</script><link rel="stylesheet" href="/_astro/Header.EBsf6siY.css">
+		</script><link rel="stylesheet" href="/_astro/Header.fwyzPsHv.css">
 <style>.checkbox-label[data-astro-cid-vkvddafm]{display:flex;align-items:center;gap:8px;font-size:.95rem;color:var(--text-light);cursor:pointer;background:#ffffff05;padding:10px;border-radius:6px;border:1px solid rgba(255,255,255,.05);transition:all .3s ease}.checkbox-label[data-astro-cid-vkvddafm]:hover{background:#3fc6b41a;border-color:#3fc6b44d}input[data-astro-cid-vkvddafm][type=checkbox],input[data-astro-cid-vkvddafm][type=radio]{accent-color:#3FC6B4;width:18px;height:18px;flex-shrink:0}@media(max-width:768px){.form-group-grid[data-astro-cid-vkvddafm],div[data-astro-cid-vkvddafm][style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr!important}}
 </style></head> <body>  <header class="header" id="header"> <div class="container"> <a href="/en#inicio" class="logo" id="logo-link"> <img src="/assets/img/logo.webp" alt="Logo de N3i Engineering & Maintenance" width="84" height="84"> <div class="logo-text">
 N3i
@@ -289,24 +289,82 @@ N3i
   }
 
   // Renderizar Mensaje
-  function appendMessage(text, sender = 'user', imageBase64 = null) {
+  function appendMessage(content, sender = 'user', imageBase64 = null) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `copilot-msg msg-${sender}`;
+
+    let text = typeof content === 'string' ? content : (content.text || '');
+    let toolLink = typeof content === 'object' ? content.toolLink : null;
+    let subOptions = typeof content === 'object' ? content.subOptions : null;
 
     let imgHtml = '';
     if (imageBase64) {
       imgHtml = `<img src="${imageBase64}" class="msg-attached-img" alt="Adjunto" />`;
     }
 
-    // Convertir saltos de línea y negritas simples
-    const formattedText = text
+    // Convertir markdown (enlaces, saltos de línea y negritas)
+    let formattedText = text
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="copilot-inline-link">$1</a>')
       .replace(/\n/g, '<br>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    let actionsHtml = '';
+    if (sender === 'assistant') {
+      let toolBtnHtml = '';
+      if (toolLink && toolLink.url) {
+        toolBtnHtml = `
+          <a href="${toolLink.url}" class="copilot-tool-link-btn" title="${toolLink.title}">
+            <span class="btn-icon">${toolLink.icon || '🧮'}</span>
+            <div class="btn-text">
+              <strong>${toolLink.title}</strong>
+              <small>${toolLink.desc || ''}</small>
+            </div>
+            <span class="btn-arrow">➔</span>
+          </a>
+        `;
+      }
+
+      let subChipsHtml = '';
+      if (subOptions && subOptions.length > 0) {
+        subChipsHtml = `
+          <div class="copilot-sub-options">
+            ${subOptions.map(opt => `<button type="button" class="copilot-sub-chip" data-query="${opt.query}">${opt.label}</button>`).join('')}
+          </div>
+        `;
+      }
+
+      // Botón de WhatsApp con el Ing. Fabio Gullacci
+      const waEncoded = encodeURIComponent(
+        isEnglish
+          ? `Hello Eng. Fabio Gullacci, I was consulting the N3i AI Copilot and would like to request technical advice.`
+          : `Hola Ing. Fabio Gullacci, estuve consultando en el Copiloto Técnico de N3i y quisiera solicitar asesoramiento técnico.`
+      );
+      const waBtnHtml = `
+        <div class="copilot-msg-action">
+          <a href="https://wa.me/5492914168232?text=${waEncoded}" target="_blank" rel="noopener noreferrer" class="msg-action-btn">
+            <span>💬</span> ${isEnglish ? 'Transfer to WhatsApp with Eng. Fabio' : 'Consultar al Ing. Fabio por WhatsApp'}
+          </a>
+        </div>
+      `;
+
+      if (toolBtnHtml || subChipsHtml) {
+        actionsHtml = `
+          <div class="copilot-action-group">
+            ${toolBtnHtml}
+            ${subChipsHtml}
+            ${waBtnHtml}
+          </div>
+        `;
+      } else {
+        actionsHtml = waBtnHtml;
+      }
+    }
 
     msgDiv.innerHTML = `
       <div class="msg-bubble">
         ${imgHtml}
         <p>${formattedText}</p>
+        ${actionsHtml}
       </div>
       <span class="msg-time">${sender === 'user' ? (isEnglish ? 'You' : 'Tú') : 'N3i Copilot'}</span>
     `;
@@ -314,6 +372,56 @@ N3i
     messagesEl.appendChild(msgDiv);
     scrollToBottom();
   }
+
+  // Delegación de clics en el contenedor de mensajes para sub-chips y links internos
+  messagesEl.addEventListener('click', (e) => {
+    // 1. Clic en Sub-Chip interactivo
+    const subChip = e.target.closest('.copilot-sub-chip');
+    if (subChip) {
+      const q = subChip.getAttribute('data-query');
+      if (q) {
+        input.value = q;
+        form.dispatchEvent(new Event('submit'));
+      }
+      return;
+    }
+
+    // 2. Clic en botón de enlace a herramienta o enlace inline
+    const toolLink = e.target.closest('.copilot-tool-link-btn, .copilot-inline-link');
+    if (toolLink) {
+      const href = toolLink.getAttribute('href');
+      if (href && href.includes('#')) {
+        const parts = href.split('#');
+        const targetPath = parts[0];
+        const targetId = parts[1];
+        const currentPath = window.location.pathname.replace(/\/$/, '');
+        const cleanTargetPath = targetPath.replace(/\/$/, '');
+
+        // Si ya estamos en la página del cálculo
+        if (!cleanTargetPath || currentPath === cleanTargetPath) {
+          const el = document.getElementById(targetId);
+          if (el) {
+            e.preventDefault();
+            if (window.innerWidth <= 768) {
+              closeChat();
+            }
+            const headerOffset = 90;
+            const elementPosition = el.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          }
+        } else {
+          // Si navegamos a otra página, cerrar el modal en móviles para evitar bloqueo
+          if (window.innerWidth <= 768) {
+            closeChat();
+          }
+        }
+      }
+    }
+  });
 
   function showTypingIndicator() {
     const typing = document.createElement('div');
@@ -335,55 +443,543 @@ N3i
     if (typing) typing.remove();
   }
 
-  // Motor Inteligente de Respuesta Técnica Local (Fallback & Heurísticas de N3i)
+  // Motor Inteligente de Respuesta Técnica Local (Detallado + Link a Herramientas + Sub-Opciones)
   function generateSmartResponse(userQuery, hasImage) {
     const q = userQuery.toLowerCase();
 
-    // 1. Detección de Factura / Reactiva
-    if (q.includes('factura') || q.includes('edes') || q.includes('reactiva') || q.includes('cos') || q.includes('potencia contratada') || q.includes('boleta') || q.includes('bill')) {
-      if (isEnglish) {
-        return "An energy audit is key to preventing extra charges on your electricity bill. The critical parameter is the **power factor (cos φ)**: if it drops below 0.95, utility companies like EDES bill heavy penalties for reactive energy.\n\nInstalling an **automatic capacitor bank** through N3i typically pays for itself in under 4 months. Would you like us to schedule an on-site electrical measurement?";
-      }
-      return "La auditoría de factura es clave para evitar sobrecostos innecesarios. El punto crítico es el **factor de potencia (cos φ)**: si se encuentra por debajo de 0.95, la distribuidora (como EDES) aplica penalidades mensuales por energía reactiva que encarecen la factura un 20% a 40%.\n\nEn **N3i Engineering** diseñamos e instalamos **bancos de capacitores automáticos** que eliminan la multa de inmediato. ¿Deseas coordinar un relevamiento en tu planta o local?";
-    }
-
-    // 2. Detección de Cableado, Tableros o Térmicas
-    if (q.includes('cable') || q.includes('termica') || q.includes('térmica') || q.includes('tablero') || q.includes('breaker') || q.includes('disyuntor') || q.includes('ampere') || q.includes('caida') || q.includes('caída')) {
-      if (isEnglish) {
-        return "According to electrical regulations (AEA 90364), sizing depends on three strict criteria: **continuous load capacity**, **maximum allowable voltage drop (<3% for lighting, <5% for motors)**, and short-circuit withstand.\n\nFor industrial machinery or commercial workshops, N3i designs certified power distribution panels and grounding protocols. You can also use our **Cable Sizing Calculator** under our Tools section.";
-      }
-      return "Según la normativa **AEA 90364**, la elección del conductor no solo depende de la corriente nominal (amperes), sino principalmente de la **caída de tensión admisible** (máximo 3% en iluminación y 5% en fuerza motriz/motores) y la longitud del tendido.\n\nEn **N3i** armamos y certificamos tableros de distribución con protecciones selectivas Schneider/ABB y realizamos mediciones de puesta a tierra con telurímetro bajo protocolo oficial. Podés usar además nuestra calculadora en la sección de Herramientas.";
-    }
-
-    // 3. Detección de Climatización / Frigorías
+    // 1. Climatización / Frigorías
     if (q.includes('frigor') || q.includes('aire') || q.includes('clima') || q.includes('acondicionado') || q.includes('calor') || q.includes('hvac')) {
-      if (isEnglish) {
-        return "For thermal calculation in Bahía Blanca, standard estimations range from **50 to 65 frigories/m³**, but factors like sheet metal roofing, west-facing glass facades, and personnel heat load significantly alter requirements.\n\nN3i handles installation, ducting, and scheduled preventive maintenance for commercial and industrial VRF/multi-split systems.";
-      }
-      return "Para el cálculo de climatización en la zona de Bahía Blanca, la base técnica suele rondar entre **50 y 65 frigorías por metro cúbico**, pero intervienen factores térmicos decisivos como techos de chapa sin aislación, ventanales orientados al oeste y la carga de equipos/personas.\n\nEn **N3i** dimensionamos sistemas split, piso-techo y multi-split inverter para locales, bancos e industrias con planes de mantenimiento de filtros y gas.";
+      return {
+        text: isEnglish
+          ? `For thermal load calculations in Bahía Blanca and surrounding areas, standard engineering estimates start at **50 to 65 frigories per m³** for residential and commercial environments.\n\n` +
+            `• **Key Thermal Variables:** Sheet metal roofing without polyurethane insulation, large West/North-facing glass windows, or rooms with electronic equipment (servers, printers) elevate required capacity to **75–85 frig/m³**.\n` +
+            `• **Practical Rule of Thumb:** 1 Frigorie/h ≈ 4 BTU/h (e.g. 3,000 frigories ≈ 12,000 BTU).\n` +
+            `• **Electrical Efficiency:** Installing Inverter split or VRF systems reduces electric power consumption by up to 40% and eliminates high compressor startup currents.\n\n` +
+            `You can calculate your room's exact cooling requirements right now with our interactive calculator below:`
+          : `Para el dimensionamiento térmico en la zona de Bahía Blanca y la región, la regla técnica base parte de **50 a 65 frigorías por metro cúbico** en recintos habitables estándar.\n\n` +
+            `• **Factores decisivos de carga:** Techos de chapa sin cielorraso aislado, ventanales con radiación solar directa (oeste/norte) o presencia de servidores elevan el requerimiento a **75–85 frig/m³**.\n` +
+            `• **Equivalencia práctica:** 1 Frigoría/h ≈ 4 BTU/h (un equipo de 3.000 frigorías equivale a 12.000 BTU).\n` +
+            `• **Criterio eléctrico:** Equipos con compresores Inverter reducen hasta un 40% el consumo eléctrico y eliminan picos de arranque.\n\n` +
+            `Podés calcular las frigorías exactas de tu ambiente usando nuestra herramienta interactiva:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-frigorias' : '/herramientas#calc-frigorias',
+          title: isEnglish ? 'Open AC & Frigories Sizing Calculator' : 'Abrir Calculadora de Frigorías Online',
+          desc: isEnglish ? 'Calculate exact cooling capacity (BTU/Frigories) with thermal factor adjustments' : 'Calculá la capacidad exacta según medidas, aberturas, orientación y techos',
+          icon: '❄️'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '⚡ Breaker & Wire for AC', query: 'What breaker and cable size do I need to install this AC unit?' },
+              { label: '🌡️ Wall Insulation (U-Value)', query: 'How does wall and roof thermal insulation affect cooling load?' },
+              { label: '🔧 AC Maintenance Checklist', query: 'What does preventive maintenance for commercial AC include?' }
+            ]
+          : [
+              { label: '⚡ Cable y Térmica para este AC', query: 'Qué térmica y qué sección de cable necesito para instalar este aire acondicionado?' },
+              { label: '🌡️ Aislación de Techo y Muros', query: 'Cómo calcular la transmitancia térmica U-Value para aislar techos y paredes?' },
+              { label: '🔧 Mantenimiento Preventivo de AC', query: 'Qué incluye el plan de mantenimiento preventivo de climatización de N3i?' }
+            ]
+      };
     }
 
-    // 4. Abonos Mensuales
+    // 2. Factura de Luz, Energía Reactiva, Factor de Potencia (cos φ) y EDES
+    if (q.includes('factura') || q.includes('edes') || q.includes('reactiva') || q.includes('cos') || q.includes('potencia contratada') || q.includes('boleta') || q.includes('bill')) {
+      return {
+        text: isEnglish
+          ? `An electricity bill audit is essential to eliminate avoidable overheads, especially for commercial and industrial meters.\n\n` +
+            `• **The Core Problem:** If your **power factor (cos φ)** drops below **0.95**, utility companies (like EDES) apply monthly reactive energy penalties that inflate bills by 20% to 45%.\n` +
+            `• **The Solution:** Installing a certified **automatic capacitor bank** neutralizes reactive power instantly at the source. At N3i, ROI is typically achieved in under 3 to 5 months.\n` +
+            `• **Peak Demand Penalties:** We also inspect contracted capacity (kW) to avoid excess demand surcharges.\n\n` +
+            `Audit your bill values right now with our online calculator:`
+          : `La auditoría de factura eléctrica es la forma más rápida de eliminar sobrecostos innecesarios en comercios, talleres e industrias.\n\n` +
+            `• **El Punto Crítico:** Si el **factor de potencia (cos φ)** cae por debajo de **0.95**, la distribuidora (como EDES) aplica un recargo mensual por energía reactiva inductiva que encarece la factura entre un 20% y un 45%.\n` +
+            `• **La Solución Técnica:** La instalación de un **banco de capacitores automático** compensa la reactiva de motores y transformadores de inmediato. En N3i el retorno de inversión (ROI) suele amortizarse en menos de 3 a 5 meses.\n` +
+            `• **Potencia Contratada:** Auditamos si estás pagando penalidad por exceder la potencia pico convenida o si estás sobrefacturando capacidad ociosa.\n\n` +
+            `Podés ingresar los datos de tu factura en nuestra calculadora online para auditar recargos:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calculadora-factura' : '/herramientas#calculadora-factura',
+          title: isEnglish ? 'Audit Power Bill & Reactive Penalty' : 'Auditar Factura de Luz y Reactiva Online',
+          desc: isEnglish ? 'Check if you are paying penalties, calculate power factor and required capacitor bank' : 'Comprobá si pagás multas por reactiva, calculá el cos φ y los kVAr necesarios',
+          icon: '🧾'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '⚡ Capacitor Bank Sizing', query: 'How does an automatic capacitor bank eliminate reactive penalties?' },
+              { label: '🔌 Simulate Amperes & Power', query: 'How to calculate total amperage consumption of my machines?' },
+              { label: '☀️ Solar PV Savings Simulator', query: 'How much can I save on power by installing solar panels?' }
+            ]
+          : [
+              { label: '⚡ Banco de Capacitores Automático', query: 'Cómo funciona un banco de capacitores automático y cuánto tarda en instalarse?' },
+              { label: '🔌 Simular Consumo en Amperes', query: 'Cómo calcular la corriente en amperes y potencia total de mis máquinas?' },
+              { label: '☀️ Ahorro con Paneles Solares', query: 'Cuánto puedo ahorrar en mi factura instalando paneles solares fotovoltaicos?' }
+            ]
+      };
+    }
+
+    // 3. Conductores, Cables y Caída de Tensión (AEA 90364)
+    if (q.includes('cable') || q.includes('conductor') || q.includes('caida') || q.includes('caída') || q.includes('seccion') || q.includes('sección') || q.includes('milimetro')) {
+      return {
+        text: isEnglish
+          ? `Under Argentine **AEA 90364** electrical regulations, sizing electrical conductors requires verifying three strict engineering criteria:\n\n` +
+            `1. **Continuous Current Capacity ($I_z \ge I_n$):** Cable cross-section must safely carry the circuit load without overheating according to installation method (conduit, cable tray, buried).\n` +
+            `2. **Maximum Permissible Voltage Drop ($\Delta V$):** Max 3% for lighting circuits, and max 5% for motors and power machinery at the farthest terminal point.\n` +
+            `3. **Breaker Protection ($I_b \le I_n \le I_z$):** The circuit breaker must protect the conductor against overloads and short circuits ($kA$ rating).\n\n` +
+            `Access our interactive electrical calculator to dimension conductors accurately:`
+          : `Según la reglamentación **AEA 90364**, el dimensionamiento de conductores y protecciones debe verificar simultáneamente 3 criterios técnicos obligatorios:\n\n` +
+            `1. **Capacidad de Corriente Admisible ($I_z \ge I_n$):** El conductor debe soportar la corriente de carga sin sobrecalentamiento, considerando el método de instalación (cañería embutida, bandeja portacables, subterráneo) y temperatura ambiente.\n` +
+            `2. **Caída de Tensión Admisible ($\Delta V$):** Máximo 3% para circuitos de iluminación y 5% para fuerza motriz/motores en el punto más alejado de la línea.\n` +
+            `3. **Coordinación de Protecciones:** La termomagnética debe proteger al cable ($I_b \le I_n \le I_z$) y poseer poder de corte adecuado (3kA, 4.5kA, 6kA o 10kA).\n\n` +
+            `Podés calcular la sección exacta y caída de tensión con nuestra herramienta interactiva:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-cable' : '/herramientas#calc-cable',
+          title: isEnglish ? 'Cable Sizing & Voltage Drop Calculator' : 'Calculadora de Sección de Cables y Caída de Tensión',
+          desc: isEnglish ? 'Determine wire cross-section (mm2), current capacity and voltage drop under AEA standards' : 'Calculá mm², corriente admisible y caída de tensión según distancia y potencia',
+          icon: '⚡'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🎛️ Design Breaker Panel', query: 'How to design a certified electrical distribution panel with DIN rail?' },
+              { label: '📊 Load Totalizer Sheet', query: 'How to generate an official AEA electrical load sheet for blueprints?' },
+              { label: '⚡ Grounding Protocol', query: 'What is the certified grounding resistance value with ground rod?' }
+            ]
+          : [
+              { label: '🎛️ Diseñar Tablero y Riel DIN', query: 'Cómo diseñar el tablero eléctrico, balanceo de fases y térmicas en riel DIN?' },
+              { label: '📊 Planilla Totalizadora de Cargas', query: 'Cómo armar la planilla de cargas oficial para planos municipales en AutoCAD?' },
+              { label: '⚡ Protocolo de Puesta a Tierra', query: 'Qué valor en Ohms debe dar el protocolo de puesta a tierra certificado con jabalina?' }
+            ]
+      };
+    }
+
+    // 4. Tableros Eléctricos, Térmicas, Disyuntores y Riel DIN
+    if (q.includes('tablero') || q.includes('termica') || q.includes('térmica') || q.includes('disyuntor') || q.includes('diferencial') || q.includes('breaker') || q.includes('din')) {
+      return {
+        text: isEnglish
+          ? `Electrical panel engineering ensures operational continuity and personal safety under AEA 771/770 regulations.\n\n` +
+            `• **Component Hierarchy:** Main breaker matched to the incoming feeder, high-sensitivity 30mA residual current devices (RCDs) for personal protection, and selective branch breakers.\n` +
+            `• **Phase Balancing:** Vital in three-phase (380V) panels to avoid neutral overheating, voltage unbalances, and breaker tripping.\n` +
+            `• **Assembly Standards:** Certified enclosures with IP54/65 protection, insulated comb busbars, terminal blocks, and circuit numbering.\n\n` +
+            `Design and simulate your panel layout with our interactive tool:`
+          : `El diseño y armado de tableros eléctricos bajo normas AEA 770/771 asegura la continuidad de tu negocio y la seguridad de las personas e instalaciones.\n\n` +
+            `• **Jerarquía Selectiva:** Interruptor termomagnético general coordinado con el alimentador, disyuntores diferenciales de alta sensibilidad (30mA) por grupo de circuitos y térmicas seccionales calibradas.\n` +
+            `• **Balanceo de Fases:** Fundamental en suministros trifásicos (380V) para evitar sobrecargas en el neutro, desbalance de tensión y disparos intempestivos.\n` +
+            `• **Normas de Montaje N3i:** Gabinetes con grado IP54/65, peines de distribución aislados, borneras de conexión y etiquetado normalizado de circuitos.\n\n` +
+            `Podés armar tu tablero y distribuir el riel DIN con nuestra herramienta interactiva:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-tableros' : '/herramientas#calc-tableros',
+          title: isEnglish ? 'Electrical Panel & DIN Rail Designer' : 'Diseñador de Tableros Eléctricos y Riel DIN',
+          desc: isEnglish ? 'Select breakers, RCDs, balance phases and visualize the DIN rail layout' : 'Elegí térmicas, disyuntores, balanceá fases y generá el esquema de riel DIN',
+          icon: '🎛️'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '⚡ Sizing Main Feeder Cable', query: 'How to calculate the main breaker and cable size for a commercial workshop?' },
+              { label: '📊 Electrical Load Table', query: 'How to generate an official AEA electrical load sheet for blueprints?' },
+              { label: '🛡️ Surge Protection (SPD)', query: 'Do I need Type 2 surge protectors for atmospheric discharges in Bahía Blanca?' }
+            ]
+          : [
+              { label: '⚡ Calcular Cable Alimentador', query: 'Cómo calcular la térmica y sección de cables para un taller comercial?' },
+              { label: '📊 Planilla de Cargas AEA', query: 'Cómo armar la planilla totalizadora de cargas para municipalidad?' },
+              { label: '🛡️ Descargadores de Sobretensión', query: 'Conviene colocar descargadores de sobretensión DPS tipo 2 en Bahía Blanca?' }
+            ]
+      };
+    }
+
+    // 5. Materiales Durlock, Steel Frame y Drywall
+    if (q.includes('durlock') || q.includes('drywall') || q.includes('steel') || q.includes('frame') || q.includes('placa') || q.includes('solera') || q.includes('montante')) {
+      return {
+        text: isEnglish
+          ? `Drywall and Steel Framing systems (Durlock / Knauf) provide high thermal-acoustic efficiency, fire resistance, and fast execution times.\n\n` +
+            `• **Framing Profiles:** Structural 70mm or 100mm tracks and studs spaced every 40 cm for superior rigidity.\n` +
+            `• **Board Selection:** Standard (ST 12.5mm) for dry rooms, Water-Resistant (RH Green) for bathrooms/kitchens, and Fire-Resistant (RF Pink) for mechanical rooms.\n` +
+            `• **Insulation:** 50mm glass wool core with vapor barrier to meet acoustic and thermal comfort standards.\n\n` +
+            `Calculate materials needed (boards, studs, tracks, screws, joint compound) online:`
+          : `Los sistemas de construcción en seco y Steel Frame (Durlock / Knauf) ofrecen una aislación termoacústica superior, resistencia al fuego y rapidez de ejecución de obra sin escombros.\n\n` +
+            `• **Estructura Portante:** Soleras y montantes galvanizados de 70 mm o 100 mm con modulación cada 40 cm para garantizar rigidez mecánica.\n` +
+            `• **Tipos de Placa:** Estándar (ST 12.5 mm) en ambientes secos, Resistente a la Humedad (RH verde) en baños y cocinas, y Resistente al Fuego (RF rosa) en salas de máquinas y tabiques corta-fuego.\n` +
+            `• **Aislación Termoacústica:** Lana de vidrio de 50 mm con barrera de vapor en el interior del tabique para cumplir exigencias de confort.\n\n` +
+            `Calculá la cantidad exacta de placas, perfiles, tornillos y masilla con nuestra herramienta:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-durlock' : '/herramientas#calc-durlock',
+          title: isEnglish ? 'Drywall / Durlock Materials Calculator' : 'Calculadora de Materiales Durlock y Cielorrasos',
+          desc: isEnglish ? 'Estimate plates, studs, tracks, screws, and joint compound according to wall dimensions' : 'Calculá placas, montantes, soleras, tornillos y masilla según las medidas de tus paredes',
+          icon: '🧱'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🎨 Paint & Primer Sizing', query: 'How many liters of latex paint do I need for walls and ceilings?' },
+              { label: '🌡️ Thermal U-Value Calculator', query: 'How to calculate the thermal transmittance of a drywall partition?' },
+              { label: '🏗️ Turnkey Works by N3i', query: 'What commercial renovation projects has N3i completed?' }
+            ]
+          : [
+              { label: '🎨 Calcular Pintura y Manos', query: 'Cuántos litros de látex necesito para pintar paredes de Durlock y cielorrasos?' },
+              { label: '🌡️ Aislación Térmica U-Value', query: 'Cómo calcular la transmitancia térmica U-Value de las paredes?' },
+              { label: '🏗️ Ver Portfolio de Obras N3i', query: 'Qué obras civiles y comerciales realizó N3i en Bahía Blanca?' }
+            ]
+      };
+    }
+
+    // 6. Abonos de Mantenimiento Preventivo Mensual (PyME e Industrial)
     if (q.includes('abono') || q.includes('plan') || q.includes('mantenimiento') || q.includes('costo') || q.includes('pyme') || q.includes('industrial 360')) {
-      if (isEnglish) {
-        return "N3i offers 3 tailored corporate maintenance tiers:\n• **PyME Start:** Ideal for offices and shops (monthly visits, electrical checkup, prioritized support).\n• **PyME Pro:** For mid-size businesses (bi-weekly checkups, plumbing, AC maintenance, emergency coverage).\n• **Industrial 360:** Comprehensive coverage for warehouses and plants with 24/7 emergency response and priority dispatch.";
-      }
-      return "N3i cuenta con 3 modalidades de abono mensual adaptadas a cada escala:\n• **PyME Start:** Pensado para locales y oficinas comerciales (visita mensual preventiva, revisión de tableros y luces, guardia prioritaria).\n• **PyME Pro:** Para medianas empresas y depósitos (visitas quincenales, gas, plomería, climatización y descuento en obras).\n• **Industrial 360:** Para plantas logísticas y fabriles con guardia de emergencia 24/7 y mantenimiento integral electromecánico.";
+      return {
+        text: isEnglish
+          ? `N3i Maintenance Plans ensure operational continuity, prevent costly breakdowns, and ensure compliance with regulatory inspections in Bahía Blanca.\n\n` +
+            `• **PyME Start:** Monthly scheduled visits, electrical panel thermographic checkup, emergency lighting testing, prioritized emergency response.\n` +
+            `• **PyME Pro:** Bi-weekly visits, electrical maintenance, plumbing/gas checkup, HVAC filter and refrigerant diagnostics, priority repair dispatch.\n` +
+            `• **Industrial 360:** Comprehensive electromechanical coverage for manufacturing facilities, logistics hubs, and banks with **24/7 on-call emergency response**.\n\n` +
+            `Compare our corporate maintenance tiers in detail:`
+          : `Los Planes de Abono de Mantenimiento de N3i garantizan la continuidad operativa de tu empresa, previenen roturas imprevistas y aseguran el cumplimiento de inspecciones oficiales.\n\n` +
+            `• **PyME Start:** Visitas programadas mensuales, inspección termográfica de tableros, prueba de luces de emergencia y línea de atención prioritaria.\n` +
+            `• **PyME Pro:** Visitas quincenales, mantenimiento electromecánico integral, revisión sanitaria/gas, control de filtros de climatización y descuentos en obras.\n` +
+            `• **Industrial 360:** Cobertura técnica integral para galpones, plantas logísticas e industrias con **guardia activa de emergencias 24/7** y reemplazo de componentes críticos.\n\n` +
+            `Podés consultar y comparar los alcances de cada abono en nuestra sección de planes:`,
+        toolLink: {
+          url: isEnglish ? '/en/#abonos' : '/#abonos',
+          title: isEnglish ? 'Compare Corporate Maintenance Plans' : 'Comparar Planes de Abono Mensual N3i',
+          desc: isEnglish ? 'Discover PyME Start, PyME Pro and Industrial 360 features and coverage' : 'Conocé los detalles de cobertura de PyME Start, PyME Pro e Industrial 360',
+          icon: '🔧'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🛠️ Maintenance Scheduler Tool', query: 'How to structure an annual preventive maintenance plan for equipment?' },
+              { label: '⚡ Certified Grounding Test', query: 'What does the certified grounding protocol include?' },
+              { label: '❄️ HVAC Preventive Care', query: 'What does preventive maintenance for commercial AC include?' }
+            ]
+          : [
+              { label: '🛠️ Asesor de Mantenimiento', query: 'Cómo estructurar un plan de mantenimiento preventivo anual para mis máquinas?' },
+              { label: '⚡ Medición de Jabalina Oficial', query: 'Qué valor en Ohms debe dar el protocolo de puesta a tierra certificado con jabalina?' },
+              { label: '❄️ Mantenimiento de Climatización', query: 'Qué incluye el mantenimiento preventivo de climatización para oficinas?' }
+            ]
+      };
     }
 
-    // 5. Obras y Construcción Steel Frame / Civil
-    if (q.includes('steel') || q.includes('frame') || q.includes('durlock') || q.includes('obra') || q.includes('techo') || q.includes('filtrac') || q.includes('reparac')) {
-      if (isEnglish) {
-        return "N3i executes turnkey commercial and industrial projects, including Steel Frame/Drywall systems (Durlock/Knauf), structural roofing, and sheet metal repairs. We ensure high thermal efficiency and rapid completion times.";
-      }
-      return "En N3i ejecutamos obras llave en mano civiles e industriales: construcción en Steel Frame y Drywall (Durlock/Knauf), reparación estructural de cubiertas, zinguería a medida y pintura epoxi industrial. Diseñamos cada proyecto con máxima aislación térmica y plazos de obra reducidos.";
+    // 7. Energía Solar Fotovoltaica
+    if (q.includes('solar') || q.includes('fotovolt') || q.includes('paneles') || q.includes('inversor')) {
+      return {
+        text: isEnglish
+          ? `Photovoltaic solar energy allows commercial properties and businesses to drastically reduce energy bills and hedge against utility rate hikes.\n\n` +
+            `• **On-Grid Systems:** Connected to the grid to self-consume power during peak daytime hours and inject surplus under Argentine Distributed Generation Law.\n` +
+            `• **Hybrid Systems with Lithium Storage:** Protect critical loads (servers, security systems, cold storage) during grid power outages.\n` +
+            `• **High Yield in Bahía Blanca:** High solar irradiance index in the region ensures payback periods of 4 to 6 years.\n\n` +
+            `Simulate your solar panel requirements and savings:`
+          : `La energía solar fotovoltaica permite a comercios e industrias congelar sus costos energéticos frente a aumentos tarifarios continuos.\n\n` +
+            `• **Sistemas On-Grid:** Conectados a la red para autoconsumo diurno y balance neto bajo la Ley de Generación Distribuida (inyectando excedentes a la distribuidora).\n` +
+            `• **Sistemas Híbridos con Litio:** Garantizan respaldo inmediato (UPS) ante cortes de luz en cargas críticas como servidores, cámaras y cámaras de frío.\n` +
+            `• **Rendimiento en Bahía Blanca:** Excelente índice de radiación solar regional con retorno de inversión promedio de 4 a 6 años.\n\n` +
+            `Calculá cuántos paneles solares necesitás y cuánto podés ahorrar con nuestro simulador:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-solar' : '/herramientas#calc-solar',
+          title: isEnglish ? 'Photovoltaic Solar Simulator & ROI' : 'Simulador Solar Fotovoltaico y Retorno de Inversión',
+          desc: isEnglish ? 'Calculate panels needed, annual energy generated and return on investment' : 'Estimá la cantidad de paneles, energía generada (kWh) y tiempo de amortización',
+          icon: '☀️'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🧾 Audit Power Bill', query: 'I want to audit my electricity bill to see if I am paying reactive power penalties.' },
+              { label: '⚡ Solar Cables & Protections', query: 'What cable size and DC protections are required for a solar PV install?' },
+              { label: '🔋 Hybrid Lithium Backup', query: 'How does a hybrid solar inverter work during power blackouts?' }
+            ]
+          : [
+              { label: '🧾 Auditar Factura de Luz', query: 'Quiero auditar mi factura de luz para saber si pago penalidad por energía reactiva.' },
+              { label: '⚡ Cables y Protecciones DC', query: 'Qué protecciones y cables solares se usan en instalaciones fotovoltaicas?' },
+              { label: '🔋 Respaldo con Baterías de Litio', query: 'Cómo funciona un sistema solar híbrido para no quedarse sin luz en cortes?' }
+            ]
+      };
     }
 
-    // Respuesta General con invitación a WhatsApp
-    if (isEnglish) {
-      return `Thank you for your inquiry. Regarding "${userQuery}", N3i Engineering & Maintenance evaluates each case with certified technicians under Argentine AEA/Camuzzi standards.\n\nWould you like to speak directly with Eng. Fabio Gullacci to arrange a site visit or receive a formal estimate?`;
+    // 8. Gas Natural y Calefacción
+    if (q.includes('gas') || q.includes('calefac') || q.includes('caldera') || q.includes('camuzzi') || q.includes('regulador') || q.includes('termotanque')) {
+      return {
+        text: isEnglish
+          ? `Natural gas installations require strict compliance with NAG-200 and Camuzzi Gas del Sur regulations.\n\n` +
+            `• **Consumption Sizing:** Total connected load in kcal/h determines gas meter and secondary regulator capacities.\n` +
+            `• **Ventilation Standards:** Sizing lower (air intake) and upper (combustion exhaust) grilles is vital for safety.\n` +
+            `• **N3i Certified Gas Fitters:** Matriculated personnel for leak tests with manometer, pipe sizing, and official commissioning.\n\n` +
+            `Calculate gas consumption and regulator sizing online:`
+          : `Las instalaciones de gas comercial e industrial exigen estricto cumplimiento de las normativas NAG-200 y especificaciones de Camuzzi Gas del Sur.\n\n` +
+            `• **Cálculo de Consumo:** La sumatoria de artefactos en kcal/h y m³/h determina el caudal necesario para dimensionar cañerías y reguladores de presión.\n` +
+            `• **Ventilaciones Reglamentarias:** Rejillas de ventilación inferior y superior calculadas según potencia instalada para evitar intoxicaciones por monóxido.\n` +
+            `• **Instalaciones Certificadas N3i:** Gasistas matriculados de primera categoría para pruebas de hermeticidad con manómetro de columna y habilitaciones.\n\n` +
+            `Calculá tu consumo mensual de gas y el regulador adecuado en nuestra herramienta:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-consumo-gas' : '/herramientas#calc-consumo-gas',
+          title: isEnglish ? 'Gas Consumption & Regulator Sizing Tool' : 'Calculadora de Consumo de Gas y Regulador',
+          desc: isEnglish ? 'Estimate hourly and monthly consumption, verify flow rate and regulator capacity' : 'Estimá consumos mensuales, caudal necesario y dimensioná el regulador reglamentario',
+          icon: '🔥'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🌡️ Wall & Roof Insulation', query: 'How to calculate thermal transmittance to reduce heating costs?' },
+              { label: '🚿 Plumbing & Sanitary Services', query: 'What plumbing, water and drainage services does N3i offer?' }
+            ]
+          : [
+              { label: '🌡️ Aislación Térmica para Ahorrar Gas', query: 'Cómo calcular la transmitancia térmica U-Value para gastar menos gas en calefacción?' },
+              { label: '🚿 Obras de Plomería y Sanitarias', query: 'Qué servicios de instalaciones sanitarias y calderas realiza N3i?' }
+            ]
+      };
     }
-    return `Muchas gracias por tu consulta. En relación a "${userQuery}", en **N3i Engineering & Maintenance** abordamos cada proyecto con profesionales matriculados asegurando cumplimiento normativo y continuidad operativa.\n\n¿Te gustaría que te comuniquemos directamente con el **Ing. Fabio Gullacci** para evaluar tu caso en planta o coordinar una visita técnica?`;
+
+    // 9. Pintura y Recubrimientos
+    if (q.includes('pintura') || q.includes('latex') || q.includes('epoxi') || q.includes('epoxy') || q.includes('rodillo') || q.includes('pared')) {
+      return {
+        text: isEnglish
+          ? `Architectural and industrial coatings require calculating total square meters, substrate porosity, and required coats.\n\n` +
+            `• **Latex for Walls:** Standard coverage is approximately 10 to 12 m² per liter per coat.\n` +
+            `• **Industrial Epoxy Floors:** High mechanical and chemical resistance for workshops, food processing plants, and garages.\n\n` +
+            `Calculate liters of paint and supplies needed:`
+          : `El cálculo de recubrimientos arquitectónicos e industriales requiere computar la superficie total, la rugosidad del sustrato y la cantidad de manos recomendadas.\n\n` +
+            `• **Látex Interior/Exterior:** Rendimiento estándar promedio de 10 a 12 m² por litro por mano sobre superficies selladas.\n` +
+            `• **Pinturas Epoxi Industriales:** Máxima resistencia al tránsito de autoelevadores y derrames químicos en talleres, plantas alimenticias y estacionamientos.\n\n` +
+            `Calculá la cantidad exacta de pintura y rodillos con nuestra herramienta:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-pintura' : '/herramientas#calc-pintura',
+          title: isEnglish ? 'Paint & Coatings Quantity Calculator' : 'Calculadora de Pintura y Rendimiento',
+          desc: isEnglish ? 'Calculate liters of paint, number of coats and supplies needed' : 'Calculá los litros de pintura, manos necesarias y envases según los metros de pared',
+          icon: '🎨'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🧱 Drywall Materials', query: 'How to calculate plates and joint compound for drywall?' },
+              { label: '🏗️ Industrial Epoxy Floors', query: 'What surface preparation is needed for industrial epoxy flooring?' }
+            ]
+          : [
+              { label: '🧱 Materiales Durlock', query: 'Cómo calcular placas y masilla antes de pintar?' },
+              { label: '🏗️ Pisos Epoxi Industriales', query: 'Qué preparación requiere un piso de hormigón para pintura epoxi?' }
+            ]
+      };
+    }
+
+    // 10. Agua, Bombas y Cisternas
+    if (q.includes('agua') || q.includes('bomba') || q.includes('cisterna') || q.includes('caudal') || q.includes('tanque')) {
+      return {
+        text: isEnglish
+          ? `Water supply sizing balances reserve volume with pump lifting power according to building height and fixture units.\n\n` +
+            `• **Storage Rule:** Minimum reserve capacity is calculated per occupant and commercial use.\n` +
+            `• **Pump Power:** Flow rate ($m^3/h$) and total dynamic head (meters) determine motor HP rating.\n\n` +
+            `Calculate water storage and pump requirements:`
+          : `El dimensionamiento hidráulico equilibra el volumen de reserva sanitaria con la potencia motriz de la bomba según la altura manométrica del edificio.\n\n` +
+            `• **Capacidad de Cisterna:** Cálculo de reserva total diaria según cantidad de ocupantes y destino comercial o fabril.\n` +
+            `• **Potencia de Bomba Elevadora:** El caudal requerido ($m^3/h$) y la altura geométrica determinan los HP necesarios del motor.\n\n` +
+            `Calculá la cisterna y potencia de bomba con nuestra herramienta interactiva:`,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-water' : '/herramientas#calc-hidrica',
+          title: isEnglish ? 'Water Storage & Pump Power Calculator' : 'Calculadora Hídrica y Potencia de Bomba',
+          desc: isEnglish ? 'Calculate cistern volume and water pump lifting capacity (HP)' : 'Calculá la reserva de agua de cisterna y la potencia requerida de la bomba',
+          icon: '💧'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '⚡ Pump Power & Amperes', query: 'What power and current does a water lifting pump consume?' },
+              { label: '🔧 Pump Preventive Maintenance', query: 'How often should pumps and water tanks receive maintenance?' }
+            ]
+          : [
+              { label: '⚡ Consumo de Bomba en Amperes', query: 'Qué potencia y corriente consume una bomba de agua elevadora?' },
+              { label: '🔧 Mantenimiento de Bombas y Tanques', query: 'Cada cuánto se hace el mantenimiento de bombas y tanques?' }
+            ]
+      };
+    }
+
+    // 11. Fallback General / Otras Consultas
+    return {
+      text: isEnglish
+        ? `Thank you for your technical inquiry regarding "${userQuery}". At **N3i Engineering & Maintenance**, each project is evaluated by certified engineers under Argentine regulations (AEA, Camuzzi, IRAM).\n\n` +
+          `• We provide a comprehensive suite of **19 free engineering calculators** covering electrical, HVAC, plumbing, structural, and security systems.\n` +
+          `• You can explore them anytime or connect directly with our engineering team for personalized advice.\n\n` +
+          `Choose one of our tools below or transfer to WhatsApp:`
+        : `Muchas gracias por tu consulta sobre "${userQuery}". En **N3i Engineering & Maintenance** abordamos cada proyecto con profesionales matriculados asegurando cumplimiento normativo y continuidad operativa.\n\n` +
+          `• Contamos con una suite de **19 calculadoras y herramientas técnicas gratuitas** para dimensionar electricidad, climatización, gas, agua, Durlock y seguridad.\n` +
+          `• Podés explorar el catálogo de cálculo o solicitar una visita técnica sin cargo a tu establecimiento.\n\n` +
+          `Elegí una de nuestras herramientas directas o comunicate por WhatsApp:`,
+      toolLink: {
+        url: isEnglish ? '/en/tools' : '/herramientas',
+        title: isEnglish ? 'Explore All 19 Engineering Calculators' : 'Directorio de 19 Calculadoras de Ingeniería N3i',
+        desc: isEnglish ? 'Browse our free suite of calculators for electrical, thermal and drywall sizing' : 'Accedé a la suite completa de herramientas online gratuitas de N3i',
+        icon: '🔍'
+      },
+      subOptions: isEnglish
+        ? [
+            { label: '⚡ Wire Sizing', query: 'How to calculate the main breaker and cable size for a commercial workshop?' },
+            { label: '❄️ AC Frigories Calculator', query: 'How many BTU/cooling capacity do I need for a 35m2 office in Bahía Blanca?' },
+            { label: '🧾 Audit Power Bill', query: 'I want to audit my electricity bill to see if I am paying reactive power penalties.' }
+          ]
+        : [
+            { label: '⚡ Potencia y Cables', query: 'Cómo calcular la térmica y sección de cables para un taller comercial?' },
+            { label: '❄️ Frigorías Climatización', query: 'Cuántas frigorías necesito para una oficina de 35 m2 en Bahía Blanca?' },
+            { label: '🧾 Auditar Factura de Luz', query: 'Quiero auditar mi factura de luz para saber si pago penalidad por energía reactiva.' }
+          ]
+    };
+  }
+
+  // Enriquecer respuestas de la API de Gemini con botones de herramientas y opciones
+  function enrichApiResponse(rawText, userQuery) {
+    const combined = (rawText + ' ' + userQuery).toLowerCase();
+
+    if (combined.includes('frigor') || combined.includes('clima') || combined.includes('aire') || combined.includes('hvac')) {
+      return {
+        text: rawText,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-frigorias' : '/herramientas#calc-frigorias',
+          title: isEnglish ? 'Open AC & Frigories Sizing Calculator' : 'Abrir Calculadora de Frigorías Online',
+          desc: isEnglish ? 'Calculate exact cooling capacity (BTU/Frigories)' : 'Calculá las frigorías exactas de tu ambiente',
+          icon: '❄️'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '⚡ Breaker & Wire for AC', query: 'What breaker and cable size do I need to install this AC unit?' },
+              { label: '🌡️ Wall Insulation (U-Value)', query: 'How does wall and roof thermal insulation affect cooling load?' }
+            ]
+          : [
+              { label: '⚡ Cable y Térmica para este AC', query: 'Qué térmica y qué sección de cable necesito para instalar este aire acondicionado?' },
+              { label: '🌡️ Aislación de Techo y Muros', query: 'Cómo calcular la transmitancia térmica U-Value para aislar techos y paredes?' }
+            ]
+      };
+    }
+
+    if (combined.includes('factura') || combined.includes('reactiva') || combined.includes('edes') || combined.includes('cos') || combined.includes('bill')) {
+      return {
+        text: rawText,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calculadora-factura' : '/herramientas#calculadora-factura',
+          title: isEnglish ? 'Audit Power Bill & Reactive Penalty' : 'Auditar Factura de Luz y Reactiva Online',
+          desc: isEnglish ? 'Check penalties, calculate power factor and capacitor bank' : 'Comprobá si pagás multas por reactiva y calculá el cos φ',
+          icon: '🧾'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '⚡ Capacitor Bank Sizing', query: 'How does an automatic capacitor bank eliminate reactive penalties?' },
+              { label: '☀️ Solar PV Savings Simulator', query: 'How much can I save on power by installing solar panels?' }
+            ]
+          : [
+              { label: '⚡ Banco de Capacitores Automático', query: 'Cómo funciona un banco de capacitores automático y cuánto tarda en instalarse?' },
+              { label: '☀️ Ahorro con Paneles Solares', query: 'Cuánto puedo ahorrar en mi factura instalando paneles solares fotovoltaicos?' }
+            ]
+      };
+    }
+
+    if (combined.includes('cable') || combined.includes('seccion') || combined.includes('caida') || combined.includes('aea')) {
+      return {
+        text: rawText,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-cable' : '/herramientas#calc-cable',
+          title: isEnglish ? 'Cable Sizing & Voltage Drop Calculator' : 'Calculadora de Sección de Cables y Caída de Tensión',
+          desc: isEnglish ? 'Determine wire mm2, current capacity and voltage drop' : 'Calculá mm², corriente admisible y caída de tensión según AEA',
+          icon: '⚡'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🎛️ Design Breaker Panel', query: 'How to design a certified electrical distribution panel with DIN rail?' },
+              { label: '📊 Load Totalizer Sheet', query: 'How to generate an official AEA electrical load sheet for blueprints?' }
+            ]
+          : [
+              { label: '🎛️ Diseñar Tablero y Riel DIN', query: 'Cómo diseñar el tablero eléctrico, balanceo de fases y térmicas en riel DIN?' },
+              { label: '📊 Planilla Totalizadora de Cargas', query: 'Cómo armar la planilla de cargas oficial para planos municipales en AutoCAD?' }
+            ]
+      };
+    }
+
+    if (combined.includes('tablero') || combined.includes('termica') || combined.includes('disyuntor') || combined.includes('din')) {
+      return {
+        text: rawText,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-tableros' : '/herramientas#calc-tableros',
+          title: isEnglish ? 'Electrical Panel & DIN Rail Designer' : 'Diseñador de Tableros Eléctricos y Riel DIN',
+          desc: isEnglish ? 'Select breakers, RCDs and visualize the DIN rail layout' : 'Elegí térmicas, disyuntores y generá el esquema de riel DIN',
+          icon: '🎛️'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '⚡ Cable Sizing', query: 'How to calculate wire cross section for breaker panel?' },
+              { label: '📊 Load Totalizer Sheet', query: 'How to generate an official AEA electrical load sheet for blueprints?' }
+            ]
+          : [
+              { label: '⚡ Calcular Sección de Cables', query: 'Cómo dimensionar los cables y alimentador del tablero?' },
+              { label: '📊 Planilla Totalizadora', query: 'Cómo armar la planilla de cargas?' }
+            ]
+      };
+    }
+
+    if (combined.includes('durlock') || combined.includes('drywall') || combined.includes('steel') || combined.includes('placa')) {
+      return {
+        text: rawText,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-durlock' : '/herramientas#calc-durlock',
+          title: isEnglish ? 'Drywall / Durlock Materials Calculator' : 'Calculadora de Materiales Durlock y Cielorrasos',
+          desc: isEnglish ? 'Estimate plates, studs, tracks, screws and joint compound' : 'Calculá placas, montantes, soleras, tornillos y masilla',
+          icon: '🧱'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🎨 Paint Sizing', query: 'How many liters of latex paint do I need for walls and ceilings?' },
+              { label: '🏗️ Turnkey Works by N3i', query: 'What commercial renovation projects has N3i completed?' }
+            ]
+          : [
+              { label: '🎨 Calcular Pintura y Manos', query: 'Cuántos litros de látex necesito para pintar paredes de Durlock y cielorrasos?' },
+              { label: '🏗️ Ver Obras de N3i', query: 'Qué obras civiles y comerciales realizó N3i en Bahía Blanca?' }
+            ]
+      };
+    }
+
+    if (combined.includes('solar') || combined.includes('fotovolt') || combined.includes('inversor')) {
+      return {
+        text: rawText,
+        toolLink: {
+          url: isEnglish ? '/en/tools#calc-solar' : '/herramientas#calc-solar',
+          title: isEnglish ? 'Photovoltaic Solar Simulator & ROI' : 'Simulador Solar Fotovoltaico y Retorno de Inversión',
+          desc: isEnglish ? 'Calculate panels needed and return on investment' : 'Estimá cantidad de paneles solares y ahorro energético',
+          icon: '☀️'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🧾 Audit Power Bill', query: 'I want to audit my electricity bill to see if I am paying reactive power penalties.' },
+              { label: '🔋 Lithium Battery Backup', query: 'How does a hybrid solar inverter work during power blackouts?' }
+            ]
+          : [
+              { label: '🧾 Auditar Factura de Luz', query: 'Quiero auditar mi factura de luz para saber si pago penalidad por energía reactiva.' },
+              { label: '🔋 Respaldo con Baterías de Litio', query: 'Cómo funciona un sistema solar híbrido para no quedarse sin luz en cortes?' }
+            ]
+      };
+    }
+
+    if (combined.includes('abono') || combined.includes('mantenimiento') || combined.includes('pyme') || combined.includes('industrial')) {
+      return {
+        text: rawText,
+        toolLink: {
+          url: isEnglish ? '/en/#abonos' : '/#abonos',
+          title: isEnglish ? 'Compare Maintenance Plans' : 'Comparar Planes de Abono Mensual N3i',
+          desc: isEnglish ? 'Explore PyME Start, PyME Pro and Industrial 360 plans' : 'Conocé la cobertura de PyME Start, PyME Pro e Industrial 360',
+          icon: '🔧'
+        },
+        subOptions: isEnglish
+          ? [
+              { label: '🛠️ Maintenance Scheduler Tool', query: 'How to structure an annual preventive maintenance plan for equipment?' },
+              { label: '⚡ Certified Grounding Test', query: 'What does the certified grounding protocol include?' }
+            ]
+          : [
+              { label: '🛠️ Asesor de Mantenimiento', query: 'Cómo estructurar un plan de mantenimiento preventivo anual para mis máquinas?' },
+              { label: '⚡ Medición de Jabalina Oficial', query: 'Qué valor en Ohms debe dar el protocolo de puesta a tierra certificado con jabalina?' }
+            ]
+      };
+    }
+
+    // Default
+    return {
+      text: rawText,
+      toolLink: {
+        url: isEnglish ? '/en/tools' : '/herramientas',
+        title: isEnglish ? 'Explore All 19 Engineering Calculators' : 'Directorio de 19 Calculadoras de Ingeniería N3i',
+        desc: isEnglish ? 'Browse our free suite of calculators for electrical, thermal and drywall sizing' : 'Accedé a la suite completa de herramientas online gratuitas de N3i',
+        icon: '🔍'
+      },
+      subOptions: isEnglish
+        ? [
+            { label: '⚡ Wire Sizing', query: 'How to calculate the main breaker and cable size for a commercial workshop?' },
+            { label: '❄️ AC Frigories Calculator', query: 'How many BTU/cooling capacity do I need for a 35m2 office in Bahía Blanca?' },
+            { label: '🧾 Audit Power Bill', query: 'I want to audit my electricity bill to see if I am paying reactive power penalties.' }
+          ]
+        : [
+            { label: '⚡ Potencia y Cables', query: 'Cómo calcular la térmica y sección de cables para un taller comercial?' },
+            { label: '❄️ Frigorías Climatización', query: 'Cuántas frigorías necesito para una oficina de 35 m2 en Bahía Blanca?' },
+            { label: '🧾 Auditar Factura de Luz', query: 'Quiero auditar mi factura de luz para saber si pago penalidad por energía reactiva.' }
+          ]
+    };
   }
 
   // Envío del Formulario
@@ -427,7 +1023,7 @@ N3i
 
     try {
       // 1. Intentar llamar al proxy seguro si existe endpoint configurado
-      let replyText = '';
+      let responsePayload = null;
       const endpoint = window.N3I_COPILOT_ENDPOINT || '/api/chat';
 
       let apiSuccess = false;
@@ -446,7 +1042,7 @@ N3i
         if (response.ok) {
           const data = await response.json();
           if (data && data.reply) {
-            replyText = data.reply;
+            responsePayload = enrichApiResponse(data.reply, textToSend);
             apiSuccess = true;
           }
         }
@@ -458,27 +1054,11 @@ N3i
       // 2. Si no hay backend configurado aún, usar el motor de ingeniería inteligente
       if (!apiSuccess) {
         await new Promise(resolve => setTimeout(resolve, 800)); // Retardo natural de lectura
-        replyText = generateSmartResponse(textToSend, !!imgToSend);
+        responsePayload = generateSmartResponse(textToSend, !!imgToSend);
       }
 
       removeTypingIndicator();
-      appendMessage(replyText, 'assistant');
-
-      // Botón de WhatsApp tras la respuesta
-      const actionDiv = document.createElement('div');
-      actionDiv.className = 'copilot-msg-action';
-      const encodedWa = encodeURIComponent(
-        isEnglish
-          ? `Hello Eng. Fabio Gullacci, I was consulting the N3i AI Copilot regarding:\n"${textToSend}"\nI would like to request technical advice.`
-          : `Hola Ing. Fabio Gullacci, estuve consultando en el Copiloto Técnico de N3i sobre:\n"${textToSend}"\nQuisiera solicitar asesoramiento técnico personalizado.`
-      );
-      actionDiv.innerHTML = `
-        <a href="https://wa.me/5492914168232?text=${encodedWa}" target="_blank" rel="noopener noreferrer" class="msg-action-btn">
-          <span>💬</span> ${isEnglish ? 'Transfer to WhatsApp with Eng. Fabio' : 'Enviar consulta a WhatsApp con el Ing. Fabio'}
-        </a>
-      `;
-      messagesEl.appendChild(actionDiv);
-      scrollToBottom();
+      appendMessage(responsePayload, 'assistant');
 
     } catch (error) {
       removeTypingIndicator();
