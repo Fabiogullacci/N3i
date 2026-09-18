@@ -1,6 +1,18 @@
 {
   "obras": [
     {
+      "id": "obra_1789740375007",
+      "title": "SISTEMA INTELIGENTE DE DETECCION Y ALARMA DE INCENDIOS.",
+      "category": "Sistemas de Alarmas",
+      "location": "Rincon 3959, Bahia Blanca",
+      "description": "En N3I, se completó la instalación integral de un sistema inteligente de detección y alarma de incendios para WASKAS SA, planta dedicada a la fabricación de pastas secas libre de gluten. El proyecto abarcó la implementación de 45 sensores de humo fotoeléctricos de alta sensibilidad, estratégicamente distribuidos, junto con pulsadores manuales de emergencia y sirenas estroboscópicas homologadas, conformando una solución de protección activa. La arquitectura centralizada del sistema facilita el monitoreo continuo en tiempo real y la emisión de alertas push directas a los equipos de seguridad y gerencia, optimizando los tiempos de respuesta operativa frente a cualquier incidente. La ejecución se realizó con equipamiento especializado, garantizando la integración eficiente y la conformidad con los estándares de seguridad industrial.\r\n#N3I #SeguridadIndustrial #DeteccionDeIncendios #SistemasDeAlarma #WASKASSA #BahiaBlanca #InstalacionesIndustriales #ProteccionContraIncendios\r\n\r\n#N3I\r\n#SeguridadIndustrial\r\n#DeteccionDeIncendios\r\n#SistemasDeAlarma\r\n#WASKASSA\r\n#BahiaBlanca\r\n#InstalacionesIndustriales\r\n#ProteccionContraIncendios",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1789740374769_img_1.webp"
+      ],
+      "date": "2026-09-18T14:06:15.007Z"
+    },
+    {
       "id": "obra_1786568658733",
       "title": "SISTEMA PLUVIAL ACCESO DE CARGAS",
       "category": "Zinguería y Reparación Estructural",
