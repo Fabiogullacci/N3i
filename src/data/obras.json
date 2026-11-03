@@ -1,6 +1,21 @@
 {
   "obras": [
     {
+      "id": "obra_1793739998134",
+      "title": "Obra DIETRICH Camiones y Buses.",
+      "category": "Construcción en Seco y Terminaciones",
+      "location": "Jorge Newbery 2610 (Bahia Blanca)",
+      "description": "Ejecución integral llave en mano en el concesionario Dietrich Camiones y Buses de Bahía Blanca, abarcando el montaje estructural de steel frame con perfilería pesada y vigas reticuladas para salvar grandes luces dentro de la nave, desarrollo completo de mampostería interior y tabiquería divisoria en drywall con placas de yeso para la delimitación de oficinas comerciales, puestos de trabajo y áreas de atención, y colocación de cielorrasos desmontables con placas acústicas en todo el salón comercial y sectores administrativos, logrando una obra en seco rápida, sólida y alineada a los estándares corporativos. (Trabajo realizado TREJO HNOS. Durlock y Pinturas)",
+      "type": "images",
+      "media": [
+        "/assets/img/obra_1793739995618_img_1.webp",
+        "/assets/img/obra_1793739995618_img_2.webp",
+        "/assets/img/obra_1793739995618_img_3.webp",
+        "/assets/img/obra_1793739995618_img_4.webp"
+      ],
+      "date": "2026-11-03T21:06:38.134Z"
+    },
+    {
       "id": "obra_1789740375007",
       "title": "SISTEMA INTELIGENTE DE DETECCION Y ALARMA DE INCENDIOS.",
       "category": "Sistemas de Alarmas",
